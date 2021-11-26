@@ -14,6 +14,19 @@ public class AGV extends Facility {
         ID = "AGV" + Integer.toString(i) + Integer.toString(j);
         color = Color.red;
     }
+
+    public boolean checkCollisionWithNode(Node[][] nodeArray) {
+        for (int i = 0; i < nodeArray.length; i ++) {
+            for (int j =0; j < nodeArray[i].length; j ++) {
+                if (!nodeArray[i][j].isLine) {
+                    if (this.getBound().intersects(nodeArray[i][j].getBound())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
 
 

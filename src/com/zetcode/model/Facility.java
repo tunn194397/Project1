@@ -1,10 +1,13 @@
 package com.zetcode.model;
 
+import com.zetcode.view.Board;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class Facility extends JPanel{
     public int size_x, size_y, x, y;
+    public int maxsize = Integer.MAX_VALUE;
 
     public String imagePath;
     public boolean isInFloor;
@@ -130,7 +133,13 @@ public class Facility extends JPanel{
         this.y = j;
     }
     public void updateSize(int i) {
-        this.size_x += i*(size_x/size_y);
-        this.size_y += i;
+        if (this.size_x*this.size_y/900 > maxsize && i > 0) {
+            JOptionPane.showMessageDialog(this,this.name +" cannot resize to over the max size!","Warning resize room",JOptionPane.WARNING_MESSAGE);
+        }
+        else {
+            this.size_x += i*(size_x/size_y);
+            this.size_y += i;
+        }
+
     }
 }
