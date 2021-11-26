@@ -8,6 +8,7 @@ public class Room extends Facility {
         super(i, j);
         size_x = 210;
         size_y = 150;
+        maxsize = 100;
         imagePath = "src/resources/images/";
         moveAbility = false;
         name = "Room";
@@ -24,6 +25,7 @@ public class Room extends Facility {
     }
     public void draw(Graphics g) {
         super.draw(g);
+        setDoor();
         for (int i = 0; i < doorArray.length; i ++) {
             doorArray[i].draw(g);
         }
