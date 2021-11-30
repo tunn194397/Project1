@@ -1,7 +1,9 @@
 package com.zetcode.view;
 
 import com.zetcode.controller.MouseController;
-import com.zetcode.model.Person;
+
+import org.json.simple.JSONObject;
+
 import com.zetcode.model.*;
 
 import javax.swing.*;
@@ -43,6 +45,7 @@ public class Board extends JPanel implements ActionListener {
     public Person[] personArray = new Person[10];
     public Facility collector = new Facility();
     public Facility[] facilities = new Facility[30];
+    public Map map = new Map();
 
     // Biến timer
     public Timer timer;
@@ -240,141 +243,38 @@ public class Board extends JPanel implements ActionListener {
         }
         return false;
     }
-    //    public class TAdapter extends KeyAdapter {
-//
-//        @Override
-//        public void keyPressed(KeyEvent e) {
-//
-//            int key = e.getKeyCode();
-////            if (mainAGV.checkCollision(portArray[0]) ) {
-////                timer.stop();
-////                if (key == KeyEvent.VK_LEFT) mainAGV.x -= DOT_SIZE;
-////                if (key == KeyEvent.VK_RIGHT) mainAGV.x += DOT_SIZE;
-////                if (key == KeyEvent.VK_DOWN) mainAGV.y += DOT_SIZE;
-////                if (key == KeyEvent.VK_UP) mainAGV.y -= DOT_SIZE;
-////                repaint();
-////            }
-//
-////
-//            if ((key == KeyEvent.VK_LEFT) && (!rightDirection) && (!leftDirection)) {
-//                leftDirection = true;
-//                upDirection = false;
-//                downDirection = false;
-//                System.out.println("<---");
-//                mainAGV.switchSide();
-//            }
-//
-//            if ((key == KeyEvent.VK_RIGHT) && (!leftDirection) && (!rightDirection)) {
-//                rightDirection = true;
-//                upDirection = false;
-//                downDirection = false;
-//                System.out.println("--->");
-//                mainAGV.switchSide();
-//            }
-//
-//            if ((key == KeyEvent.VK_UP) && (!upDirection) && (!downDirection)) {
-//                upDirection = true;
-//                rightDirection = false;
-//                leftDirection = false;
-//                System.out.println(" ^ ");
-//                mainAGV.switchSide();
-//            }
-//
-//            if ((key == KeyEvent.VK_DOWN) && (!upDirection) && (!downDirection)) {
-//                downDirection = true;
-//                rightDirection = false;
-//                leftDirection = false;
-//                System.out.println(" v ");
-//                mainAGV.switchSide();
-//            }
-//        }
-//    }
-//    public class MovingAdapterController extends MouseAdapter {
-//
-//        private int x;
-//        private int y;
-//
-//        @Override
-//        public void mouseClicked(MouseEvent e) {
-//            int click_x = e.getX();
-//            int click_y = e.getY();
-//            if (status == 0) {
-//                for (Facility facility : facilities) {
-//                    if (facility.shape.isHit(click_x, click_y)) {
-//                        System.out.println("Click Mouse in" + facility.ID);
-//                        if (collector == facility) {
-//                            collector = new Facility();
-//                            collector.setMovable(false);
-//                        } else {
-//                            collector = facility;
-//                            collector.setMovable(true);
-//                        }
-//                        repaint();
-//                        break;
-//                    }
-//                    else {};
-//                }
-//            }
-//            else if (status == 1) {
-//
-//            }
-//
-//        }
-//        @Override
-//        public void mousePressed(MouseEvent e) {
-//            x = e.getX();
-//            y = e.getY();
-//            System.out.println("press Mouse in " + x + " " + y);
-//        }
-//
-//        @Override
-//        public void mouseDragged(MouseEvent e) {
-//            if (status == 0) {
-//                if (collector.moveAbility){
-//                    doMove(e);
-//                }
-//            }
-//            else if (status == 1) {
-//                doDrawLine(e);
-//                System.out.println(e.getX()+ " " + e.getY());
-//            }
-//
-//        }
-//
-//        private void doMove(MouseEvent e) {
-//            int dx = e.getX() - x;
-//            int dy = e.getY() - y;
-//
-//            if (!collector.shape.isHit(x, y)) {
-//            } else {
-//                collector.update(e.getX() - 60,e.getY() - 45);
-//                System.out.println(collector.x+ " " + collector.y);
-//                repaint();
-//            }
-//            x += dx;
-//            y += dy;
-//        }
-//        private void doDrawLine(MouseEvent e)  {
-//            int dx = e.getX() - x;
-//            int dy = e.getY() - y;
-//            nodeArray[e.getX()/30][e.getY()/30].updateIsLine(true);
-//            repaint();
-//            x += dx;
-//            y += dy;
-//        }
-//    }
+    public void saveGame(){
+        for (Port port: portArray){
+            PortJs portJs = new PortJs(port);
+            map.add(portJs);
+        }
+        for(Lift lift: liftArray){
+            LiftJs liftJs = new LiftJs(lift);
+            map.add(liftJs);
+        }
+        for(Room room: roomArray){
+            RoomJs roomJs= new RoomJs(room) ;
+            map.add(roomJs);
+        }
+        System.out.println("Save Game");
+        map.SaveMap();
+    }
+
     private void constructData() {
         Port p1 = new Port(1,1);
         Port p2 = new Port(1110,1);
         Port p3 = new Port(1,540);
         Port p4 = new Port(1110,540);
         portArray = new Port[]{p1,p2,p3,p4};
-
+       
+        
         Lift l1 = new Lift(1,240);
         Lift l2 = new Lift(1110,240);
         Lift l3 = new Lift(1,300);
         Lift l4 = new Lift(1110,300);
         liftArray = new Lift[]{l1,l2,l3,l4};
+      
+
 
         Room r1 = new Room(150,60);
         Room r2 = new Room(480,60);
@@ -395,6 +295,8 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
+   
+
 }
 
 

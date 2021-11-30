@@ -1,8 +1,10 @@
 package com.zetcode.view;
 
-import com.zetcode.controller.ButtonController.buttonController;
-import com.zetcode.controller.ButtonController.drawButtonController;
-import com.zetcode.controller.ButtonController.playButtonController;
+import com.zetcode.controller.buttoncontroller.ButtonController;
+import com.zetcode.controller.buttoncontroller.DrawButtonController;
+import com.zetcode.controller.buttoncontroller.PlayButtonController;
+import com.zetcode.controller.buttoncontroller.PlayButtonController;
+import com.zetcode.controller.buttoncontroller.SaveButtonController;
 import com.zetcode.controller.KeyController;
 import com.zetcode.controller.MouseController;
 import com.zetcode.model.*;
@@ -34,9 +36,10 @@ public class UI {
     public static final Board mainBoard = new Board();
 
     //Controller
-    buttonController pBC = new playButtonController(mainBoard,playButton, drawButton);
-    buttonController dBC = new drawButtonController(mainBoard,drawButton, playButton);
+    ButtonController pBC = new PlayButtonController(mainBoard,playButton, drawButton);
+    ButtonController dBC = new DrawButtonController(mainBoard,drawButton, playButton);
     KeyController kc = new KeyController(mainBoard);
+    SaveButtonController sBC = new SaveButtonController(mainBoard, saveButton);
 
     public UI() {
         System.out.println("Start the game");
@@ -56,6 +59,7 @@ public class UI {
         playButton.addKeyListener(kc);
         playButton.addActionListener(pBC);
         drawButton.addActionListener(dBC);
+        saveButton.addActionListener(sBC);
     }
 
     public void showLayout() {

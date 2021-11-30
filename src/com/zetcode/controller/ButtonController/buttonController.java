@@ -1,4 +1,4 @@
-package com.zetcode.controller.ButtonController;
+package com.zetcode.controller.buttoncontroller;
 
 import com.zetcode.view.Board;
 
@@ -6,16 +6,16 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class buttonController implements ActionListener {
+public class ButtonController implements ActionListener {
     public Board board;
     public JButton button;
-    public buttonController(Board board, JButton button) {
+    public ButtonController(Board board, JButton button) {
         super();
         this.board = board;
         this.button = button;
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-
+    // do something
     }
 }
