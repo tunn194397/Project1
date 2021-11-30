@@ -142,4 +142,8 @@ public class Facility extends JPanel{
         }
 
     }
+    public void updateSize(int i, int j){
+        this.size_x = i;
+        this.size_y = j;
+    }
 }

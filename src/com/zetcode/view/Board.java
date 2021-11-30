@@ -9,18 +9,28 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Vector;
 
 public class Board extends JPanel implements ActionListener {
     // Các biến toàn cục trong Board
     public final int B_WIDTH = 1200;
     public final int B_HEIGHT = 600;
     private final int DOT_SIZE = 10;
-    private final int MAX_PERSON = 10;
-    private final int MAX_AGV = 10;
     private final int RAND_POS = 29;
     private final int DELAY = 140;
+
+    //Các biến chứa các giá trị Validate
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
-    public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV
+    public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV, 3 la resize
+    public final int MAX_ROOM_QUANTITY = 10;
+    public final int MAX_AGV_QUANTITY = 6;
+    public final int MAX_PERSON_QUANTITY = 10;
+    public final int MAX_GURNEY_QUANTITY = 10;
+    public final int MAX_LIFT_QUANTITY = 8;
+    public final int MAX_PORT_QUANTITY = 8;
 
     //Controller của chuột, cái này không đẩy được sang class UI vì bị thay đổi liên tục trong repaint()
     MouseController ma;
@@ -35,14 +45,14 @@ public class Board extends JPanel implements ActionListener {
     // Các Facilities và Node trong Board
     public static final AGV mainAGV = new AGV(120,120);
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
-    public Room[] roomArray = new Room[8];
-    public AGV[] agvArray = new AGV[6];
-    public Gurney[] gurneyArray = new Gurney[6];
-    public Lift[] liftArray = new Lift[4];
-    public Port[] portArray = new Port[4];
-    public Person[] personArray = new Person[10];
+    public Vector<Room> roomArray = new Vector<>();
+    public Vector<AGV> agvArray = new Vector<>();
+    public Vector<Gurney> gurneyArray = new Vector<>();
+    public Vector<Lift> liftArray = new Vector<>();
+    public Vector<Port> portArray = new Vector<>();
+    public Vector<Person> personArray = new Vector<>();
     public Facility collector = new Facility();
-    public Facility[] facilities = new Facility[30];
+    public Vector<Facility> facilities = new Vector<>();
 
     // Biến timer
     public Timer timer;
@@ -115,14 +125,8 @@ public class Board extends JPanel implements ActionListener {
         }
         mainAGV.draw(g);
         // Ve 4 cong vao ra
-        for (Port port : portArray) {
-            port.draw(g);
-        }
-        for (Lift lift : liftArray) {
-            lift.draw(g);
-        }
-        for (Room room : roomArray) {
-            room.draw(g);
+        for (Facility facility: facilities){
+            facility.draw(g);
         }
         if (checkRoomOverTotalSize()){
             JOptionPane.showMessageDialog(this,"Total size of room cannot over " + validMaxSizeOfRoom*100 + "% size of room","Warning",JOptionPane.WARNING_MESSAGE);
@@ -240,160 +244,42 @@ public class Board extends JPanel implements ActionListener {
         }
         return false;
     }
-    //    public class TAdapter extends KeyAdapter {
-//
-//        @Override
-//        public void keyPressed(KeyEvent e) {
-//
-//            int key = e.getKeyCode();
-////            if (mainAGV.checkCollision(portArray[0]) ) {
-////                timer.stop();
-////                if (key == KeyEvent.VK_LEFT) mainAGV.x -= DOT_SIZE;
-////                if (key == KeyEvent.VK_RIGHT) mainAGV.x += DOT_SIZE;
-////                if (key == KeyEvent.VK_DOWN) mainAGV.y += DOT_SIZE;
-////                if (key == KeyEvent.VK_UP) mainAGV.y -= DOT_SIZE;
-////                repaint();
-////            }
-//
-////
-//            if ((key == KeyEvent.VK_LEFT) && (!rightDirection) && (!leftDirection)) {
-//                leftDirection = true;
-//                upDirection = false;
-//                downDirection = false;
-//                System.out.println("<---");
-//                mainAGV.switchSide();
-//            }
-//
-//            if ((key == KeyEvent.VK_RIGHT) && (!leftDirection) && (!rightDirection)) {
-//                rightDirection = true;
-//                upDirection = false;
-//                downDirection = false;
-//                System.out.println("--->");
-//                mainAGV.switchSide();
-//            }
-//
-//            if ((key == KeyEvent.VK_UP) && (!upDirection) && (!downDirection)) {
-//                upDirection = true;
-//                rightDirection = false;
-//                leftDirection = false;
-//                System.out.println(" ^ ");
-//                mainAGV.switchSide();
-//            }
-//
-//            if ((key == KeyEvent.VK_DOWN) && (!upDirection) && (!downDirection)) {
-//                downDirection = true;
-//                rightDirection = false;
-//                leftDirection = false;
-//                System.out.println(" v ");
-//                mainAGV.switchSide();
-//            }
-//        }
-//    }
-//    public class MovingAdapterController extends MouseAdapter {
-//
-//        private int x;
-//        private int y;
-//
-//        @Override
-//        public void mouseClicked(MouseEvent e) {
-//            int click_x = e.getX();
-//            int click_y = e.getY();
-//            if (status == 0) {
-//                for (Facility facility : facilities) {
-//                    if (facility.shape.isHit(click_x, click_y)) {
-//                        System.out.println("Click Mouse in" + facility.ID);
-//                        if (collector == facility) {
-//                            collector = new Facility();
-//                            collector.setMovable(false);
-//                        } else {
-//                            collector = facility;
-//                            collector.setMovable(true);
-//                        }
-//                        repaint();
-//                        break;
-//                    }
-//                    else {};
-//                }
-//            }
-//            else if (status == 1) {
-//
-//            }
-//
-//        }
-//        @Override
-//        public void mousePressed(MouseEvent e) {
-//            x = e.getX();
-//            y = e.getY();
-//            System.out.println("press Mouse in " + x + " " + y);
-//        }
-//
-//        @Override
-//        public void mouseDragged(MouseEvent e) {
-//            if (status == 0) {
-//                if (collector.moveAbility){
-//                    doMove(e);
-//                }
-//            }
-//            else if (status == 1) {
-//                doDrawLine(e);
-//                System.out.println(e.getX()+ " " + e.getY());
-//            }
-//
-//        }
-//
-//        private void doMove(MouseEvent e) {
-//            int dx = e.getX() - x;
-//            int dy = e.getY() - y;
-//
-//            if (!collector.shape.isHit(x, y)) {
-//            } else {
-//                collector.update(e.getX() - 60,e.getY() - 45);
-//                System.out.println(collector.x+ " " + collector.y);
-//                repaint();
-//            }
-//            x += dx;
-//            y += dy;
-//        }
-//        private void doDrawLine(MouseEvent e)  {
-//            int dx = e.getX() - x;
-//            int dy = e.getY() - y;
-//            nodeArray[e.getX()/30][e.getY()/30].updateIsLine(true);
-//            repaint();
-//            x += dx;
-//            y += dy;
-//        }
-//    }
+
     private void constructData() {
-        Port p1 = new Port(1,1);
-        Port p2 = new Port(1110,1);
-        Port p3 = new Port(1,540);
-        Port p4 = new Port(1110,540);
-        portArray = new Port[]{p1,p2,p3,p4};
+        portArray.add(new Port(1,1));
+        portArray.add(new Port(1110,1));
+        portArray.add(new Port(1,540));
+        portArray.add(new Port(1110,540));
 
-        Lift l1 = new Lift(1,240);
-        Lift l2 = new Lift(1110,240);
-        Lift l3 = new Lift(1,300);
-        Lift l4 = new Lift(1110,300);
-        liftArray = new Lift[]{l1,l2,l3,l4};
 
-        Room r1 = new Room(150,60);
-        Room r2 = new Room(480,60);
-        Room r3 = new Room(150,360);
-        Room r4 = new Room(480,360);
-        Room r5 = new Room(810,60);
-        Room r6 = new Room(810,360);
-        roomArray = new Room[]{r1, r2, r3, r4, r5, r6};
+        liftArray.add(new Lift(1,240));
+        liftArray.add(new Lift(1110,240));
+        liftArray.add(new Lift(1,300));
+        liftArray.add(new Lift(1110,300));
+//
+//        roomArray.add(new Room(150,60));
+//        roomArray.add(new Room(480,60));
+//        roomArray.add(new Room(150,360));
+//        roomArray.add(new Room(480,360));
+//        roomArray.add(new Room(810,60));
+//        roomArray.add(new Room(810,360));
 
-        facilities = new Facility[]{p1,p2,p3,p4,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
-                r1.doorArray[0],r1.doorArray[1], r1.doorArray[2],r1.doorArray[3],
-                r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
-                r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
-                r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3], };
         for (int i = 0; i < B_WIDTH/30; i ++) {
             for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
                 nodeArray[i][j] = new Node(i*30+2, j*30+2);
             }
         }
+        setUpFacilities();
+        System.out.println(facilities.size());
+        for (int i = 0; i < facilities.size(); i ++) {
+            System.out.println(facilities.get(i).ID);
+        }
+    }
+    public void setUpFacilities(){
+//        facilities.addAll(Arrays.asList(room.doorArray));
+        facilities.addAll(roomArray);
+        facilities.addAll(liftArray);
+        facilities.addAll(portArray);
     }
 }
 
