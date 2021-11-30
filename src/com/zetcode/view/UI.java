@@ -1,21 +1,10 @@
 package com.zetcode.view;
 
-import com.zetcode.controller.ButtonController.buttonController;
-import com.zetcode.controller.ButtonController.drawButtonController;
-import com.zetcode.controller.ButtonController.playButtonController;
+import com.zetcode.controller.buttoncontroller.*;
 import com.zetcode.controller.KeyController;
-import com.zetcode.controller.MouseController;
-import com.zetcode.model.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.security.Key;
-
-import static com.sun.java.accessibility.util.AWTEventMonitor.addKeyListener;
 
 public class UI {
     // Frame
@@ -34,8 +23,11 @@ public class UI {
     public static final Board mainBoard = new Board();
 
     //Controller
-    buttonController pBC = new playButtonController(mainBoard,playButton, drawButton);
-    buttonController dBC = new drawButtonController(mainBoard,drawButton, playButton);
+    ButtonController pBC = new PlayButtonController(mainBoard,playButton, drawButton);
+    ButtonController dBC = new DrawButtonController(mainBoard,drawButton, playButton);
+    ButtonController aRC = new AddRoomController(mainBoard,addButton);
+    ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
+    ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
     KeyController kc = new KeyController(mainBoard);
 
     public UI() {
@@ -56,6 +48,9 @@ public class UI {
         playButton.addKeyListener(kc);
         playButton.addActionListener(pBC);
         drawButton.addActionListener(dBC);
+        addButton.addActionListener(aRC);
+        deleteButton.addActionListener(deleteBC);
+        resizeButton.addActionListener(rBC);
     }
 
     public void showLayout() {

@@ -8,10 +8,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.Vector;
 
 public class MouseController extends MouseAdapter implements MouseWheelListener {
     public Board board;
-    public Facility[] facilities;
+    public Vector<Facility> facilities;
     public int status;
     public Facility collector;
     public Node[][] nodeArray;
