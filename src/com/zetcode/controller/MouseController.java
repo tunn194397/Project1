@@ -4,6 +4,7 @@ import com.zetcode.model.Facility;
 import com.zetcode.model.Node;
 import com.zetcode.view.Board;
 
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -59,6 +60,13 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
         x = e.getX();
         y = e.getY();
         System.out.println("press Mouse in " + x + " " + y);
+        if (status == 2) {
+            board.dijkstra.getMouseData(e, board.getGraphics());
+            board.setStatus(3);
+        } else if (status == 3) {
+            board.dijkstra.getMouseData(e, board.getGraphics());
+            board.setStatus(4);
+        }
     }
 
     @Override
@@ -73,7 +81,6 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             doDrawLine(e);
             System.out.println(e.getX()+ " " + e.getY());
         }
-
     }
 
     public void doMove(MouseEvent e) {

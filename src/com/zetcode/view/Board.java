@@ -3,12 +3,14 @@ package com.zetcode.view;
 import com.zetcode.controller.MouseController;
 import com.zetcode.model.Person;
 import com.zetcode.model.*;
+import com.zetcode.algorithm.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.List;
 
 public class Board extends JPanel implements ActionListener {
     // Các biến toàn cục trong Board
@@ -21,6 +23,7 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 140;
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
     public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV
+    public Dijkstra dijkstra = new Dijkstra();
 
     //Controller của chuột, cái này không đẩy được sang class UI vì bị thay đổi liên tục trong repaint()
     MouseController ma;
@@ -115,15 +118,9 @@ public class Board extends JPanel implements ActionListener {
         }
         mainAGV.draw(g);
         // Ve 4 cong vao ra
-        for (Port port : portArray) {
-            port.draw(g);
-        }
-        for (Lift lift : liftArray) {
-            lift.draw(g);
-        }
-        for (Room room : roomArray) {
-            room.draw(g);
-        }
+        for (Port port : portArray) { port.draw(g); }
+        for (Lift lift : liftArray) { lift.draw(g); }
+        for (Room room : roomArray) { room.draw(g); }
         if (checkRoomOverTotalSize()){
             JOptionPane.showMessageDialog(this,"Total size of room cannot over " + validMaxSizeOfRoom*100 + "% size of room","Warning",JOptionPane.WARNING_MESSAGE);
         }
@@ -368,13 +365,13 @@ public class Board extends JPanel implements ActionListener {
         Port p2 = new Port(1110,1);
         Port p3 = new Port(1,540);
         Port p4 = new Port(1110,540);
-        portArray = new Port[]{p1,p2,p3,p4};
+        portArray = new Port[] {p1, p2, p3, p4};
 
         Lift l1 = new Lift(1,240);
         Lift l2 = new Lift(1110,240);
         Lift l3 = new Lift(1,300);
         Lift l4 = new Lift(1110,300);
-        liftArray = new Lift[]{l1,l2,l3,l4};
+        liftArray = new Lift[] {l1, l2, l3, l4};
 
         Room r1 = new Room(150,60);
         Room r2 = new Room(480,60);
@@ -382,7 +379,7 @@ public class Board extends JPanel implements ActionListener {
         Room r4 = new Room(480,360);
         Room r5 = new Room(810,60);
         Room r6 = new Room(810,360);
-        roomArray = new Room[]{r1, r2, r3, r4, r5, r6};
+        roomArray = new Room[] {r1, r2, r3, r4, r5, r6};
 
         facilities = new Facility[]{p1,p2,p3,p4,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
                 r1.doorArray[0],r1.doorArray[1], r1.doorArray[2],r1.doorArray[3],
@@ -393,6 +390,88 @@ public class Board extends JPanel implements ActionListener {
             for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
                 nodeArray[i][j] = new Node(i*30+2, j*30+2);
             }
+        }
+        dijkstra.cover();
+        dijkstra.match();
+    }
+
+    public class Dijkstra extends JPanel {
+        int a = 0, b = 0, c = 0, d = 0;
+        boolean f = false;
+        Vertex[][] vertices = new Vertex[20][40];
+        Vertex sourceV = new Vertex("source");
+        Vertex targetV = new Vertex("target");
+        public Dijkstra() {
+            for (int i = 0; i < 20; i++) {
+                for (int j = 0; j < 40; j++) {
+                    vertices[i][j] = new Vertex("[" + i + "][" + j + "]");
+                }
+            }
+        }
+        public void cover() {
+            for (Facility facility : facilities) {
+                int x = facility.x / 30;
+                int y = facility.y / 30;
+                int size_x = (facility.size_x + 29) / 30;
+                int size_y = (facility.size_y + 29) / 30;
+                for (int i = y; i < size_y + y; i++) {
+                    for (int j = x; j < size_x + x; j++) {
+                        vertices[i][j].cover();
+                    }
+                }
+            }
+        }
+        public void match() {
+            for (int i = 0; i < 20; i++) {
+                for (int j = 0; j < 39; j++) {
+                    if (!vertices[i][j].getCover() && !vertices[i][j+1].getCover()) {
+                        vertices[i][j].addNeighbour(new Edge(1, vertices[i][j], vertices[i][j+1]));
+                        vertices[i][j+1].addNeighbour(new Edge(1, vertices[i][j+1], vertices[i][j]));
+                    }
+                }
+            }
+            for (int i = 0; i < 40; i++) {
+                for (int j = 0; j < 19; j++) {
+                    if (!vertices[j][i].getCover() && !vertices[j+1][i].getCover()) {
+                        vertices[j][i].addNeighbour(new Edge(1, vertices[j][i], vertices[j+1][i]));
+                        vertices[j+1][i].addNeighbour(new Edge(1, vertices[j+1][i], vertices[j][i]));
+                    }
+                }
+            }
+        }
+        public void getMouseData(MouseEvent e, Graphics g) {
+            if (!f) {
+                a = e.getX() / 30;
+                b = e.getY() / 30;
+                sourceV = vertices[b][a];
+                f = true;
+            } else {
+                c = e.getX() / 30;
+                d = e.getY() / 30;
+                targetV = vertices[d][c];
+                algorithm(sourceV, targetV);
+                f = false; a = b = c = d = 0;
+                for (int i = 0; i < 20; i++) {
+                    for (int j = 0; j < 40; j++) {
+                        if (vertices[i][j].getInLine()) {
+                            System.out.println(vertices[i][j].getName());
+                            draw(g, j*30, i*30);
+                        }
+                    }
+                }
+            }
+        }
+        public List<Vertex> algorithm(Vertex sourceVertex, Vertex targetVertex) {
+            FindPath findPath = new FindPath();
+            findPath.ShortestPath(sourceVertex);
+            return findPath.getShortestPath(targetVertex);
+        }
+        public void draw(Graphics g, int co_x, int co_y) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setColor(Color.green);
+            g2d.drawRect(co_x, co_y, 30, 30);
+            g2d.fillRect(co_x, co_y, 30, 30);
+            g2d.dispose();
         }
     }
 }

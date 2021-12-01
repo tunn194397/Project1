@@ -1,6 +1,7 @@
 package com.zetcode.view;
 
 import com.zetcode.controller.ButtonController.buttonController;
+import com.zetcode.controller.ButtonController.dijkstraButtonController;
 import com.zetcode.controller.ButtonController.drawButtonController;
 import com.zetcode.controller.ButtonController.playButtonController;
 import com.zetcode.controller.KeyController;
@@ -29,6 +30,7 @@ public class UI {
     public JButton drawButton = new JButton("Draw Line");
     public JButton saveButton = new JButton("Save");
     public JButton playButton = new JButton("Play");
+    public JButton dijkstra = new JButton("Dijkstra");
 
     //Board
     public static final Board mainBoard = new Board();
@@ -36,6 +38,7 @@ public class UI {
     //Controller
     buttonController pBC = new playButtonController(mainBoard,playButton, drawButton);
     buttonController dBC = new drawButtonController(mainBoard,drawButton, playButton);
+    buttonController dij = new dijkstraButtonController(mainBoard, dijkstra, playButton);
     KeyController kc = new KeyController(mainBoard);
 
     public UI() {
@@ -56,6 +59,7 @@ public class UI {
         playButton.addKeyListener(kc);
         playButton.addActionListener(pBC);
         drawButton.addActionListener(dBC);
+        dijkstra.addActionListener(dij);
     }
 
     public void showLayout() {
@@ -73,6 +77,7 @@ public class UI {
         panel.add(drawButton);
         panel.add(saveButton);
         panel.add(playButton);
+        panel.add(dijkstra);
         controlPanel.add(panel);
     }
 
