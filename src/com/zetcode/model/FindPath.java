@@ -1,8 +1,5 @@
 package com.zetcode.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.PriorityQueue;
 
 public class FindPath {
@@ -28,12 +25,9 @@ public class FindPath {
     }
 
     // Lay duong di ngan nhat toi moi diem
-    public List<Node> getShortestPath(Node targetVertex) {
-        List<Node> path = new ArrayList<>();
+    public void getShortestPath(Node targetVertex) {
         for (Node vertex = targetVertex; vertex != null; vertex = vertex.getPrevious()) {
             vertex.updateIsLine(true);
         }
-        Collections.reverse(path);
-        return path;
     }
 }

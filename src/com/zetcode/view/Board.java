@@ -459,17 +459,23 @@ public class Board extends JPanel implements ActionListener {
                 f = false; a = b = c = d = 0;
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 40; j++) {
-                        if (nodeArray[i][j].getCover()) {
+                        if (nodeArray[i][j].getIsLine()) {
                             System.out.println("[" + i + "][" + j + "]");
                         }
                     }
                 }
             }
         }
-        public List<Node> algorithm(Node sourceVertex, Node targetVertex) {
+        public void algorithm(Node sourceVertex, Node targetVertex) {
             FindPath findPath = new FindPath();
+            for (int i = 0; i < 20; i++) {
+                for (int j = 0; j < 40; j++) {
+                    nodeArray[i][j].setPrevious(null);
+                    nodeArray[i][j].setVisited(false);
+                }
+            }
             findPath.ShortestPath(sourceVertex);
-            return findPath.getShortestPath(targetVertex);
+            findPath.getShortestPath(targetVertex);
         }
     }
 }
