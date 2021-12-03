@@ -61,10 +61,10 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
         y = e.getY();
         System.out.println("press Mouse in " + x + " " + y);
         if (status == 2) {
-            board.dijkstra.getMouseData(e, board.getGraphics());
+            board.dijkstra.getMouseData(e);
             board.setStatus(3);
         } else if (status == 3) {
-            board.dijkstra.getMouseData(e, board.getGraphics());
+            board.dijkstra.getMouseData(e);
             board.setStatus(4);
         }
     }
@@ -100,7 +100,6 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     public void doDrawLine(MouseEvent e)  {
         int dx = e.getX() - x;
         int dy = e.getY() - y;
-        nodeArray[e.getX()/30][e.getY()/30].updateIsLine(true);
         updateBoard();
         board.repaint();
         x += dx;

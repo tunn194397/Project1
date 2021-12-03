@@ -3,7 +3,6 @@ package com.zetcode.view;
 import com.zetcode.controller.MouseController;
 import com.zetcode.model.Person;
 import com.zetcode.model.*;
-import com.zetcode.algorithm.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +22,6 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 140;
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
     public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV
-    public Dijkstra dijkstra = new Dijkstra();
 
     //Controller của chuột, cái này không đẩy được sang class UI vì bị thay đổi liên tục trong repaint()
     MouseController ma;
@@ -37,7 +35,7 @@ public class Board extends JPanel implements ActionListener {
 
     // Các Facilities và Node trong Board
     public static final AGV mainAGV = new AGV(120,120);
-    public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
+    public Node[][] nodeArray = new Node[20][40];
     public Room[] roomArray = new Room[8];
     public AGV[] agvArray = new AGV[6];
     public Gurney[] gurneyArray = new Gurney[6];
@@ -46,6 +44,8 @@ public class Board extends JPanel implements ActionListener {
     public Person[] personArray = new Person[10];
     public Facility collector = new Facility();
     public Facility[] facilities = new Facility[30];
+
+    public Dijkstra dijkstra = new Dijkstra();
 
     // Biến timer
     public Timer timer;
@@ -111,8 +111,8 @@ public class Board extends JPanel implements ActionListener {
                 g.drawLine(i,0,i,B_HEIGHT);
             }
         }
-        for (int i = 0; i < B_WIDTH/30; i ++) {
-            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 40; j++) {
                 nodeArray[i][j].draw(g);
             }
         }
@@ -381,42 +381,38 @@ public class Board extends JPanel implements ActionListener {
         Room r6 = new Room(810,360);
         roomArray = new Room[] {r1, r2, r3, r4, r5, r6};
 
-        facilities = new Facility[]{p1,p2,p3,p4,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
+        facilities = new Facility[] { p1,p2,p3,p4,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
                 r1.doorArray[0],r1.doorArray[1], r1.doorArray[2],r1.doorArray[3],
                 r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
-                r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
-                r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3], };
-        for (int i = 0; i < B_WIDTH/30; i ++) {
-            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
-                nodeArray[i][j] = new Node(i*30+2, j*30+2);
+                r3.doorArray[0],r3.doorArray[1], r3.doorArray[2],r3.doorArray[3],
+                r4.doorArray[0],r4.doorArray[1], r4.doorArray[2],r4.doorArray[3],
+                r5.doorArray[0],r5.doorArray[1], r5.doorArray[2],r5.doorArray[3],
+                r6.doorArray[0],r6.doorArray[1], r6.doorArray[2],r6.doorArray[3],
+        };
+
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 40; j++) {
+                nodeArray[i][j] = new Node(j*30+1, i*30+1);
             }
         }
         dijkstra.cover();
         dijkstra.match();
     }
 
-    public class Dijkstra extends JPanel {
+    public class Dijkstra {
         int a = 0, b = 0, c = 0, d = 0;
         boolean f = false;
-        Vertex[][] vertices = new Vertex[20][40];
-        Vertex sourceV = new Vertex("source");
-        Vertex targetV = new Vertex("target");
-        public Dijkstra() {
-            for (int i = 0; i < 20; i++) {
-                for (int j = 0; j < 40; j++) {
-                    vertices[i][j] = new Vertex("[" + i + "][" + j + "]");
-                }
-            }
-        }
+        Node sourceV;
+        Node targetV;
         public void cover() {
             for (Facility facility : facilities) {
                 int x = facility.x / 30;
                 int y = facility.y / 30;
-                int size_x = (facility.size_x + 29) / 30;
-                int size_y = (facility.size_y + 29) / 30;
-                for (int i = y; i < size_y + y; i++) {
-                    for (int j = x; j < size_x + x; j++) {
-                        vertices[i][j].cover();
+                int size_x = (facility.size_x + facility.x + 28) / 30;
+                int size_y = (facility.size_y + facility.y + 28) / 30;
+                for (int i = y; i < size_y; i++) {
+                    for (int j = x; j < size_x; j++) {
+                        nodeArray[i][j].updateIsCover(true);
                     }
                 }
             }
@@ -424,54 +420,56 @@ public class Board extends JPanel implements ActionListener {
         public void match() {
             for (int i = 0; i < 20; i++) {
                 for (int j = 0; j < 39; j++) {
-                    if (!vertices[i][j].getCover() && !vertices[i][j+1].getCover()) {
-                        vertices[i][j].addNeighbour(new Edge(1, vertices[i][j], vertices[i][j+1]));
-                        vertices[i][j+1].addNeighbour(new Edge(1, vertices[i][j+1], vertices[i][j]));
+                    if (!nodeArray[i][j].getCover() && !nodeArray[i][j+1].getCover()) {
+                        nodeArray[i][j].addNeighbour(new Edge(1, nodeArray[i][j], nodeArray[i][j+1]));
+                        //System.out.println("[" + i + "][" + j + "] to [" + i + "][" + (j+1) + "]");
+                        nodeArray[i][j+1].addNeighbour(new Edge(1, nodeArray[i][j+1], nodeArray[i][j]));
+                        //System.out.println("[" + i + "][" + (j+1) + "] to [" + i + "][" + j + "]");
                     }
                 }
             }
             for (int i = 0; i < 40; i++) {
                 for (int j = 0; j < 19; j++) {
-                    if (!vertices[j][i].getCover() && !vertices[j+1][i].getCover()) {
-                        vertices[j][i].addNeighbour(new Edge(1, vertices[j][i], vertices[j+1][i]));
-                        vertices[j+1][i].addNeighbour(new Edge(1, vertices[j+1][i], vertices[j][i]));
+                    if (!nodeArray[j][i].getCover() && !nodeArray[j+1][i].getCover()) {
+                        nodeArray[j][i].addNeighbour(new Edge(1, nodeArray[j][i], nodeArray[j+1][i]));
+                        //System.out.println("[" + j + "][" + i + "] to [" + (j+1) + "][" + i + "]");
+                        nodeArray[j+1][i].addNeighbour(new Edge(1, nodeArray[j+1][i], nodeArray[j][i]));
+                        //System.out.println("[" + (j+1) + "][" + i + "] to [" + j + "][" + i + "]");
                     }
                 }
             }
+            /* for (int i = 0; i < 40; i++) {
+                for (int j = 0; j < 20; j++) {
+                    int a = nodeArray[j][i].getList().size();
+                    System.out.println("[" + i + "][" + j + "] has " + a + " neighbour");
+                }
+            } */
         }
-        public void getMouseData(MouseEvent e, Graphics g) {
+        public void getMouseData(MouseEvent e) {
             if (!f) {
                 a = e.getX() / 30;
                 b = e.getY() / 30;
-                sourceV = vertices[b][a];
+                sourceV = nodeArray[b][a];
                 f = true;
             } else {
                 c = e.getX() / 30;
                 d = e.getY() / 30;
-                targetV = vertices[d][c];
+                targetV = nodeArray[d][c];
                 algorithm(sourceV, targetV);
                 f = false; a = b = c = d = 0;
                 for (int i = 0; i < 20; i++) {
                     for (int j = 0; j < 40; j++) {
-                        if (vertices[i][j].getInLine()) {
-                            System.out.println(vertices[i][j].getName());
-                            draw(g, j*30, i*30);
+                        if (nodeArray[i][j].getCover()) {
+                            System.out.println("[" + i + "][" + j + "]");
                         }
                     }
                 }
             }
         }
-        public List<Vertex> algorithm(Vertex sourceVertex, Vertex targetVertex) {
+        public List<Node> algorithm(Node sourceVertex, Node targetVertex) {
             FindPath findPath = new FindPath();
             findPath.ShortestPath(sourceVertex);
             return findPath.getShortestPath(targetVertex);
-        }
-        public void draw(Graphics g, int co_x, int co_y) {
-            Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setColor(Color.green);
-            g2d.drawRect(co_x, co_y, 30, 30);
-            g2d.fillRect(co_x, co_y, 30, 30);
-            g2d.dispose();
         }
     }
 }

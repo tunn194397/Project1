@@ -7,7 +7,7 @@ public class Vertex implements Comparable<Vertex> {
     private boolean visited;                    // Da duoc tham chua
     private String name;                        // Ten dinh
     private List<Edge> List;                    // Danh sach
-    private int dist = Integer.MAX_VALUE;       // Khoang cach den dinh nguon
+    private int dist = Integer.MAX_VALUE;       // Dat khoang cach mac dinh la vo cung
     private Vertex previous;                    // Dinh nam truoc no
     private boolean isCover = false;            // Co bi phu khong
     private boolean inLine = false;             // Co nam tren duong di khong
@@ -33,8 +33,8 @@ public class Vertex implements Comparable<Vertex> {
     public int getDist() { return dist; }
     public void setDist(int dist) { this.dist = dist; }
 
-    public void cover() { this.isCover = true; }
-    public boolean getCover() { return this.isCover; }
+    public void cover() { isCover = true; }
+    public boolean getCover() { return isCover; }
 
     public void setInLine() { this.inLine = true; }
     public boolean getInLine() { return this.inLine; }
