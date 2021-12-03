@@ -2,6 +2,7 @@ package com.zetcode.view;
 
 import com.zetcode.controller.buttoncontroller.ButtonController;
 import com.zetcode.controller.buttoncontroller.DrawButtonController;
+import com.zetcode.controller.buttoncontroller.LoadButtonController;
 import com.zetcode.controller.buttoncontroller.PlayButtonController;
 import com.zetcode.controller.buttoncontroller.PlayButtonController;
 import com.zetcode.controller.buttoncontroller.SaveButtonController;
@@ -29,8 +30,9 @@ public class UI {
     public JButton resizeButton = new JButton("Resize");
     public JButton deleteButton = new JButton("Delete");
     public JButton drawButton = new JButton("Draw Line");
-    public JButton saveButton = new JButton("Save");
+    public JButton saveButton = new JButton("Save Map");
     public JButton playButton = new JButton("Play");
+    public JButton loadButton = new JButton("Load Map");
 
     //Board
     public static final Board mainBoard = new Board();
@@ -40,7 +42,7 @@ public class UI {
     ButtonController dBC = new DrawButtonController(mainBoard,drawButton, playButton);
     KeyController kc = new KeyController(mainBoard);
     SaveButtonController sBC = new SaveButtonController(mainBoard, saveButton);
-
+    LoadButtonController lBC = new LoadButtonController(mainBoard, loadButton);
     public UI() {
         System.out.println("Start the game");
         mainFrame = new JFrame();
@@ -60,6 +62,7 @@ public class UI {
         playButton.addActionListener(pBC);
         drawButton.addActionListener(dBC);
         saveButton.addActionListener(sBC);
+        loadButton.addActionListener(lBC);
     }
 
     public void showLayout() {
@@ -75,8 +78,9 @@ public class UI {
         panel.add(resizeButton);
         panel.add(deleteButton);
         panel.add(drawButton);
-        panel.add(saveButton);
         panel.add(playButton);
+        panel.add(saveButton);
+        panel.add(loadButton);
         controlPanel.add(panel);
     }
 

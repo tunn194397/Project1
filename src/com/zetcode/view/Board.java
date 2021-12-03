@@ -244,7 +244,7 @@ public class Board extends JPanel implements ActionListener {
         return false;
     }
     public void saveGame(){
-        for (Port port: portArray){
+       /* for (Port port: portArray){
             PortJs portJs = new PortJs(port);
             map.add(portJs);
         }
@@ -255,11 +255,19 @@ public class Board extends JPanel implements ActionListener {
         for(Room room: roomArray){
             RoomJs roomJs= new RoomJs(room) ;
             map.add(roomJs);
+        }*/
+        for(Facility facility: facilities){
+            FacilityJS facilityJS = new FacilityJS(facility);
+            map.add(facilityJS);
+            map.add("r");
         }
-        System.out.println("Save Game");
         map.SaveMap();
+        System.out.println(map.size());
     }
 
+    public void loadGame(){
+        // do something
+    }
     private void constructData() {
         Port p1 = new Port(1,1);
         Port p2 = new Port(1110,1);
@@ -295,8 +303,6 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
-   
-
 }
 
 
