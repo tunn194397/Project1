@@ -14,6 +14,7 @@ import java.awt.Graphics;
 
 public class Board extends JPanel implements ActionListener {
     // Các biến toàn cục trong Board
+    
     public final int B_WIDTH = 1200;
     public final int B_HEIGHT = 600;
     private final int DOT_SIZE = 10;
@@ -259,14 +260,13 @@ public class Board extends JPanel implements ActionListener {
         for(Facility facility: facilities){
             FacilityJS facilityJS = new FacilityJS(facility);
             map.add(facilityJS);
-            map.add("r");
         }
         map.SaveMap();
         System.out.println(map.size());
     }
 
-    public void loadGame(){
-        // do something
+    public void loadGame(String nameFile){
+        map.LoadMap(nameFile);
     }
     private void constructData() {
         Port p1 = new Port(1,1);
