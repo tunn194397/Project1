@@ -18,6 +18,8 @@ public class UI {
     public JButton drawButton = new JButton("Draw Line");
     public JButton saveButton = new JButton("Save");
     public JButton playButton = new JButton("Play");
+    public JButton optionsButton = new JButton("Options");
+
 
     //Board
     public static final Board mainBoard = new Board();
@@ -29,6 +31,8 @@ public class UI {
     ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
     ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
     KeyController kc = new KeyController(mainBoard);
+    OptionsController btn_options = new OptionsController(mainBoard, optionsButton);
+
 
     public UI() {
         System.out.println("Start the game");
@@ -51,6 +55,8 @@ public class UI {
         addButton.addActionListener(aRC);
         deleteButton.addActionListener(deleteBC);
         resizeButton.addActionListener(rBC);
+        optionsButton.addActionListener(btn_options);
+
     }
 
     public void showLayout() {
@@ -68,6 +74,7 @@ public class UI {
         panel.add(drawButton);
         panel.add(saveButton);
         panel.add(playButton);
+        panel.add(optionsButton);
         controlPanel.add(panel);
     }
 
