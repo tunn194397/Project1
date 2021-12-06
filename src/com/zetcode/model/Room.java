@@ -17,10 +17,10 @@ public class Room extends Facility {
         setDoor();
     }
     public void setDoor() {
-        Door d1 = new Door(this.x + 25, this.y - 10);
-        Door d2 = new Door(this.x + 130, this.y - 10);
+        Door d1 = new Door(this.x + 25, this.y );
+        Door d2 = new Door(this.x + size_x -55 , this.y );
         Door d3 = new Door(this.x + 25, this.y + this.size_y - 10);
-        Door d4 = new Door(this.x + 130, this.y+ this.size_y - 10);
+        Door d4 = new Door(this.x + size_x -55 , this.y+ this.size_y - 10);
         this.doorArray = new Door[]{d1,d2,d3,d4};
     }
     public void draw(Graphics g) {
