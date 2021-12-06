@@ -28,7 +28,7 @@ public class AddRoomController extends ButtonController {
             if (board.roomArray.size() < board.MAX_ROOM_QUANTITY) {
                 flag =0;
                 board.roomArray.add(room);
-                board.setUpFacilities();
+                board.updateFacilities();
             }
             else {
                 JOptionPane.showMessageDialog(board,"Cannot add Room because of max room in the map is " + board.MAX_ROOM_QUANTITY);
@@ -41,7 +41,7 @@ public class AddRoomController extends ButtonController {
     }
     public boolean checkNewLocated(Facility z) {
         for (Facility facility: board.facilities){
-            if (facility.checkCollision(z)) return true;
+            if (z.checkCollision(facility)) return true;
         }
         return false;
     }

@@ -53,6 +53,7 @@ public class Board extends JPanel implements ActionListener {
     public Vector<Person> personArray = new Vector<>();
     public Facility collector = new Facility();
     public Vector<Facility> facilities = new Vector<>();
+    public Node firstNode = new Node(), lastNode = new Node();
 
     // Biến timer
     public Timer timer;
@@ -84,7 +85,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void pauseGame() {
-        timer.stop();
+        if (this.timer != null) timer.stop();
     }
     @Override
     public void paintComponent(Graphics g) {
@@ -214,6 +215,7 @@ public class Board extends JPanel implements ActionListener {
             rightDirection = mainAGV.x <= 600;
             mainAGV.switchSide();
         }
+//        pauseGame();
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -269,17 +271,19 @@ public class Board extends JPanel implements ActionListener {
                 nodeArray[i][j] = new Node(i*30+2, j*30+2);
             }
         }
-        setUpFacilities();
-        System.out.println(facilities.size());
-        for (int i = 0; i < facilities.size(); i ++) {
-            System.out.println(facilities.get(i).ID);
-        }
+        updateFacilities();
     }
-    public void setUpFacilities(){
+    public void updateFacilities(){
 //        facilities.addAll(Arrays.asList(room.doorArray));
-        facilities.addAll(roomArray);
-        facilities.addAll(liftArray);
-        facilities.addAll(portArray);
+        for (Room room : roomArray) {
+            if (room.checkBelongToFacilities(facilities) == 0) facilities.add(room);
+        }
+        for (Lift lift : liftArray) {
+            if (lift.checkBelongToFacilities(facilities) == 0) facilities.add(lift);
+        }
+        for (Port port : portArray) {
+            if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
+        }
     }
 }
 

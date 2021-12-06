@@ -18,8 +18,13 @@ public class ResizeButtonController extends ButtonController {
     public void actionPerformed(ActionEvent e) {
         if (board.collector.ID != "Null"){
             board.pauseGame();
-            board.status = 3;
-            playButton.setText("Play");
+            if (playButton.getText().equals("Play")) {
+                board.setStatus(2);
+            }
+            else {
+                playButton.setText("Play");
+                board.setStatus(0);
+            }
         }
         else {
             JOptionPane.showMessageDialog(board,"Collect one facility to resize!");

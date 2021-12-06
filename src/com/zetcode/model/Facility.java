@@ -4,6 +4,7 @@ import com.zetcode.view.Board;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Vector;
 
 public class Facility extends JPanel{
     public int size_x, size_y, x, y;
@@ -95,10 +96,10 @@ public class Facility extends JPanel{
     }
 
     public void outFloor() {
-        if (this.isInFloor == true) setInFloor(false);
+        if (this.isInFloor) setInFloor(false);
     }
     public void inFloor() {
-        if (this.isInFloor == false) setInFloor(true);
+        if (!this.isInFloor) setInFloor(true);
     }
 
     public void switchSide() {
@@ -120,8 +121,16 @@ public class Facility extends JPanel{
     }
 
     public boolean checkCollision(Facility other) {
-        if(this.getBound().intersects(other.getBound())) {
-            return true;
+        return this.getBound().intersects(other.getBound());
+    }
+    public boolean checkCollision(Node node) {
+        return (node.isBelongTo(this));
+    }
+    public boolean checkCollision(Node[][] nodes) {
+        for (Node[] node1: nodes) {
+            for (Node node: node1) {
+                if (node.isBelongTo(this) && node.direction != 0) return true;
+            }
         }
         return false;
     }
@@ -142,8 +151,14 @@ public class Facility extends JPanel{
         }
 
     }
+    public int checkBelongToFacilities(Vector<Facility> facilities){
+        for (Facility facility : facilities) {
+            if (this.ID.equals(facility.ID)) return 1;
+        }
+        return 0;
+    }
     public void updateSize(int i, int j){
-        this.size_x = i;
-        this.size_y = j;
+        this.size_x +=i;
+        this.size_y += j;
     }
 }

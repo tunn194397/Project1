@@ -6,7 +6,7 @@ public class Door extends Facility {
     public Door(int i, int j) {
         super(i, j);
         size_x = 30;
-        size_y = 20;
+        size_y = 10;
         imagePath = "src/resources/images/";
         moveAbility = false;
         name = "Door";
