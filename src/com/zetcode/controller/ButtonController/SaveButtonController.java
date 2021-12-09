@@ -12,8 +12,7 @@ public class SaveButtonController extends ButtonController{
             super(board, button);
         }
         @Override
-        public void actionPerformed(ActionEvent e) {
-            
+        public void actionPerformed(ActionEvent e) {   
             nameMap = null;
             nameMap = JOptionPane.showInputDialog("Name Of Map");
             if(nameMap != null)board.saveGame();

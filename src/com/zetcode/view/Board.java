@@ -47,6 +47,7 @@ public class Board extends JPanel implements ActionListener {
     public Facility collector = new Facility();
     public Facility[] facilities = new Facility[30];
     public Map map = new Map();
+    public Map openMap = new Map();
 
     // Biến timer
     public Timer timer;
@@ -266,7 +267,9 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void loadGame(String nameFile){
-        map.LoadMap(nameFile);
+       for(Facility facility: map.LoadMap(nameFile) ){
+           facility.draw(getGraphics());
+       }
     }
     private void constructData() {
         Port p1 = new Port(1,1);
