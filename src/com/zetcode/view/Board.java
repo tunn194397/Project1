@@ -190,32 +190,32 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     public void moveWhenCollision(){
-        if (leftDirection) {
-            mainAGV.x += DOT_SIZE;
-            leftDirection = false;
-            upDirection = mainAGV.y > 300;
-            downDirection = mainAGV.y <= 300;
-            mainAGV.switchSide();
-        } else if (rightDirection) {
-            mainAGV.x -= DOT_SIZE;
-            rightDirection = false;
-            upDirection = mainAGV.y > 300;
-            downDirection = mainAGV.y <= 300;
-            mainAGV.switchSide();
-        } else if (upDirection) {
-            mainAGV.y += DOT_SIZE;
-            upDirection = false;
-            leftDirection = mainAGV.x > 600;
-            rightDirection = mainAGV.x <= 600;
-            mainAGV.switchSide();
-        } else if (downDirection) {
-            mainAGV.y -= DOT_SIZE;
-            downDirection = false;
-            leftDirection = mainAGV.x > 600;
-            rightDirection = mainAGV.x <= 600;
-            mainAGV.switchSide();
-        }
-//        pauseGame();
+//        if (leftDirection) {
+//            mainAGV.x += DOT_SIZE;
+//            leftDirection = false;
+//            upDirection = mainAGV.y > 300;
+//            downDirection = mainAGV.y <= 300;
+//            mainAGV.switchSide();
+//        } else if (rightDirection) {
+//            mainAGV.x -= DOT_SIZE;
+//            rightDirection = false;
+//            upDirection = mainAGV.y > 300;
+//            downDirection = mainAGV.y <= 300;
+//            mainAGV.switchSide();
+//        } else if (upDirection) {
+//            mainAGV.y += DOT_SIZE;
+//            upDirection = false;
+//            leftDirection = mainAGV.x > 600;
+//            rightDirection = mainAGV.x <= 600;
+//            mainAGV.switchSide();
+//        } else if (downDirection) {
+//            mainAGV.y -= DOT_SIZE;
+//            downDirection = false;
+//            leftDirection = mainAGV.x > 600;
+//            rightDirection = mainAGV.x <= 600;
+//            mainAGV.switchSide();
+//        }
+        pauseGame();
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -283,6 +283,9 @@ public class Board extends JPanel implements ActionListener {
         }
         for (Port port : portArray) {
             if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
+        }
+        for (Facility facility: facilities) {
+            System.out.println(facility.ID);
         }
     }
 }

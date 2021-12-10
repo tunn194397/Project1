@@ -41,7 +41,7 @@ public class AddRoomController extends ButtonController {
     }
     public boolean checkNewLocated(Facility z) {
         for (Facility facility: board.facilities){
-            if (z.checkCollision(facility)) return true;
+            if (facility.checkCollision(z)) return true;
         }
         return false;
     }
