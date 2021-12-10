@@ -57,8 +57,7 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         constructData();
-//        loadImages();
-//        initGame();
+
 
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
