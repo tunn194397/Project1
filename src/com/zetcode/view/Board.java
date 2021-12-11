@@ -46,8 +46,8 @@ public class Board extends JPanel implements ActionListener {
     public Person[] personArray = new Person[10];
     public Facility collector = new Facility();
     public Facility[] facilities = new Facility[30];
-    public Map map = new Map();
-    public Map openMap = new Map();
+    public Map map;
+
 
     // Biến timer
     public Timer timer;
@@ -245,23 +245,19 @@ public class Board extends JPanel implements ActionListener {
         return false;
     }
     public void saveGame(){
-       /* for (Port port: portArray){
-            PortJs portJs = new PortJs(port);
-            map.add(portJs);
-        }
-        for(Lift lift: liftArray){
-            LiftJs liftJs = new LiftJs(lift);
-            map.add(liftJs);
-        }
-        for(Room room: roomArray){
-            RoomJs roomJs= new RoomJs(room) ;
-            map.add(roomJs);
-        }*/
+        int p = 0; 
+        int pAGV = 0;
+        Map newMap = new Map();
         for(Facility facility: facilities){
             FacilityJS facilityJS = new FacilityJS(facility);
-            map.add(facilityJS);
+            newMap.add(facilityJS);
+            if("Port".equals(facility.name)) p = p+1;
+            if("Lift".equals(facility.name)) pAGV = pAGV +1;
         }
-        map.SaveMap();
+        if(p < 2)JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if(pAGV < 4)JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1))JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if((p>=2)&&(pAGV>=4)&&(p%2==0 && pAGV%2==0)) newMap.SaveMap();
         System.out.println(map.size());
     }
 
@@ -274,8 +270,8 @@ public class Board extends JPanel implements ActionListener {
         Port p1 = new Port(1,1);
         Port p2 = new Port(1110,1);
         Port p3 = new Port(1,540);
-        Port p4 = new Port(1110,540);
-        portArray = new Port[]{p1,p2,p3,p4};
+       // Port p4 = new Port(1110,540);
+    portArray = new Port[]{p1,p2,p3/*,p4*/};
        
         
         Lift l1 = new Lift(1,240);
@@ -294,7 +290,7 @@ public class Board extends JPanel implements ActionListener {
         Room r6 = new Room(810,360);
         roomArray = new Room[]{r1, r2, r3, r4, r5, r6};
 
-        facilities = new Facility[]{p1,p2,p3,p4,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
+        facilities = new Facility[]{p1,p2,p3/*,p4*/,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
                 r1.doorArray[0],r1.doorArray[1], r1.doorArray[2],r1.doorArray[3],
                 r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
                 r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
