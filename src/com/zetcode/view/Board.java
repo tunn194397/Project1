@@ -270,8 +270,8 @@ public class Board extends JPanel implements ActionListener {
         Port p1 = new Port(1,1);
         Port p2 = new Port(1110,1);
         Port p3 = new Port(1,540);
-       // Port p4 = new Port(1110,540);
-    portArray = new Port[]{p1,p2,p3/*,p4*/};
+       Port p4 = new Port(1110,540);
+    portArray = new Port[]{p1,p2,p3,p4};
        
         
         Lift l1 = new Lift(1,240);
@@ -290,7 +290,7 @@ public class Board extends JPanel implements ActionListener {
         Room r6 = new Room(810,360);
         roomArray = new Room[]{r1, r2, r3, r4, r5, r6};
 
-        facilities = new Facility[]{p1,p2,p3/*,p4*/,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
+        facilities = new Facility[]{p1,p2,p3,p4,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
                 r1.doorArray[0],r1.doorArray[1], r1.doorArray[2],r1.doorArray[3],
                 r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
                 r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
