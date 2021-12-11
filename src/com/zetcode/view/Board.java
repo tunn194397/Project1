@@ -1,19 +1,12 @@
 package com.zetcode.view;
 
 import com.zetcode.controller.MouseController;
-
-import org.json.simple.JSONObject;
-
 import com.zetcode.model.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.Collections;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 
 public class Board extends JPanel implements ActionListener {
@@ -60,7 +53,6 @@ public class Board extends JPanel implements ActionListener {
     public Map openMap = new Map();
 
     public Vector<Facility> facilities = new Vector<>();
-    public Node firstNode = new Node(), lastNode = new Node();
 
     // Biến timer
     public Timer timer;
@@ -333,18 +325,18 @@ public class Board extends JPanel implements ActionListener {
     public void updateLineGraph() {
         for (int i = 0; i < nodeIsLineArray.size() - 1; i ++) {
             if (nodeIsLineArray.get(i).coordinate_x == nodeIsLineArray.get(i+1).coordinate_x) {
-                if (nodeIsLineArray.get(i).coordinate_y > nodeIsLineArray.get(i+1).coordinate_y) {
+                if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y + 1) {
                     nodeIsLineArray.get(i).setDown(nodeIsLineArray.get(i+1));
                     nodeIsLineArray.get(i+1).setUp(nodeIsLineArray.get(i));
                 }
                 else {
                     nodeIsLineArray.get(i).setUp(nodeIsLineArray.get(i+1));
-                    nodeIsLineArray.get(i+1).setUp(nodeIsLineArray.get(i));
+                    nodeIsLineArray.get(i+1).setDown(nodeIsLineArray.get(i));
                 }
             }
             else {
                 if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y) {
-                    if (nodeIsLineArray.get(i).coordinate_x > nodeIsLineArray.get(i+1).coordinate_x) {
+                    if (nodeIsLineArray.get(i).coordinate_x ==  nodeIsLineArray.get(i+1).coordinate_x + 1) {
                         nodeIsLineArray.get(i).setRight(nodeIsLineArray.get(i+1));
                         nodeIsLineArray.get(i+1).setLeft(nodeIsLineArray.get(i));
                     }

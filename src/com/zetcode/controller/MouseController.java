@@ -17,7 +17,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     public int status;
     public Facility collector;
     public Node[][] nodeArray;
-    public Node firstNode, lastNode;
+    public Node firstNode = new Node(), lastNode = new Node();
     public int x;
     public int y;
     public MouseController(){
@@ -89,12 +89,11 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     }
 
     public void doDrawLineByTwoNode(){
-        if ( Math.abs(firstNode.y - lastNode.y) < 60 ) {  //Ve duong di theo phuong ngang
-            lastNode.updateNode(lastNode.x, firstNode.y);
+        if ( firstNode.y == lastNode.y ) {  //Ve duong di theo phuong ngang
             int bothY = firstNode.y/30;
             if (firstNode. x > lastNode.x) {
                 boolean ok = true;
-                for (int i = firstNode.y/30; i >= lastNode.y/30; i --) {
+                for (int i = firstNode.x/30; i >= lastNode.x/30; i --) {
                     for (Facility facility : facilities) {
                         if (nodeArray[i][bothY].isBelongTo(facility)) {
                             ok = false;
@@ -105,15 +104,13 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
                     if (!ok) break;
                 }
                 if (ok) for (int i = firstNode.x /30; i >= lastNode.x/30; i --) {
-                    board.firstNode.updateDirection(2);
-                    board.lastNode.updateDirection(2);
                     nodeArray[i][bothY].updateDirection(2); //Update no la left direction
                 }
                 else resetDraw();
             }
             else {
                 boolean ok = true;
-                for (int i = firstNode.y/30; i <= lastNode.y/30; i ++) {
+                for (int i = firstNode.x/30; i <= lastNode.x/30; i ++) {
                     for (Facility facility : facilities) {
                         if (nodeArray[i][bothY].isBelongTo(facility)) {
                             ok = false;
@@ -123,15 +120,12 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
                     if (!ok) break;
                 }
                 if (ok) for (int i = firstNode.x /30; i <= lastNode.x/30; i ++) {
-                    board.firstNode.updateDirection(1);
-                    board.lastNode.updateDirection(1);
                     nodeArray[i][bothY].updateDirection(1); //Update no la right direction
                 }
                 else resetDraw();
             }
         }
-        else if ( Math.abs(firstNode.x - lastNode.x) < 60) {
-            lastNode.updateNode(firstNode.x, lastNode.y);
+        else if ( firstNode.x == lastNode.x) {
             int bothX = firstNode.x/30;
             if (firstNode.y >= lastNode.y) {
                 boolean ok = true;
@@ -146,8 +140,6 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
                 }
                 if (ok) {
                     for (int i = firstNode.y/30; i >= lastNode.y/30; i --) {
-                        board.firstNode.updateDirection(3);
-                        board.lastNode.updateDirection(3);
                         nodeArray[bothX][i].updateDirection(3); //Update no la up direction
                     }
                 }
@@ -165,30 +157,22 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
                     if (!ok) break;
                 }
                 if (ok) for (int i = firstNode.y/30; i <= lastNode.y/30; i ++) {
-                    board.firstNode.updateDirection(4);
-                    board.lastNode.updateDirection(4);
                     nodeArray[bothX][i].updateDirection(4); //Update no la down direction
                 }
                 else resetDraw();
             }
         }
-
         updateBoard();
         board.updateNode();
         board.repaint();
-        for (Node node : board.nodeIsLineArray) {
-            System.out.print(node.coordinate_x+ " " + node.coordinate_y);
-            if (node.Up != null) System.out.print("--> "+ node.Up.coordinate_x+ " " + node.Up.coordinate_y);
-        }
-
     }
 
     public void resetDraw(){
         JOptionPane.showMessageDialog(board,"Cannot make line because line cannot go through the facility");
+        firstNode.updateDirection(0);
+        lastNode.updateDirection(0);
         firstNode = new Node();
         lastNode = new Node();
-        board.firstNode.updateDirection(0);
-        board.lastNode.updateDirection(0);
     }
 
     @Override
@@ -258,16 +242,12 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
         status = board.status;
         collector = board.collector;
         nodeArray = board.nodeArray;
-        firstNode = board.firstNode;
-        lastNode = board.lastNode;
     }
     public void updateBoard(){
         board.facilities = facilities;
         board.status = status;
         board.collector = collector;
         board.nodeArray = nodeArray;
-        board.firstNode = firstNode;
-        board.lastNode = lastNode;
     }
 
 
