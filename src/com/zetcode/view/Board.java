@@ -48,6 +48,7 @@ public class Board extends JPanel implements ActionListener {
     // Các Facilities và Node trong Board
     public static final AGV mainAGV = new AGV(120,120);
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
+    public Vector<Node> nodeIsLineArray = new Vector<>();
     public Vector<Room> roomArray = new Vector<>();
     public Vector<AGV> agvArray = new Vector<>();
     public Vector<Gurney> gurneyArray = new Vector<>();
@@ -114,19 +115,19 @@ public class Board extends JPanel implements ActionListener {
     public void doDrawing(Graphics g) {
         Toolkit.getDefaultToolkit().sync();
         g.setColor(Color.lightGray);
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
+                nodeArray[i][j].draw(g);
+            }
+        }
         for (int i = 0; i < B_HEIGHT; i ++) {
-            if (i % 30 == 1) {
+            if (i % 30 == 0) {
                 g.drawLine(0,i,B_WIDTH,i);
             }
         }
         for (int i = 0; i < B_WIDTH; i ++) {
-            if (i % 30 == 1) {
+            if (i % 30 == 0) {
                 g.drawLine(i,0,i,B_HEIGHT);
-            }
-        }
-        for (int i = 0; i < B_WIDTH/30; i ++) {
-            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
-                nodeArray[i][j].draw(g);
             }
         }
         mainAGV.draw(g);
@@ -226,11 +227,13 @@ public class Board extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         move();
         repaint();
-        doRound();
     }
     private void doRound() {
         int ex = (collector.x % 30 <= 15)? collector.x - ( collector.x % 30): collector.x + 30 - collector.x % 30;
         int ey = (collector.y % 30 <= 15)? collector.y - ( collector.y % 30): collector.y + 30 - collector.y % 30;
+        for (Facility facility: facilities) {
+            if (facility.ID.equals(collector.ID)) facility.update(ex,ey);
+        }
         collector.update(ex,ey);
         repaint();
     }
@@ -298,7 +301,8 @@ public class Board extends JPanel implements ActionListener {
 
         for (int i = 0; i < B_WIDTH/30; i ++) {
             for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
-                nodeArray[i][j] = new Node(i*30+2, j*30+2);
+                nodeArray[i][j] = new Node(i*30, j*30);
+                System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
             }
         }
         updateFacilities();
@@ -317,6 +321,42 @@ public class Board extends JPanel implements ActionListener {
         for (Facility facility: facilities) {
             System.out.println(facility.ID);
         }
+    }
+    public void updateNode() {
+        for (Node[] nodes: nodeArray) {
+            for (Node node: nodes){
+                if (node.direction != 0) nodeIsLineArray.add(node);
+            }
+        }
+        updateLineGraph();
+    }
+    public void updateLineGraph() {
+        for (int i = 0; i < nodeIsLineArray.size() - 1; i ++) {
+            if (nodeIsLineArray.get(i).coordinate_x == nodeIsLineArray.get(i+1).coordinate_x) {
+                if (nodeIsLineArray.get(i).coordinate_y > nodeIsLineArray.get(i+1).coordinate_y) {
+                    nodeIsLineArray.get(i).setDown(nodeIsLineArray.get(i+1));
+                    nodeIsLineArray.get(i+1).setUp(nodeIsLineArray.get(i));
+                }
+                else {
+                    nodeIsLineArray.get(i).setUp(nodeIsLineArray.get(i+1));
+                    nodeIsLineArray.get(i+1).setUp(nodeIsLineArray.get(i));
+                }
+            }
+            else {
+                if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y) {
+                    if (nodeIsLineArray.get(i).coordinate_x > nodeIsLineArray.get(i+1).coordinate_x) {
+                        nodeIsLineArray.get(i).setRight(nodeIsLineArray.get(i+1));
+                        nodeIsLineArray.get(i+1).setLeft(nodeIsLineArray.get(i));
+                    }
+                    else {
+                        nodeIsLineArray.get(i).setLeft(nodeIsLineArray.get(i+1));
+                        nodeIsLineArray.get(i+1).setRight(nodeIsLineArray.get(i));
+                    }
+                }
+            };
+            nodeIsLineArray.get(i).setEdge();
+        }
+        System.out.println("Updating line graph");
     }
 }
 

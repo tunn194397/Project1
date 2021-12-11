@@ -174,7 +174,13 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
         }
 
         updateBoard();
+        board.updateNode();
         board.repaint();
+        for (Node node : board.nodeIsLineArray) {
+            System.out.print(node.coordinate_x+ " " + node.coordinate_y);
+            if (node.Up != null) System.out.print("--> "+ node.Up.coordinate_x+ " " + node.Up.coordinate_y);
+        }
+
     }
 
     public void resetDraw(){
@@ -209,7 +215,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             collector.update(e.getX() - 60,e.getY() - 45);
             System.out.println(collector.x+ " " + collector.y);
             updateBoard();
-            board.repaint();
+//            board.repaint();
         }
         x += dx;
         y += dy;
@@ -225,8 +231,9 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     }
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        doScale(e);
-        System.out.println("Mouse Wheel in "+ e.getX()+ " " + e.getY());
+        if (collector.ID.equals("Null")) {
+            doScale(e);
+        }
     }
 
     private void doScale(MouseWheelEvent e) {
