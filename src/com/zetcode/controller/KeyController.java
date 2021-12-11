@@ -31,7 +31,6 @@ public class KeyController extends KeyAdapter {
             System.out.println("--->");
             board.mainAGV.switchSide();
         }
-
         if ((key == KeyEvent.VK_UP) && (!board.upDirection) && (!board.downDirection)) {
             board.upDirection = true;
             board.rightDirection = false;
@@ -39,11 +38,9 @@ public class KeyController extends KeyAdapter {
             System.out.println(" ^ ");
             board.mainAGV.switchSide();
         }
-
         if ((key == KeyEvent.VK_DOWN) && (!board.upDirection) && (!board.downDirection)) {
             board.downDirection = true;
-            board.rightDirection = false;
-            board.leftDirection = false;
+            board.rightDirection = false;board.leftDirection = false;
             System.out.println(" v ");
             board.mainAGV.switchSide();
         }

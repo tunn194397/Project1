@@ -1,15 +1,14 @@
 package com.zetcode.model;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.ParseException;
 
 import com.zetcode.controller.buttoncontroller.SaveButtonController;
-import com.zetcode.view.Board;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Map extends JSONArray {
 	String nameMap;
     public void SaveMap() {

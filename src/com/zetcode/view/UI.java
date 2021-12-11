@@ -6,19 +6,12 @@ import com.zetcode.controller.buttoncontroller.LoadButtonController;
 import com.zetcode.controller.buttoncontroller.PlayButtonController;
 import com.zetcode.controller.buttoncontroller.PlayButtonController;
 import com.zetcode.controller.buttoncontroller.SaveButtonController;
+import com.zetcode.controller.buttoncontroller.*;
+
 import com.zetcode.controller.KeyController;
-import com.zetcode.controller.MouseController;
-import com.zetcode.model.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.security.Key;
-
-import static com.sun.java.accessibility.util.AWTEventMonitor.addKeyListener;
 
 public class UI {
     // Frame
@@ -32,7 +25,12 @@ public class UI {
     public JButton drawButton = new JButton("Draw Line");
     public JButton saveButton = new JButton("Save Map");
     public JButton playButton = new JButton("Play");
+
     public JButton loadButton = new JButton("Load Map");
+
+    public JButton optionsButton = new JButton("Options");
+
+
 
     //Board
     public static final Board mainBoard = new Board();
@@ -40,9 +38,18 @@ public class UI {
     //Controller
     ButtonController pBC = new PlayButtonController(mainBoard,playButton, drawButton);
     ButtonController dBC = new DrawButtonController(mainBoard,drawButton, playButton);
+
     KeyController kc = new KeyController(mainBoard);
     SaveButtonController sBC = new SaveButtonController(mainBoard, saveButton);
     LoadButtonController lBC = new LoadButtonController(mainBoard, loadButton);
+
+    ButtonController aRC = new AddRoomController(mainBoard,addButton);
+    ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
+    ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
+    OptionsController btn_options = new OptionsController(mainBoard, optionsButton);
+
+
+
     public UI() {
         System.out.println("Start the game");
         mainFrame = new JFrame();
@@ -63,6 +70,13 @@ public class UI {
         drawButton.addActionListener(dBC);
         saveButton.addActionListener(sBC);
         loadButton.addActionListener(lBC);
+
+        addButton.addActionListener(aRC);
+        deleteButton.addActionListener(deleteBC);
+        resizeButton.addActionListener(rBC);
+        optionsButton.addActionListener(btn_options);
+
+
     }
 
     public void showLayout() {
@@ -79,8 +93,11 @@ public class UI {
         panel.add(deleteButton);
         panel.add(drawButton);
         panel.add(playButton);
+
         panel.add(saveButton);
         panel.add(loadButton);
+
+        panel.add(optionsButton);
         controlPanel.add(panel);
     }
 
