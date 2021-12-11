@@ -14,5 +14,4 @@ public class Port extends Facility {
         ID = "Port " + Integer.toString(i) + "-" + Integer.toString(j);
         color = Color.blue;
     }
-
 }

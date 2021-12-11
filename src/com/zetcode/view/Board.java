@@ -1,7 +1,9 @@
 package com.zetcode.view;
 
 import com.zetcode.controller.MouseController;
-import com.zetcode.model.Person;
+
+import org.json.simple.JSONObject;
+
 import com.zetcode.model.*;
 
 import javax.swing.*;
@@ -16,6 +18,7 @@ import java.util.Vector;
 
 public class Board extends JPanel implements ActionListener {
     // Các biến toàn cục trong Board
+    
     public final int B_WIDTH = 1200;
     public final int B_HEIGHT = 600;
     private final int DOT_SIZE = 10;
@@ -52,6 +55,9 @@ public class Board extends JPanel implements ActionListener {
     public Vector<Port> portArray = new Vector<>();
     public Vector<Person> personArray = new Vector<>();
     public Facility collector = new Facility();
+    public Map map = new Map();
+    public Map openMap = new Map();
+
     public Vector<Facility> facilities = new Vector<>();
     public Node firstNode = new Node(), lastNode = new Node();
 
@@ -63,8 +69,7 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         constructData();
-//        loadImages();
-//        initGame();
+
 
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
@@ -246,7 +251,32 @@ public class Board extends JPanel implements ActionListener {
         }
         return false;
     }
+    public void saveGame(){
+       /* for (Port port: portArray){
+            PortJs portJs = new PortJs(port);
+            map.add(portJs);
+        }
+        for(Lift lift: liftArray){
+            LiftJs liftJs = new LiftJs(lift);
+            map.add(liftJs);
+        }
+        for(Room room: roomArray){
+            RoomJs roomJs= new RoomJs(room) ;
+            map.add(roomJs);
+        }*/
+        for(Facility facility: facilities){
+            FacilityJS facilityJS = new FacilityJS(facility);
+            map.add(facilityJS);
+        }
+        map.SaveMap();
+        System.out.println(map.size());
+    }
 
+    public void loadGame(String nameFile){
+       for(Facility facility: map.LoadMap(nameFile) ){
+           facility.draw(getGraphics());
+       }
+    }
     private void constructData() {
         portArray.add(new Port(1,1));
         portArray.add(new Port(1110,1));

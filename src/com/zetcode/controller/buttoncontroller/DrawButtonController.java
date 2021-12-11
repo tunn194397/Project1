@@ -5,7 +5,7 @@ import com.zetcode.view.Board;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class DrawButtonController extends ButtonController {
+public class DrawButtonController extends ButtonController{
     public JButton playButton;
     public DrawButtonController(Board board, JButton button) {
         super(board, button);

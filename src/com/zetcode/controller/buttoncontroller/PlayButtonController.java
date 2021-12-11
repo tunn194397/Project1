@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 public class PlayButtonController extends ButtonController {
 
     public JButton drawButton;
-
     public PlayButtonController(Board board, JButton button) {
         super(board, button);
     }

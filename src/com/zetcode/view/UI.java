@@ -1,6 +1,13 @@
 package com.zetcode.view;
 
+import com.zetcode.controller.buttoncontroller.ButtonController;
+import com.zetcode.controller.buttoncontroller.DrawButtonController;
+import com.zetcode.controller.buttoncontroller.LoadButtonController;
+import com.zetcode.controller.buttoncontroller.PlayButtonController;
+import com.zetcode.controller.buttoncontroller.PlayButtonController;
+import com.zetcode.controller.buttoncontroller.SaveButtonController;
 import com.zetcode.controller.buttoncontroller.*;
+
 import com.zetcode.controller.KeyController;
 
 import javax.swing.*;
@@ -16,9 +23,13 @@ public class UI {
     public JButton resizeButton = new JButton("Resize");
     public JButton deleteButton = new JButton("Delete");
     public JButton drawButton = new JButton("Draw Line");
-    public JButton saveButton = new JButton("Save");
+    public JButton saveButton = new JButton("Save Map");
     public JButton playButton = new JButton("Play");
+
+    public JButton loadButton = new JButton("Load Map");
+
     public JButton optionsButton = new JButton("Options");
+
 
 
     //Board
@@ -27,11 +38,16 @@ public class UI {
     //Controller
     ButtonController pBC = new PlayButtonController(mainBoard,playButton, drawButton);
     ButtonController dBC = new DrawButtonController(mainBoard,drawButton, playButton);
+
+    KeyController kc = new KeyController(mainBoard);
+    SaveButtonController sBC = new SaveButtonController(mainBoard, saveButton);
+    LoadButtonController lBC = new LoadButtonController(mainBoard, loadButton);
+
     ButtonController aRC = new AddRoomController(mainBoard,addButton);
     ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
     ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
-    KeyController kc = new KeyController(mainBoard);
     OptionsController btn_options = new OptionsController(mainBoard, optionsButton);
+
 
 
     public UI() {
@@ -52,10 +68,14 @@ public class UI {
         playButton.addKeyListener(kc);
         playButton.addActionListener(pBC);
         drawButton.addActionListener(dBC);
+        saveButton.addActionListener(sBC);
+        loadButton.addActionListener(lBC);
+
         addButton.addActionListener(aRC);
         deleteButton.addActionListener(deleteBC);
         resizeButton.addActionListener(rBC);
         optionsButton.addActionListener(btn_options);
+
 
     }
 
@@ -72,8 +92,11 @@ public class UI {
         panel.add(resizeButton);
         panel.add(deleteButton);
         panel.add(drawButton);
-        panel.add(saveButton);
         panel.add(playButton);
+
+        panel.add(saveButton);
+        panel.add(loadButton);
+
         panel.add(optionsButton);
         controlPanel.add(panel);
     }
