@@ -5,6 +5,7 @@ import com.zetcode.view.Board;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 public class PlayButtonController extends ButtonController {
 
@@ -31,6 +32,12 @@ public class PlayButtonController extends ButtonController {
                 if (node.Right != null) System.out.print("--> "+ "["+ node.Right.coordinate_x+ "; " + node.Right.coordinate_y+ "]");
                 if (node.Left != null) System.out.print("--> "+ "["+ node.Left.coordinate_x+ "; " + node.Left.coordinate_y+ "]");
                 System.out.println("");
+            }
+	    try {
+                board.printResult();
+                board.readInput.readInput();
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
         else {

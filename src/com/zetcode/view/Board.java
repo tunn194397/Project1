@@ -1,5 +1,6 @@
 package com.zetcode.view;
 
+import com.zetcode.algorithm.ReadInput;
 import com.zetcode.controller.MouseController;
 import com.zetcode.model.*;
 
@@ -7,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Random;
 import java.util.Vector;
 
 public class Board extends JPanel implements ActionListener {
@@ -53,6 +56,11 @@ public class Board extends JPanel implements ActionListener {
     public Map openMap = new Map();
 
     public Vector<Facility> facilities = new Vector<>();
+
+    public ReadInput readInput = new ReadInput();
+    public String[] doorCordinateX;
+    public String[] doorCordinateY;
+    public int numOfDoors;
 
     // Biến timer
     public Timer timer;
@@ -135,6 +143,10 @@ public class Board extends JPanel implements ActionListener {
             g.fillRect(collector.x, collector.y,collector.size_x,collector.size_y);
         };
         doRound();
+
+        // Ve quy dao agent
+        g.setColor(Color.red);
+        readInput.drawRoute(g);
     }
 
     private void move() {
@@ -349,6 +361,87 @@ public class Board extends JPanel implements ActionListener {
             nodeIsLineArray.get(i).setEdge();
         }
         System.out.println("Updating line graph");
+    }
+
+    public void printResult() throws IOException {
+        numOfDoors = 0;
+        doorCordinateX = new String[100];
+        doorCordinateY = new String[100];
+        File file = new File("src/com/zetcode/algorithm/testCase.inp");
+        OutputStream outputStream = new FileOutputStream(file);
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+        String numberOfFacilities = String.valueOf(facilities.size());
+        outputStreamWriter.write( "100");  //Số lượng đường đi
+        outputStreamWriter.write("\n");
+
+        for (Room room : roomArray) {
+            for(Door door : room.doorArray) {
+                doorCordinateX[numOfDoors] = String.valueOf(door.getX() + 15);
+                if (numOfDoors % 4 == 0 || numOfDoors % 4 == 1) {
+                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() - 6);  // 2 cửa trên có tọa độ y - 6
+                } else {
+                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() + 16); // 2 cửa dưới có tọa độ y + 6
+                } numOfDoors++;
+            }
+        }
+//            for(int i = 0 ; i < 12 ; i++){
+//                String x1 , y1 ;
+//                x1 = doorCordinateX[i];
+//                y1 = doorCordinateY[i];
+//                System.out.println(x1 +","+ y1);
+//                outputStreamWriter.write(doorCordinateX[i] + "," + doorCordinateY[i] +" ");
+//
+//        }
+
+        for (int i = 0 ; i < 100; i++) {   // 100 ở đây là số đường đi
+            Random rand1 = new Random();
+            int random1 = rand1.nextInt(numOfDoors);
+            Random rand2 = new Random();
+            int random2 = rand2.nextInt(numOfDoors);
+            outputStreamWriter.write(doorCordinateX[random1] + "," + doorCordinateY[random1] + " ");
+            outputStreamWriter.write(doorCordinateX[random2] + "," + doorCordinateY[random2]);
+            outputStreamWriter.write("\n");
+        }
+
+        outputStreamWriter.write(numberOfFacilities);  // in ra số đa giác
+        outputStreamWriter.write("\n");
+
+        for (Facility facility: facilities) {
+            String xLeft  = String.valueOf(facility.getX());
+            String xRight = String.valueOf(facility.getX() + facility.getSize_x());
+            String yTop   = String.valueOf(facility.getY());
+            String yBot   = String.valueOf(facility.getY() + facility.getSize_y());
+            String botLeft  = xLeft  + "," + yBot;
+            String botRight = xRight + "," + yBot;
+            String topLeft  = xLeft  + "," + yTop;
+            String topRight = xRight + "," + yTop;
+
+            String[] data = {
+                    "4" ," ",
+                    topLeft ," ",
+                    topRight," ",
+                    botRight," ",
+                    botLeft
+            };
+
+            for (String item: data) {
+                try {
+                    outputStreamWriter.write(item); //in dữ liệu
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            outputStreamWriter.write("\n"); //xuong dong
+        }
+
+        //  ghi dữ liệu xong thì mới kết thúc chương trình.
+        try {
+            outputStreamWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
 
