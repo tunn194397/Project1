@@ -39,9 +39,9 @@ public class Board extends JPanel implements ActionListener {
 
 
     // Các Facilities và Node trong Board
-    public static final AGV mainAGV = new AGV(120,120);
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
-    public Vector<Node> nodeIsLineArray = new Vector<>();
+    public AGV mainAGV ;
+    public Vector<Node> lineArray = new Vector<>();
     public Vector<Room> roomArray = new Vector<>();
     public Vector<AGV> agvArray = new Vector<>();
     public Vector<Gurney> gurneyArray = new Vector<>();
@@ -127,6 +127,9 @@ public class Board extends JPanel implements ActionListener {
         for (Facility facility: facilities){
             facility.draw(g);
         }
+        for (AGV agv: agvArray) {
+            agv.draw(g);
+        }
         if (checkRoomOverTotalSize()){
             JOptionPane.showMessageDialog(this,"Total size of room cannot over " + validMaxSizeOfRoom*100 + "% size of room","Warning",JOptionPane.WARNING_MESSAGE);
         }
@@ -137,87 +140,87 @@ public class Board extends JPanel implements ActionListener {
         doRound();
     }
 
-    private void move() {
-        if (mainAGV.checkCollisionWithNode(nodeArray)) {
-            moveWhenCollision();
-        }
-        else {
-            for (Facility facility : facilities) {
-                if (mainAGV.checkCollision(facility)) {
-                    moveWhenCollision();
-                }
-            }
-            if (mainAGV.y < 0) {
-                mainAGV.y += DOT_SIZE;
-                upDirection = false;
-                downDirection = false;
-                leftDirection = mainAGV.x > 600;
-                rightDirection = mainAGV.x <= 600;
-                mainAGV.switchSide();
-            }
-            else if (mainAGV.y > 570){
-                mainAGV.y -= DOT_SIZE;
-                upDirection = false;
-                downDirection = false;
-                leftDirection = mainAGV.x > 600;
-                rightDirection = mainAGV.x <= 600;
-                mainAGV.switchSide();
-            }
-            else if (mainAGV.x < 10){
-                mainAGV.x += DOT_SIZE;
-                leftDirection = false;
-                rightDirection = false;
-                upDirection = mainAGV.y > 300;
-                downDirection = mainAGV.y <= 300;
-                mainAGV.switchSide();
-            }
-            else if (mainAGV.x > 1170) {
-                mainAGV.x -= DOT_SIZE;
-                leftDirection = false;
-                rightDirection = false;
-                upDirection = mainAGV.y > 300;
-                downDirection = mainAGV.y <= 300;
-                mainAGV.switchSide();
-            }
-            else {
-                if (leftDirection) {mainAGV.x -= DOT_SIZE;}
-                if (rightDirection) {mainAGV.x += DOT_SIZE;}
-                if (upDirection) {mainAGV.y -= DOT_SIZE;}
-                if (downDirection) {mainAGV.y += DOT_SIZE;}
-            }
-        }
-    }
-    public void moveWhenCollision(){
-//        if (leftDirection) {
-//            mainAGV.x += DOT_SIZE;
-//            leftDirection = false;
-//            upDirection = mainAGV.y > 300;
-//            downDirection = mainAGV.y <= 300;
-//            mainAGV.switchSide();
-//        } else if (rightDirection) {
-//            mainAGV.x -= DOT_SIZE;
-//            rightDirection = false;
-//            upDirection = mainAGV.y > 300;
-//            downDirection = mainAGV.y <= 300;
-//            mainAGV.switchSide();
-//        } else if (upDirection) {
-//            mainAGV.y += DOT_SIZE;
-//            upDirection = false;
-//            leftDirection = mainAGV.x > 600;
-//            rightDirection = mainAGV.x <= 600;
-//            mainAGV.switchSide();
-//        } else if (downDirection) {
-//            mainAGV.y -= DOT_SIZE;
-//            downDirection = false;
-//            leftDirection = mainAGV.x > 600;
-//            rightDirection = mainAGV.x <= 600;
-//            mainAGV.switchSide();
+//    private void move() {
+//        if (mainAGV.inLine()) {
+//            moveWhenCollision();
 //        }
-        pauseGame();
-    }
+//        else {
+//            for (Facility facility : facilities) {
+//                if (mainAGV.checkCollision(facility)) {
+//                    moveWhenCollision();
+//                }
+//            }
+//            if (mainAGV.y < 0) {
+//                mainAGV.y += DOT_SIZE;
+//                upDirection = false;
+//                downDirection = false;
+//                leftDirection = mainAGV.x > 600;
+//                rightDirection = mainAGV.x <= 600;
+//                mainAGV.switchSide();
+//            }
+//            else if (mainAGV.y > 570){
+//                mainAGV.y -= DOT_SIZE;
+//                upDirection = false;
+//                downDirection = false;
+//                leftDirection = mainAGV.x > 600;
+//                rightDirection = mainAGV.x <= 600;
+//                mainAGV.switchSide();
+//            }
+//            else if (mainAGV.x < 10){
+//                mainAGV.x += DOT_SIZE;
+//                leftDirection = false;
+//                rightDirection = false;
+//                upDirection = mainAGV.y > 300;
+//                downDirection = mainAGV.y <= 300;
+//                mainAGV.switchSide();
+//            }
+//            else if (mainAGV.x > 1170) {
+//                mainAGV.x -= DOT_SIZE;
+//                leftDirection = false;
+//                rightDirection = false;
+//                upDirection = mainAGV.y > 300;
+//                downDirection = mainAGV.y <= 300;
+//                mainAGV.switchSide();
+//            }
+//            else {
+//                if (leftDirection) {mainAGV.x -= DOT_SIZE;}
+//                if (rightDirection) {mainAGV.x += DOT_SIZE;}
+//                if (upDirection) {mainAGV.y -= DOT_SIZE;}
+//                if (downDirection) {mainAGV.y += DOT_SIZE;}
+//            }
+//        }
+//    }
+//    public void moveWhenCollision(){
+////        if (leftDirection) {
+////            mainAGV.x += DOT_SIZE;
+////            leftDirection = false;
+////            upDirection = mainAGV.y > 300;
+////            downDirection = mainAGV.y <= 300;
+////            mainAGV.switchSide();
+////        } else if (rightDirection) {
+////            mainAGV.x -= DOT_SIZE;
+////            rightDirection = false;
+////            upDirection = mainAGV.y > 300;
+////            downDirection = mainAGV.y <= 300;
+////            mainAGV.switchSide();
+////        } else if (upDirection) {
+////            mainAGV.y += DOT_SIZE;
+////            upDirection = false;
+////            leftDirection = mainAGV.x > 600;
+////            rightDirection = mainAGV.x <= 600;
+////            mainAGV.switchSide();
+////        } else if (downDirection) {
+////            mainAGV.y -= DOT_SIZE;
+////            downDirection = false;
+////            leftDirection = mainAGV.x > 600;
+////            rightDirection = mainAGV.x <= 600;
+////            mainAGV.switchSide();
+////        }
+//        pauseGame();
+//    }
     @Override
     public void actionPerformed(ActionEvent e) {
-        move();
+        moveAGV();
         repaint();
     }
     private void doRound() {
@@ -272,7 +275,19 @@ public class Board extends JPanel implements ActionListener {
            facility.draw(getGraphics());
        }
     }
+    public void moveAGV() {
+        mainAGV.move();
+//        for (AGV agv : agvArray) {
+//            agv.move();
+//        }
+    }
     private void constructData() {
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
+                nodeArray[i][j] = new Node(i*30, j*30);
+                System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
+            }
+        }
         portArray.add(new Port(1,1));
         portArray.add(new Port(1110,1));
         portArray.add(new Port(1,540));
@@ -291,13 +306,13 @@ public class Board extends JPanel implements ActionListener {
 //        roomArray.add(new Room(810,60));
 //        roomArray.add(new Room(810,360));
 
-        for (int i = 0; i < B_WIDTH/30; i ++) {
-            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
-                nodeArray[i][j] = new Node(i*30, j*30);
-                System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
-            }
-        }
+//        agvArray.add(new AGV(60,90, nodeArray));
+//        agvArray.add(new AGV(180,210, nodeArray));
+//        agvArray.add(new AGV(300,240, nodeArray));
+
         updateFacilities();
+        mainAGV = new AGV(120,120,nodeArray);
+
     }
     public void updateFacilities(){
 //        facilities.addAll(Arrays.asList(room.doorArray));
@@ -310,45 +325,37 @@ public class Board extends JPanel implements ActionListener {
         for (Port port : portArray) {
             if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
         }
+//        for (AGV agv : agvArray) {
+//            if (agv.checkBelongToFacilities(facilities) == 0) facilities.add(agv);
+//        }
         for (Facility facility: facilities) {
             System.out.println(facility.ID);
         }
     }
-    public void updateNode() {
-        for (Node[] nodes: nodeArray) {
-            for (Node node: nodes){
-                if (node.direction != 0) nodeIsLineArray.add(node);
-            }
-        }
-        updateLineGraph();
-    }
+//    public void updateNode() {
+//        for (Node[] nodes: nodeArray) {
+//            for (Node node: nodes){
+//                if (node.isLine) lineArray.add(node);
+//            }
+//        }
+//        updateLineGraph();
+//    }
     public void updateLineGraph() {
-        for (int i = 0; i < nodeIsLineArray.size() - 1; i ++) {
-            if (nodeIsLineArray.get(i).coordinate_x == nodeIsLineArray.get(i+1).coordinate_x) {
-                if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y + 1) {
-                    nodeIsLineArray.get(i).setDown(nodeIsLineArray.get(i+1));
-                    nodeIsLineArray.get(i+1).setUp(nodeIsLineArray.get(i));
-                }
-                else {
-                    nodeIsLineArray.get(i).setUp(nodeIsLineArray.get(i+1));
-                    nodeIsLineArray.get(i+1).setDown(nodeIsLineArray.get(i));
-                }
-            }
-            else {
-                if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y) {
-                    if (nodeIsLineArray.get(i).coordinate_x ==  nodeIsLineArray.get(i+1).coordinate_x + 1) {
-                        nodeIsLineArray.get(i).setRight(nodeIsLineArray.get(i+1));
-                        nodeIsLineArray.get(i+1).setLeft(nodeIsLineArray.get(i));
-                    }
-                    else {
-                        nodeIsLineArray.get(i).setLeft(nodeIsLineArray.get(i+1));
-                        nodeIsLineArray.get(i+1).setRight(nodeIsLineArray.get(i));
-                    }
-                }
-            };
-            nodeIsLineArray.get(i).setEdge();
-        }
         System.out.println("Updating line graph");
+        for (Node node : lineArray) {
+            System.out.print("["+ node.ID +"]");
+            if (node.getUp() != null) System.out.print(" ^ [" + node.getUp().ID +" ]");
+            if (node.getDown() != null) System.out.print(" v [" + node.getDown().ID +" ]");
+            if (node.getRight() != null) System.out.print(" -> [" + node.getRight().ID +" ]");
+            if (node.getLeft() != null) System.out.print(" <- [" + node.getLeft().ID +" ]");
+            System.out.println();
+        }
+        updateAGV();
+        System.out.println("Updated line graph");
+    }
+    public void updateAGV() {
+        mainAGV.nodeArray = nodeArray;
+        System.out.println("Update AGV: " + mainAGV.x + " " + mainAGV.y);
     }
 }
 

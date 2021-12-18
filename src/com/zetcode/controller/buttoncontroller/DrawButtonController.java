@@ -25,6 +25,7 @@ public class DrawButtonController extends ButtonController{
         else {
             button.setText("Draw Line");
             board.setStatus(0);
+            board.updateLineGraph();
         }
     }
 }
