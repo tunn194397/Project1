@@ -1,17 +1,21 @@
 package com.zetcode.model;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.ParseException;
 
 import com.zetcode.controller.buttoncontroller.SaveButtonController;
-import com.zetcode.view.Board;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Vector;
+
 public class Map extends JSONArray {
+	private static final int B_WIDTH = 1200;
+	private static final int B_HEIGHT = 600;
 	String nameMap;
+	Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
+	Vector<Node> node = new Vector<>();
     public void SaveMap() {
 		this.nameMap = SaveButtonController.nameMap;
         try {
@@ -24,37 +28,42 @@ public class Map extends JSONArray {
 			e.printStackTrace();
 		}
     }
-    public Facility[] LoadMap(String nameFile) {
+    public Vector<Facility> LoadFacilities(String nameFile) {
       Object obj;	
-	  Facility[] facilities = new Facility[30];
+	  Vector<Facility> facilities = new Vector<>();
 	  try{
 	  	obj = new JSONParser().parse(new FileReader("F:\\Project1\\src\\com\\filemap\\"+nameFile));
 	  	JSONArray jsonArray = (JSONArray) obj;
-	    System.out.println(jsonArray.size());
 	  	for (int i = 0; i < jsonArray.size(); i++) {
 		  	JSONObject jobj = (JSONObject)jsonArray.get(i);
-			System.out.println(jobj);
 			String name = (String) jobj.get("name");
-			
+			//System.out.println(name);
 			if ("Port".equals(name) ){
 				Port p = new Port(0,0);
 				setFacility(p, jobj);
-				facilities[i] = p;
-				System.out.println(facilities[i]);
+				facilities.add(p);
 			}
 			if ("Lift".equals(name)) {
 				Lift l = new Lift(0,0);
 				setFacility(l, jobj);
-				facilities[i] = l;
+				facilities.add(l);
 			}
 			if ("Room".equals(name)) {
 				Room r = new Room(0,0);
 				setFacility(r, jobj);
-				facilities[i] = r;
-				//System.out.println(r);
+				facilities.add(r);
 			}
-		System.out.println(facilities[i]);	
-	 	}
+			if ("Node".equals(name) ){
+				Node n = new Node(0, 0);
+				long X =( (Long) jobj.get("x")).longValue();
+				n.x = (int)X;
+				long Y =( (Long) jobj.get("y")).longValue();
+				n.y = (int)Y;
+				long direc =( (Long) jobj.get("direction")).longValue();
+				n.direction = (int)direc;
+				node.add(n); 
+	 		}
+		}
 		
       } catch (IOException e) {
 			e.printStackTrace();
@@ -63,6 +72,18 @@ public class Map extends JSONArray {
 		e.printStackTrace();
 		}
 		return facilities;
+	}
+
+	public Node[][] LoadNode(String nameFile) {
+				Node[] nodeArray1 = node.toArray(new Node[1200]);
+
+				for (int h = 0; h < B_WIDTH/30; h ++) {
+					for (int k = 0; k < B_HEIGHT/30 ; k ++ ) {
+						nodeArray[h][k] = nodeArray1[h*20+k];
+						//System.out.println(nodeArray[h][k].direction);
+					}
+				}
+		  return nodeArray;
 	}
 	private void setFacility(Facility f, JSONObject jobj) {
 		long xL, yL, sx, sy;
@@ -76,8 +97,6 @@ public class Map extends JSONArray {
 		f.size_x = (int) sx;
 		sy = ( (Long) jobj.get("size_y")).longValue();
 		f.size_y = (int)sy;
-	//	f.x = (int) jobj.get("x");
-	//	f.y = (int) jobj.get("y");
 	}
 }
 

@@ -1,9 +1,8 @@
 package com.zetcode.controller.buttoncontroller;
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-
 import com.zetcode.view.Board;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 public class SaveButtonController extends ButtonController{
         public static String nameMap;
@@ -12,11 +11,12 @@ public class SaveButtonController extends ButtonController{
             super(board, button);
         }
         @Override
-        public void actionPerformed(ActionEvent e) {   
+        public void actionPerformed(ActionEvent e) { 
+           //if(board.checkLine() == true){  
             nameMap = null;
             nameMap = JOptionPane.showInputDialog("Name Of Map");
             if(nameMap != null)board.saveGame();
-           
+           //} 
         }
     }
 

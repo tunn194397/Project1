@@ -7,10 +7,16 @@ import org.json.simple.JSONObject;
 import com.zetcode.model.*;
 
 import javax.swing.*;
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Vector;
 
 public class Board extends JPanel implements ActionListener {
     // Các biến toàn cục trong Board
@@ -18,12 +24,18 @@ public class Board extends JPanel implements ActionListener {
     public final int B_WIDTH = 1200;
     public final int B_HEIGHT = 600;
     private final int DOT_SIZE = 10;
-    private final int MAX_PERSON = 10;
-    private final int MAX_AGV = 10;
     private final int RAND_POS = 29;
     private final int DELAY = 140;
+
+    //Các biến chứa các giá trị Validate
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
-    public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV
+    public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV, 3 la resize
+    public final int MAX_ROOM_QUANTITY = 10;
+    public final int MAX_AGV_QUANTITY = 6;
+    public final int MAX_PERSON_QUANTITY = 10;
+    public final int MAX_GURNEY_QUANTITY = 10;
+    public final int MAX_LIFT_QUANTITY = 8;
+    public final int MAX_PORT_QUANTITY = 8;
 
     //Controller của chuột, cái này không đẩy được sang class UI vì bị thay đổi liên tục trong repaint()
     MouseController ma;
@@ -38,16 +50,17 @@ public class Board extends JPanel implements ActionListener {
     // Các Facilities và Node trong Board
     public static final AGV mainAGV = new AGV(120,120);
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
-    public Room[] roomArray = new Room[8];
-    public AGV[] agvArray = new AGV[6];
-    public Gurney[] gurneyArray = new Gurney[6];
-    public Lift[] liftArray = new Lift[4];
-    public Port[] portArray = new Port[4];
-    public Person[] personArray = new Person[10];
+    public Vector<Room> roomArray = new Vector<>();
+    public Vector<AGV> agvArray = new Vector<>();
+    public Vector<Gurney> gurneyArray = new Vector<>();
+    public Vector<Lift> liftArray = new Vector<>();
+    public Vector<Port> portArray = new Vector<>();
+    public Vector<Person> personArray = new Vector<>();
     public Facility collector = new Facility();
-    public Facility[] facilities = new Facility[30];
-    public Map map;
+    public Map map = new Map();
 
+    public Vector<Facility> facilities = new Vector<>();
+    public Node firstNode = new Node(), lastNode = new Node();
 
     // Biến timer
     public Timer timer;
@@ -78,22 +91,11 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void pauseGame() {
-        timer.stop();
+        if (this.timer != null) timer.stop();
     }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //Ve cac duong ke
-//        for (int i = 0; i < personArray.length; i ++) {
-//            personArray[i].personGraphic(g);
-//        }
-//        for (int i = 0; i < agvArray.length; i ++) {
-//            agvArray[i].agvGraphic(g);
-//        }
-//        for (int i = 0; i < gurneyArray.length; i ++) {
-//            gurneyArray[i].gurneyGraphic(g);
-//        }
-
 
         //Ve phan AGV
         ma.updateController();
@@ -119,14 +121,8 @@ public class Board extends JPanel implements ActionListener {
         }
         mainAGV.draw(g);
         // Ve 4 cong vao ra
-        for (Port port : portArray) {
-            port.draw(g);
-        }
-        for (Lift lift : liftArray) {
-            lift.draw(g);
-        }
-        for (Room room : roomArray) {
-            room.draw(g);
+        for (Facility facility: facilities){
+            facility.draw(g);
         }
         if (checkRoomOverTotalSize()){
             JOptionPane.showMessageDialog(this,"Total size of room cannot over " + validMaxSizeOfRoom*100 + "% size of room","Warning",JOptionPane.WARNING_MESSAGE);
@@ -214,6 +210,7 @@ public class Board extends JPanel implements ActionListener {
             rightDirection = mainAGV.x <= 600;
             mainAGV.switchSide();
         }
+//        pauseGame();
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -254,51 +251,76 @@ public class Board extends JPanel implements ActionListener {
             if("Port".equals(facility.name)) p = p+1;
             if("Lift".equals(facility.name)) pAGV = pAGV +1;
         }
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
+                NodeJS nodeJS = new NodeJS(nodeArray[i][j]);
+                newMap.add(nodeJS);
+            }
+        }
         if(p < 2)JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
         if(pAGV < 4)JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
         if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1))JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);
         if((p>=2)&&(pAGV>=4)&&(p%2==0 && pAGV%2==0)) newMap.SaveMap();
-        System.out.println(map.size());
     }
 
     public void loadGame(String nameFile){
-       for(Facility facility: map.LoadMap(nameFile) ){
-           facility.draw(getGraphics());
-       }
+      facilities = map.LoadFacilities(nameFile);
+      map.LoadNode(nameFile);
+      this.nodeArray = map.LoadNode(nameFile);
+      
+    }
+
+    public boolean checkLine(){
+        boolean oke = true;
+        for (int i = 1; i < B_WIDTH/30 - 1; i ++) {
+            
+            for (int j = 1; j < B_HEIGHT/30 - 1; j ++ ) {
+                int count = 0;
+                if(nodeArray[i][j-1].direction == 1) count++;
+                if(nodeArray[i][j+1].direction == 2) count++;
+                if(nodeArray[i+1][j].direction == 3) count++;
+                if(nodeArray[i-1][j].direction == 4) count++;
+
+                if(nodeArray[i][j].direction != 0 && count == 0){ 
+                    oke = false;
+                    JOptionPane.showMessageDialog(this, "Co 1 diem tren duong ray khong the den duoc","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+                    break;
+                }
+            }
+            if(oke == false) break;
+        }
+        return oke;
     }
     private void constructData() {
-        Port p1 = new Port(1,1);
-        Port p2 = new Port(1110,1);
-        Port p3 = new Port(1,540);
-       Port p4 = new Port(1110,540);
-    portArray = new Port[]{p1,p2,p3,p4};
-       
-        
-        Lift l1 = new Lift(1,240);
-        Lift l2 = new Lift(1110,240);
-        Lift l3 = new Lift(1,300);
-        Lift l4 = new Lift(1110,300);
-        liftArray = new Lift[]{l1,l2,l3,l4};
-      
+
+        liftArray.add(new Lift(1,240));
+        liftArray.add(new Lift(1110,240));
+        liftArray.add(new Lift(1,300));
+        liftArray.add(new Lift(1110,300));
+
+       // portArray.add(new Port(1,1));
+       // portArray.add(new Port(1,500));
+       // portArray.add(new Port(300,400));
+       // portArray.add(new Port(200,300));
 
 
-        Room r1 = new Room(150,60);
-        Room r2 = new Room(480,60);
-        Room r3 = new Room(150,360);
-        Room r4 = new Room(480,360);
-        Room r5 = new Room(810,60);
-        Room r6 = new Room(810,360);
-        roomArray = new Room[]{r1, r2, r3, r4, r5, r6};
-
-        facilities = new Facility[]{p1,p2,p3,p4,r1,r2,r3,r4,r5,r6,l1,l2,l3,l4,
-                r1.doorArray[0],r1.doorArray[1], r1.doorArray[2],r1.doorArray[3],
-                r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
-                r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3],
-                r2.doorArray[0],r2.doorArray[1], r2.doorArray[2],r2.doorArray[3], };
         for (int i = 0; i < B_WIDTH/30; i ++) {
             for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
                 nodeArray[i][j] = new Node(i*30+2, j*30+2);
             }
+        }
+        updateFacilities();
+    }
+    public void updateFacilities(){
+//        facilities.addAll(Arrays.asList(room.doorArray));
+        for (Room room : roomArray) {
+            if (room.checkBelongToFacilities(facilities) == 0) facilities.add(room);
+        }
+        for (Lift lift : liftArray) {
+            if (lift.checkBelongToFacilities(facilities) == 0) facilities.add(lift);
+        }
+        for (Port port : portArray) {
+            if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
         }
     }
 }
