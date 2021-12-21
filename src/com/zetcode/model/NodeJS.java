@@ -8,6 +8,9 @@ public class NodeJS extends JSONObject {
         this.put("name", "Node");
         this.put("x", node.x);
         this.put("y", node.y);
-        this.put("direction", node.direction);
+        this.put("updirection", node.direction.up);
+        this.put("downdirection", node.direction.down);
+        this.put("rightdirection", node.direction.right);
+        this.put("leftdirection", node.direction.left);
     }
 }

@@ -50,6 +50,8 @@ public class Board extends JPanel implements ActionListener {
     // Các Facilities và Node trong Board
     public static final AGV mainAGV = new AGV(120,120);
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
+    public Vector<Node> lineArray = new Vector<>();
+
     public Vector<Room> roomArray = new Vector<>();
     public Vector<AGV> agvArray = new Vector<>();
     public Vector<Gurney> gurneyArray = new Vector<>();
@@ -272,18 +274,94 @@ public class Board extends JPanel implements ActionListener {
 
     public boolean checkLine(){
         boolean oke = true;
-        for (int i = 1; i < B_WIDTH/30 - 1; i ++) {
-            
-            for (int j = 1; j < B_HEIGHT/30 - 1; j ++ ) {
-                int count = 0;
-                if(nodeArray[i][j-1].direction == 1) count++;
-                if(nodeArray[i][j+1].direction == 2) count++;
-                if(nodeArray[i+1][j].direction == 3) count++;
-                if(nodeArray[i-1][j].direction == 4) count++;
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30; j ++ ) {
+                // i là cot, j la hang
+                int a, b, count = 0;
+                if(i == 0){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                    }
+                }
+                if(i == B_WIDTH/30-1){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }    
+                if(j == 0){
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                }
+                if(j == B_HEIGHT/30-1){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }
+                if((i%39 != 0)&&(j%19 != 0)){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }
 
-                if(nodeArray[i][j].direction != 0 && count == 0){ 
+                if(nodeArray[i][j].isLine && count == 0){ 
                     oke = false;
-                    JOptionPane.showMessageDialog(this, "Co 1 diem tren duong ray khong the den duoc","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+                    a = j+1;
+                    b = i+1;
+                    JOptionPane.showMessageDialog(this, "Node o hang "+a+" cot "+b+" khong hop le","Map khong hop le", JOptionPane.WARNING_MESSAGE);
                     break;
                 }
             }

@@ -18,7 +18,7 @@ public class AGV extends Facility {
     public boolean checkCollisionWithNode(Node[][] nodeArray) {
         for (Node[] nodes : nodeArray) {
             for (Node node : nodes) {
-                if (node.direction == 0) {
+                if (!node.isLine) {
                     if (this.getBound().intersects(node.getBound())) {
                         return true;
                     }

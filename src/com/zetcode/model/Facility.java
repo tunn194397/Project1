@@ -129,7 +129,7 @@ public class Facility extends JPanel{
     public boolean checkCollision(Node[][] nodes) {
         for (Node[] node1: nodes) {
             for (Node node: node1) {
-                if (node.isBelongTo(this) && node.direction != 0) return true;
+                if (node.isBelongTo(this) && node.isLine) return true;
             }
         }
         return false;

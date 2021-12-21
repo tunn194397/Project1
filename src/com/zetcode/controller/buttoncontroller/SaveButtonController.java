@@ -12,11 +12,11 @@ public class SaveButtonController extends ButtonController{
         }
         @Override
         public void actionPerformed(ActionEvent e) { 
-           //if(board.checkLine() == true){  
-            nameMap = null;
-            nameMap = JOptionPane.showInputDialog("Name Of Map");
-            if(nameMap != null)board.saveGame();
-           //} 
+            if(board.checkLine() == true){  
+                nameMap = null;
+                nameMap = JOptionPane.showInputDialog("Name Of Map");
+                if(nameMap != null)board.saveGame();
+            } 
         }
     }
 

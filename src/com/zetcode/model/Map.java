@@ -59,8 +59,14 @@ public class Map extends JSONArray {
 				n.x = (int)X;
 				long Y =( (Long) jobj.get("y")).longValue();
 				n.y = (int)Y;
-				long direc =( (Long) jobj.get("direction")).longValue();
-				n.direction = (int)direc;
+				long updirec =( (Long) jobj.get("updirection")).longValue();
+				n.direction.up = (int)updirec;
+				long downdirec =( (Long) jobj.get("downdirection")).longValue();
+				n.direction.down = (int)downdirec;
+				long rightdirec =( (Long) jobj.get("rightdirection")).longValue();
+				n.direction.right = (int)rightdirec;
+				long leftdirec =( (Long) jobj.get("leftdirection")).longValue();
+				n.direction.left = (int)leftdirec;
 				node.add(n); 
 	 		}
 		}
