@@ -51,7 +51,6 @@ public class Board extends JPanel implements ActionListener {
     public static final AGV mainAGV = new AGV(120,120);
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
     public Vector<Node> lineArray = new Vector<>();
-
     public Vector<Room> roomArray = new Vector<>();
     public Vector<AGV> agvArray = new Vector<>();
     public Vector<Gurney> gurneyArray = new Vector<>();
@@ -72,7 +71,6 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         constructData();
-
 
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
