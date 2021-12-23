@@ -55,4 +55,7 @@ public class Direction {
         if (right == 1 && d.right == 1) return true;
         else return false;
     }
+    public boolean isSquareWith(Direction d) {
+        return (up + down) * (d.left + d.right) != 0 || (left + right) * (d.up + d.down) != 0;
+    }
 }
