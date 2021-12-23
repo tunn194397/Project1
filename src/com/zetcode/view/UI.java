@@ -1,14 +1,7 @@
 package com.zetcode.view;
 
-import com.zetcode.controller.buttoncontroller.ButtonController;
-import com.zetcode.controller.buttoncontroller.DrawButtonController;
-import com.zetcode.controller.buttoncontroller.LoadButtonController;
-import com.zetcode.controller.buttoncontroller.PlayButtonController;
-import com.zetcode.controller.buttoncontroller.PlayButtonController;
-import com.zetcode.controller.buttoncontroller.SaveButtonController;
-import com.zetcode.controller.buttoncontroller.*;
-
 import com.zetcode.controller.KeyController;
+import com.zetcode.controller.buttoncontroller.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,6 +27,7 @@ public class UI {
 
     //Board
     public static final Board mainBoard = new Board();
+
 
     //Controller
     ButtonController pBC = new PlayButtonController(mainBoard,playButton, drawButton);
