@@ -42,6 +42,7 @@ public class AGV extends Facility {
         Node tmpNode = nodeArray[this.x/30][this.y/30];
         return tmpNode.isLine;
     }
+
     public void findNextNode() {
         if (inLine()) {
             Node tmpUp = nodeArray[this.x / 30][this.y / 30 - 1];
@@ -83,21 +84,31 @@ public class AGV extends Facility {
         findNextNode();
         updateDirection();
         updateBaseNode();
+        setupMove();
         if (nextNode.isLine && !delay) {
             if (direction.up == 1) update(this.x, this.y - 10);
             if (direction.down == 1) update(this.x, this.y + 10);
             if (direction.left == 1) update(this.x - 10, this.y);
             if (direction.right == 1) update(this.x + 10, this.y);
+
             baseNode.updateIsBlocked(true);
             if (!baseNode.equals(oldNode)) nodeArray[oldNode.x/30][oldNode.y/30].updateIsBlocked(false);
-            System.out.println("OldNode : "+ oldNode.ID + " w: " + oldNode.w + " u: " + oldNode.u);
-            System.out.println("BaseNode : "+ baseNode.ID + " w: " + baseNode.w + " u: " + baseNode.u);
-            System.out.println("NextNode : "+ nextNode.ID + " w: " + nextNode.w + " u: " + nextNode.u);
-            System.out.println();
         }
     }
     public void setControl (boolean control) {
         canControl = control;
+    }
+    public void setupMove() {
+        if (direction.up == 1 || direction.down == 1) {
+            this.size_x = 15;
+            this.size_y = 30;
+        }
+        else {
+            if (direction.left == 1 || direction.right == 1) {
+                this.size_x = 30;
+                this.size_y = 15;
+            }
+        }
     }
 }
 

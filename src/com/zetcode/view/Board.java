@@ -19,7 +19,7 @@ public class Board extends JPanel implements ActionListener {
     public final int B_HEIGHT = 600;
     private final int DOT_SIZE = 10;
     private final int RAND_POS = 29;
-    private final int DELAY = 140;
+    private final int DELAY = 333;
 
     //Các biến chứa các giá trị Validate
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
