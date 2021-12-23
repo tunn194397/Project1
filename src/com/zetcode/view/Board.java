@@ -384,6 +384,30 @@ public class Board extends JPanel implements ActionListener {
                 } numOfDoors++;
             }
         }
+
+        for (Port port : portArray) {
+            if (port.getX() > 6) {
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() - 6);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 30);
+                numOfDoors++;
+            }
+            if (port.getY() > 6) {
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 45);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() - 6);
+                numOfDoors++;
+            }
+            if (port.getX() < 1104) {
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 96);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 30);
+                numOfDoors++;
+            }
+            if (port.getY() < 534) {
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 45);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 66);
+                numOfDoors++;
+            }
+        }
+
 //            for(int i = 0 ; i < 12 ; i++){
 //                String x1 , y1 ;
 //                x1 = doorCordinateX[i];
@@ -444,5 +468,3 @@ public class Board extends JPanel implements ActionListener {
 
     }
 }
-
-
