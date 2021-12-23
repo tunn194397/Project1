@@ -13,6 +13,7 @@ public class ReadInput {
     List<Path> paths = new ArrayList<>();
 
     public void readInput() throws FileNotFoundException {
+        paths.clear();
         try {
             Process process = Runtime.getRuntime().exec("src/com/zetcode/algorithm/a.exe");
             while (process.isAlive()) {} // do nothing
