@@ -13,6 +13,7 @@ public class Node extends Rectangle {
     public boolean isNull;
     public boolean isHead;
     public boolean isLine;
+
     public boolean isBlocked = false; // Là giá trị mà node đó có AGV đi qua hay không true: có, false: không có. những node nào không phải là đường của AGV (direction = 0) thì hasNode =  false;
 
     public int coordinate_x, coordinate_y;
@@ -30,13 +31,14 @@ public class Node extends Rectangle {
         this.direction = new Direction();
         this.isHead = false;
         this.ID = i/30 + " - " + j/30;
+
     }
     public Node(){
         this.isNull = true;
     };
     public void updateNode(int i, int j) {
-        this.x =i;
-        this.y =j;
+        this.x = i;
+        this.y = j;
     }
     public void updateDirection(String s) {
         this.isLine = true;
@@ -98,6 +100,8 @@ public class Node extends Rectangle {
     public void setEdge() {
         direction.updateAll((Up == null)?0:1, (Down == null)?0:1, (Right == null)?0:1, (Left == null)?0:1);
     }
+    public boolean getIsLine() { return isLine; }
+
     public void draw(Graphics g){
         Graphics2D g2d = (Graphics2D) g.create();
         ImageIcon imageArrow = new ImageIcon();
@@ -126,6 +130,7 @@ public class Node extends Rectangle {
     public Rectangle getBound() {
         return new Rectangle(this.x, this.y, this.size_x, this.size_y);
     }
+
     public void updateDelayTime() {
         if (isBlocked) {
             if (u == 0) {

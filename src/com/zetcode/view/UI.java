@@ -18,6 +18,7 @@ public class UI {
     public JButton drawButton = new JButton("Draw Line");
     public JButton saveButton = new JButton("Save Map");
     public JButton playButton = new JButton("Play");
+    public JButton dijkstra = new JButton("Dijkstra");
 
     public JButton loadButton = new JButton("Load Map");
 
