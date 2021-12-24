@@ -10,6 +10,12 @@ import java.io.IOException;
 public class PlayButtonController extends ButtonController {
 
     public JButton drawButton;
+    public static boolean gameStart = false;
+
+    public static boolean isGameStart() {
+        return gameStart;
+    }
+
     public PlayButtonController(Board board, JButton button) {
         super(board, button);
     }
@@ -23,6 +29,7 @@ public class PlayButtonController extends ButtonController {
         if (button.getText().equals("Play")) {
             drawButton.setText("Draw Line");
             board.initGame();
+            gameStart = true;
             button.setText("Pause");
             board.setStatus(0);
             for (Node node : board.lineArray) {
