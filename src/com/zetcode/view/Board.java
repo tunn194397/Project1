@@ -330,7 +330,6 @@ public class Board extends JPanel implements ActionListener {
 
         updateFacilities();
         mainAGV = new AGV(120,120,nodeArray);
-
     }
     public void updateFacilities(){
 //        facilities.addAll(Arrays.asList(room.doorArray));
