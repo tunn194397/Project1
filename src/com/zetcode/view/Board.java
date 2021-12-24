@@ -12,6 +12,9 @@ import java.io.*;
 import java.util.Random;
 import java.util.Vector;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 public class Board extends JPanel implements ActionListener {
     // Các biến toàn cục trong Board
     
@@ -51,6 +54,7 @@ public class Board extends JPanel implements ActionListener {
     public Vector<Lift> liftArray = new Vector<>();
     public Vector<Port> portArray = new Vector<>();
     public Vector<Person> personArray = new Vector<>();
+
     public Facility collector = new Facility();
     public Map map = new Map();
     public Map openMap = new Map();
@@ -61,6 +65,7 @@ public class Board extends JPanel implements ActionListener {
     public String[] doorCordinateX;
     public String[] doorCordinateY;
     public int numOfDoors;
+
 
     // Biến timer
     public Timer timer;
@@ -135,6 +140,7 @@ public class Board extends JPanel implements ActionListener {
         for (Facility facility: facilities){
             facility.draw(g);
         }
+
         if (checkRoomOverTotalSize()){
             JOptionPane.showMessageDialog(this,"Total size of room cannot over " + validMaxSizeOfRoom*100 + "% size of room","Warning",JOptionPane.WARNING_MESSAGE);
         }
@@ -371,17 +377,18 @@ public class Board extends JPanel implements ActionListener {
         OutputStream outputStream = new FileOutputStream(file);
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
         String numberOfFacilities = String.valueOf(facilities.size());
-        outputStreamWriter.write( "100");  //Số lượng đường đi
+        outputStreamWriter.write("100");  //Số lượng đường đi
         outputStreamWriter.write("\n");
 
         for (Room room : roomArray) {
-            for(Door door : room.doorArray) {
+            for (Door door : room.doorArray) {
                 doorCordinateX[numOfDoors] = String.valueOf(door.getX() + 15);
                 if (numOfDoors % 4 == 0 || numOfDoors % 4 == 1) {
                     doorCordinateY[numOfDoors] = String.valueOf(door.getY() - 6);  // 2 cửa trên có tọa độ y - 6
                 } else {
                     doorCordinateY[numOfDoors] = String.valueOf(door.getY() + 16); // 2 cửa dưới có tọa độ y + 6
-                } numOfDoors++;
+                }
+                numOfDoors++;
             }
         }
 
@@ -417,7 +424,7 @@ public class Board extends JPanel implements ActionListener {
 //
 //        }
 
-        for (int i = 0 ; i < 100; i++) {   // 100 ở đây là số đường đi
+        for (int i = 0; i < 100; i++) {   // 100 ở đây là số đường đi
             Random rand1 = new Random();
             int random1 = rand1.nextInt(numOfDoors);
             Random rand2 = new Random();
@@ -430,25 +437,25 @@ public class Board extends JPanel implements ActionListener {
         outputStreamWriter.write(numberOfFacilities);  // in ra số đa giác
         outputStreamWriter.write("\n");
 
-        for (Facility facility: facilities) {
-            String xLeft  = String.valueOf(facility.getX());
+        for (Facility facility : facilities) {
+            String xLeft = String.valueOf(facility.getX());
             String xRight = String.valueOf(facility.getX() + facility.getSize_x());
-            String yTop   = String.valueOf(facility.getY());
-            String yBot   = String.valueOf(facility.getY() + facility.getSize_y());
-            String botLeft  = xLeft  + "," + yBot;
+            String yTop = String.valueOf(facility.getY());
+            String yBot = String.valueOf(facility.getY() + facility.getSize_y());
+            String botLeft = xLeft + "," + yBot;
             String botRight = xRight + "," + yBot;
-            String topLeft  = xLeft  + "," + yTop;
+            String topLeft = xLeft + "," + yTop;
             String topRight = xRight + "," + yTop;
 
             String[] data = {
-                    "4" ," ",
-                    topLeft ," ",
-                    topRight," ",
-                    botRight," ",
+                    "4", " ",
+                    topLeft, " ",
+                    topRight, " ",
+                    botRight, " ",
                     botLeft
             };
 
-            for (String item: data) {
+            for (String item : data) {
                 try {
                     outputStreamWriter.write(item); //in dữ liệu
 

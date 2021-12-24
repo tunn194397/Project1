@@ -5,6 +5,7 @@ import com.zetcode.model.Node;
 import com.zetcode.view.Board;
 
 import javax.swing.*;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -83,7 +84,6 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             System.out.println("press Mouse in " + press_x + " " + press_y);
         }
         else if (status == 1) {
-
         }
     }
     @Override
@@ -100,7 +100,6 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
 //            doDrawLine(e);
             System.out.println(e.getX()+ " " + e.getY());
         }
-
     }
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
@@ -205,11 +204,8 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     public void doDrawLine(MouseEvent e, int x, int y)  {
         int dx = e.getX() - x;
         int dy = e.getY() - y;
+
         nodeArray[e.getX()/30][e.getY()/30].updateDirection("true");
-        updateBoard();
-        board.repaint();
-        x += dx;
-        y += dy;
     }
 
     // Ham ho tro size update
