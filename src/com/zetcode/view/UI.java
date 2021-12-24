@@ -1,8 +1,7 @@
 package com.zetcode.view;
 
-import com.zetcode.controller.buttoncontroller.*;
-
 import com.zetcode.controller.KeyController;
+import com.zetcode.controller.buttoncontroller.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +21,7 @@ public class UI {
     public JButton drawButton = new JButton("Draw Line");
     public JButton saveButton = new JButton("Save Map");
     public JButton playButton = new JButton("Play");
+    public JButton dijkstra = new JButton("Dijkstra");
 
     public JButton loadButton = new JButton("Load Map");
 
@@ -31,6 +31,7 @@ public class UI {
 
     //Board
     public static final Board mainBoard = new Board();
+
 
     //Controller
     ButtonController pBC = new PlayButtonController(mainBoard,playButton, drawButton);

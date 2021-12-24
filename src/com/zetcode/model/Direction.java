@@ -56,3 +56,4 @@ public class Direction {
         else return false;
     }
 }
+

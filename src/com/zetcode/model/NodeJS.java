@@ -1,6 +1,6 @@
 package com.zetcode.model;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 public class NodeJS extends JSONObject {
     public NodeJS(){};

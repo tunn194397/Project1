@@ -19,7 +19,7 @@ public class Map extends JSONArray {
     public void SaveMap() {
 		this.nameMap = SaveButtonController.nameMap;
         try {
-			FileWriter file = new FileWriter("F:\\Project1\\src\\com\\filemap\\"+this.nameMap+".json");
+			FileWriter file = new FileWriter("src/com/filemap/"+this.nameMap+".json");
 			file.write(this.toJSONString());
 			file.flush();
 			file.close();
@@ -32,7 +32,7 @@ public class Map extends JSONArray {
       Object obj;	
 	  Vector<Facility> facilities = new Vector<>();
 	  try{
-	  	obj = new JSONParser().parse(new FileReader("F:\\Project1\\src\\com\\filemap\\"+nameFile));
+	  	obj = new JSONParser().parse(new FileReader("src/com/filemap/"+nameFile));
 	  	JSONArray jsonArray = (JSONArray) obj;
 	  	for (int i = 0; i < jsonArray.size(); i++) {
 		  	JSONObject jobj = (JSONObject)jsonArray.get(i);
