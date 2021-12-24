@@ -1,18 +1,20 @@
 package com.zetcode.algorithm;
 
+import com.zetcode.model.Path;
+import com.zetcode.model.Point;
+
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import com.zetcode.model.Path;
-import com.zetcode.model.Point;
 
 public class ReadInput {
     List<Path> paths = new ArrayList<>();
 
     public void readInput() throws FileNotFoundException {
+        paths.clear();
         try {
             Process process = Runtime.getRuntime().exec("src/com/zetcode/algorithm/a.exe");
             while (process.isAlive()) {} // do nothing

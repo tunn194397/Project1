@@ -137,7 +137,7 @@ public class Board extends JPanel implements ActionListener {
         }
         mainAGV.draw(g);
         // Ve 4 cong vao ra
-        for (Facility facility: facilities){
+        for (Facility facility: facilities) {
             facility.draw(g);
         }
         for (AGV agv: agvArray) {
@@ -395,6 +395,29 @@ public class Board extends JPanel implements ActionListener {
                 } else {
                     doorCordinateY[numOfDoors] = String.valueOf(door.getY() + 16); // 2 cửa dưới có tọa độ y + 6
                 }
+                numOfDoors++;
+            }
+        }
+
+        for (Port port : portArray) {
+            if (port.getX() > 6) {
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() - 6);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 30);
+                numOfDoors++;
+            }
+            if (port.getY() > 6) {
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 45);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() - 6);
+                numOfDoors++;
+            }
+            if (port.getX() < 1104) {
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 96);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 30);
+                numOfDoors++;
+            }
+            if (port.getY() < 534) {
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 45);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 66);
                 numOfDoors++;
             }
         }

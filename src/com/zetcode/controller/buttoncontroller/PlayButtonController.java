@@ -33,7 +33,7 @@ public class PlayButtonController extends ButtonController {
                 if (node.Left != null) System.out.print("--> "+ "["+ node.Left.coordinate_x+ "; " + node.Left.coordinate_y+ "]");
                 System.out.println("");
             }
-	    try {
+	        try {
                 board.printResult();
                 board.readInput.readInput();
             } catch (IOException ex) {
