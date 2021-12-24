@@ -35,7 +35,7 @@ public class PlayButtonController extends ButtonController {
             }
 	        try {
 
-                board.printResult();               board.readInput.readInput();
+                board.printResult();               //board.readInput.readInput();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

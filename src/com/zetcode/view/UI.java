@@ -43,7 +43,7 @@ public class UI {
 
     ButtonController aRC = new AddRoomController(mainBoard,addButton);
     ButtonController aPC = new AddPortController(mainBoard,addPortButton);
-    ButtonController aLC = new AddPortController(mainBoard,addLiftButton);
+    ButtonController aLC = new AddLiftController(mainBoard,addLiftButton);
 
     ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
     ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);

@@ -125,7 +125,7 @@ public class Node extends Rectangle {
         g2d.dispose();
     };
     public boolean isBelongTo(Facility facility){
-        return ((this.x >= facility.x - size_x-3) && (this.y >= facility.y - size_y-3) && (this.x <= facility.x + facility.size_x+3) && (this.y <= facility.y + facility.size_y+3));
+        return ((this.x >= facility.x ) && (this.y >= facility.y) && (this.x <= facility.x + facility.size_x - 28) && (this.y <= facility.y + facility.size_y - 28));
     }
     public Rectangle getBound() {
         return new Rectangle(this.x, this.y, this.size_x, this.size_y);

@@ -1,6 +1,6 @@
 package com.zetcode.view;
 
-import com.zetcode.algorithm.ReadInput;
+//import com.zetcode.algorithm.ReadInput;
 import com.zetcode.controller.MouseController;
 import com.zetcode.model.*;
 
@@ -57,7 +57,7 @@ public class Board extends JPanel implements ActionListener {
 
     public Vector<Facility> facilities = new Vector<>();
 
-    public ReadInput readInput = new ReadInput();
+    //public ReadInput readInput = new ReadInput();
     public String[] doorCordinateX;
     public String[] doorCordinateY;
     public int numOfDoors;
@@ -139,7 +139,7 @@ public class Board extends JPanel implements ActionListener {
 
         // Ve quy dao agent
         g.setColor(Color.red);
-        readInput.drawRoute(g);
+        //readInput.drawRoute(g);
     }
 
 //    private void move() {
