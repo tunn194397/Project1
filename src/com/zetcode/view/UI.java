@@ -42,8 +42,6 @@ public class UI {
     LoadButtonController lBC = new LoadButtonController(mainBoard, loadButton);
 
     ButtonController aRC = new AddRoomController(mainBoard,addButton);
-    ButtonController aPC = new AddPortController(mainBoard,addPortButton);
-    ButtonController aLC = new AddPortController(mainBoard,addLiftButton);
 
     ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
     ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
@@ -73,8 +71,6 @@ public class UI {
         loadButton.addActionListener(lBC);
 
         addButton.addActionListener(aRC);
-        addPortButton.addActionListener(aPC);
-        addLiftButton.addActionListener(aLC);
         deleteButton.addActionListener(deleteBC);
         resizeButton.addActionListener(rBC);
         optionsButton.addActionListener(btn_options);
