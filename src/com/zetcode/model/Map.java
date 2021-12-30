@@ -16,6 +16,7 @@ public class Map extends JSONArray {
 	String nameMap;
 	Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
 	Vector<Node> node = new Vector<>();
+	//Vector<Agent> AG = new Vector<>();
     public void SaveMap() {
 		this.nameMap = SaveButtonController.nameMap;
         try {
@@ -51,6 +52,8 @@ public class Map extends JSONArray {
 			if ("Room".equals(name)) {
 				Room r = new Room(0,0);
 				setFacility(r, jobj);
+
+
 				facilities.add(r);
 			}
 			if ("Node".equals(name) ){
@@ -69,6 +72,14 @@ public class Map extends JSONArray {
 				n.direction.left = (int)leftdirec;
 				node.add(n); 
 	 		}
+			if("Agent".equals(name)){
+				Agent a = new Agent(0,0);
+				long X =( (Long) jobj.get("x")).longValue();
+				a.x = (int)X;
+				long Y =( (Long) jobj.get("y")).longValue();
+				a.y = (int)Y;
+				facilities.add(a);
+			}
 		}
 		
       } catch (IOException e) {
@@ -91,6 +102,10 @@ public class Map extends JSONArray {
 				}
 		  return nodeArray;
 	}
+
+	/*public Vector<Agent> LoadAgent(String name){
+		return this.AG;
+	}*/
 	private void setFacility(Facility f, JSONObject jobj) {
 		long xL, yL, sx, sy;
 		f.name = (String) jobj.get("name");

@@ -44,6 +44,7 @@ public class Board extends JPanel implements ActionListener {
     // Các Facilities và Node trong Board
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
     public AGV mainAGV;
+    public Vector<Agent> agArray = new Vector<>();
     public Vector<Node> lineArray = new Vector<>();
     public Vector<Room> roomArray = new Vector<>();
     public Vector<AGV> agvArray = new Vector<>();
@@ -267,6 +268,14 @@ public class Board extends JPanel implements ActionListener {
                 newMap.add(nodeJS);
             }
         }
+        for(Room r: roomArray){
+            for(int i = 0; i < r.agentNum; i++){
+                agArray.add(r.agentArray[i]);
+                System.out.println("size of agArray "+agArray.size());
+                AgentJS agJS = new AgentJS(r.agentArray[i]);
+                newMap.add(agJS);
+            }
+        }
         if(p < 2)JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
         if(pAGV < 4)JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
         if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1))JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);
@@ -277,7 +286,7 @@ public class Board extends JPanel implements ActionListener {
       facilities = map.LoadFacilities(nameFile);
       map.LoadNode(nameFile);
       this.nodeArray = map.LoadNode(nameFile);
-      
+      //agArray = map.LoadAgent(nameFile);
     }
 
     public void moveAGV() {
@@ -294,6 +303,12 @@ public class Board extends JPanel implements ActionListener {
         portArray.add(new Port(1110, 1));
         portArray.add(new Port(1, 540));
         portArray.add(new Port(1110, 540));
+        liftArray.add(new Lift(1, 240));
+        liftArray.add(new Lift(1, 300));
+        liftArray.add(new Lift(1110, 240));
+        liftArray.add(new Lift(1110, 300));
+
+        updateFacilities();
 
         mainAGV = new AGV(120,120,nodeArray);
     }
@@ -407,6 +422,9 @@ public class Board extends JPanel implements ActionListener {
         for (Port port : portArray) {
             if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
         }
+       /* for (Agent agent : agArray) {
+            if (agent.checkBelongToFacilities(facilities) == 0) facilities.add(agent);
+        }*/
 //        for (AGV agv : agvArray) {
 //            if (agv.checkBelongToFacilities(facilities) == 0) facilities.add(agv);
 //        }
