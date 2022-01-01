@@ -21,6 +21,7 @@ public class UI {
     public JButton dijkstra = new JButton("Dijkstra");
 
     public JButton loadButton = new JButton("Load Map");
+    public JButton playAgainButton = new JButton("Play Again");
 
     public JButton optionsButton = new JButton("Options");
 
@@ -41,6 +42,7 @@ public class UI {
     ButtonController aRC = new AddRoomController(mainBoard,addButton);
     ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
     ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
+    ButtonController pAB = new PlayAgainController(mainBoard,playAgainButton, drawButton);
     OptionsController btn_options = new OptionsController(mainBoard, optionsButton);
 
 
@@ -70,6 +72,7 @@ public class UI {
         deleteButton.addActionListener(deleteBC);
         resizeButton.addActionListener(rBC);
         optionsButton.addActionListener(btn_options);
+        playAgainButton.addActionListener(pAB);
 
 
     }
@@ -91,6 +94,7 @@ public class UI {
 
         panel.add(saveButton);
         panel.add(loadButton);
+        panel.add(playAgainButton);
 
         panel.add(optionsButton);
         controlPanel.add(panel);

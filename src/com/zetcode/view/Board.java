@@ -9,11 +9,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
-
-import java.awt.Color;
-import java.awt.Graphics;
 
 public class Board extends JPanel implements ActionListener {
     // Các biến toàn cục trong Board
@@ -22,7 +20,7 @@ public class Board extends JPanel implements ActionListener {
     public final int B_HEIGHT = 600;
     private final int DOT_SIZE = 10;
     private final int RAND_POS = 29;
-    private final int DELAY = 140;
+    private final int DELAY = 100;
 
     //Các biến chứa các giá trị Validate
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
@@ -47,13 +45,13 @@ public class Board extends JPanel implements ActionListener {
     // Các Facilities và Node trong Board
     public AGV mainAGV;
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
-    public Vector<Node> nodeIsLineArray = new Vector<>();
-    public Vector<Room> roomArray = new Vector<>();
-    public Vector<AGV> agvArray = new Vector<>();
-    public Vector<Gurney> gurneyArray = new Vector<>();
-    public Vector<Lift> liftArray = new Vector<>();
-    public Vector<Port> portArray = new Vector<>();
-    public Vector<Person> personArray = new Vector<>();
+    public ArrayList<Node> lineArray = new ArrayList<>();
+    public ArrayList<Room> roomArray = new ArrayList<>();
+    public ArrayList<AGV> agvArray = new ArrayList<>();
+    public ArrayList<Gurney> gurneyArray = new ArrayList<>();
+    public ArrayList<Lift> liftArray = new ArrayList<>();
+    public ArrayList<Port> portArray = new ArrayList<>();
+    public ArrayList<Person> personArray = new ArrayList<>();
 
     public Facility collector = new Facility();
     public Map map = new Map();
@@ -74,6 +72,7 @@ public class Board extends JPanel implements ActionListener {
         setBackground(Color.white);
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setUpNode();
         constructData();
 
 
@@ -136,6 +135,9 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         mainAGV.draw(g);
+        for (AGV agv : agvArray) {
+            agv.draw(g);
+        }
         // Ve 4 cong vao ra
         for (Facility facility: facilities){
             facility.draw(g);
@@ -157,6 +159,9 @@ public class Board extends JPanel implements ActionListener {
 
     private void move() {
         mainAGV.move();
+        for (AGV agv : agvArray) {
+            agv.move();
+        }
     }
     public void moveWhenCollision(){
 //        if (leftDirection) {
@@ -243,6 +248,13 @@ public class Board extends JPanel implements ActionListener {
            facility.draw(getGraphics());
        }
     }
+    public void setUpNode() {
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
+                nodeArray[i][j] = new Node(i*30, j*30);
+            }
+        }
+    }
     private void constructData() {
         portArray.add(new Port(1,1));
         portArray.add(new Port(1110,1));
@@ -262,14 +274,17 @@ public class Board extends JPanel implements ActionListener {
 //        roomArray.add(new Room(810,60));
 //        roomArray.add(new Room(810,360));
 
-        for (int i = 0; i < B_WIDTH/30; i ++) {
-            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
-                nodeArray[i][j] = new Node(i*30, j*30);
-                System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
-            }
-        }
         updateFacilities();
+
         mainAGV = new AGV(120,120,nodeArray);
+        AGV agv1 = new AGV(210,60, nodeArray);
+        AGV agv2 = new AGV(210,15, nodeArray);
+        AGV agv3 = new AGV(420,450, nodeArray);
+        AGV agv4 = new AGV(600,300, nodeArray);
+        agvArray.add(agv1);
+        agvArray.add(agv2);
+        agvArray.add(agv3);
+        agvArray.add(agv4);
 
     }
     public void updateFacilities(){
@@ -290,38 +305,47 @@ public class Board extends JPanel implements ActionListener {
     public void updateNode() {
         for (Node[] nodes: nodeArray) {
             for (Node node: nodes){
-                if (node.isLine) nodeIsLineArray.add(node);
+                if (node.isLine) lineArray.add(node);
             }
         }
         updateLineGraph();
     }
     public void updateLineGraph() {
-        for (int i = 0; i < nodeIsLineArray.size() - 1; i ++) {
-            if (nodeIsLineArray.get(i).coordinate_x == nodeIsLineArray.get(i+1).coordinate_x) {
-                if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y + 1) {
-                    nodeIsLineArray.get(i).setDown(nodeIsLineArray.get(i+1));
-                    nodeIsLineArray.get(i+1).setUp(nodeIsLineArray.get(i));
+        for (int i = 0; i < lineArray.size() - 1; i ++) {
+            if (lineArray.get(i).coordinate_x == lineArray.get(i+1).coordinate_x) {
+                if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y + 1) {
+                    lineArray.get(i).setUp(lineArray.get(i+1));
                 }
                 else {
-                    nodeIsLineArray.get(i).setUp(nodeIsLineArray.get(i+1));
-                    nodeIsLineArray.get(i+1).setDown(nodeIsLineArray.get(i));
+                    if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y - 1) {
+                        lineArray.get(i).setDown(lineArray.get(i+1));
+                    }
                 }
             }
             else {
-                if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y) {
-                    if (nodeIsLineArray.get(i).coordinate_x ==  nodeIsLineArray.get(i+1).coordinate_x + 1) {
-                        nodeIsLineArray.get(i).setRight(nodeIsLineArray.get(i+1));
-                        nodeIsLineArray.get(i+1).setLeft(nodeIsLineArray.get(i));
+                if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y) {
+                    if (lineArray.get(i).coordinate_x ==  lineArray.get(i+1).coordinate_x + 1) {
+                        lineArray.get(i).setLeft(lineArray.get(i+1));
                     }
                     else {
-                        nodeIsLineArray.get(i).setLeft(nodeIsLineArray.get(i+1));
-                        nodeIsLineArray.get(i+1).setRight(nodeIsLineArray.get(i));
+                        if (lineArray.get(i).coordinate_x ==  lineArray.get(i+1).coordinate_x - 1) {
+                            lineArray.get(i).setRight(lineArray.get(i+1));
+                        }
                     }
                 }
             };
-            nodeIsLineArray.get(i).setEdge();
         }
+
         System.out.println("Updating line graph");
+        System.out.println("Line array gom " + lineArray.size() + " phan tu");
+        for (Node node : lineArray) {
+            System.out.print("["+ node.coordinate_x+ "; " + node.coordinate_y+ "]");
+            if (node.Up != null) System.out.print("--> "+ "["+ node.Up.coordinate_x+ "; " + node.Up.coordinate_y+ "]");
+            if (node.Down != null) System.out.print("--> "+ "["+ node.Down.coordinate_x+ "; " + node.Down.coordinate_y+ "]");
+            if (node.Right != null) System.out.print("--> "+ "["+ node.Right.coordinate_x+ "; " + node.Right.coordinate_y+ "]");
+            if (node.Left != null) System.out.print("--> "+ "["+ node.Left.coordinate_x+ "; " + node.Left.coordinate_y+ "]");
+            System.out.println("");
+        }
     }
 
     public void printResult() throws IOException {
@@ -428,5 +452,14 @@ public class Board extends JPanel implements ActionListener {
             e.printStackTrace();
         }
 
+    }
+
+    public void playAgainGame() {
+        facilities.removeAllElements();
+        agvArray = new ArrayList<>();
+        constructData();
+        for (Node node: lineArray) {
+            node.agvPriority = 0;
+        }
     }
 }

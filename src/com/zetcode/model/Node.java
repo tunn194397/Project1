@@ -15,6 +15,7 @@ public class Node extends Rectangle {
     public boolean isLine;
 
     public boolean isBlocked = false; // Là giá trị mà node đó có AGV đi qua hay không true: có, false: không có. những node nào không phải là đường của AGV (direction = 0) thì hasNode =  false;
+    public int agvPriority = 0;
 
     public int coordinate_x, coordinate_y;
     public Node Up, Down, Right, Left ; //Bốn node cho biết các node xung quanh của node này.
@@ -31,10 +32,12 @@ public class Node extends Rectangle {
         this.direction = new Direction();
         this.isHead = false;
         this.ID = i/30 + " - " + j/30;
-
+        this.isBlocked = false;
     }
     public Node(){
         this.isNull = true;
+        this.agvPriority = 0;
+        this.isBlocked = false;
     };
     public void updateNode(int i, int j) {
         this.x = i;
@@ -87,7 +90,7 @@ public class Node extends Rectangle {
     public float getW() {
         return w;
     }
-    public void setW(int w) {
+    public void setW(float w) {
         this.w = w;
     }
     public float getU() {
@@ -120,8 +123,15 @@ public class Node extends Rectangle {
         shape = new ZRectangle(this.x, this.y, this.size_x, this.size_y);
         g2d.fill(shape);
         if (imageArrow != null) {
-            g2d.drawImage(imageArrow.getImage(),this.x+this.size_x/3, this.y+this.size_y/4, this.size_x/3, this.size_y/2, Color.yellow,null);
+            g2d.drawImage(imageArrow.getImage(),this.x+this.size_x/3, this.y+this.size_y/4, this.size_x/3, this.size_y/2, Color.yellow,null);        }
+        if (isLine) {
+            g.drawString(String.valueOf(w), this.x + 10, this.y + 10);
         }
+        //Cho nay de test xem o co bi block ko
+//        if (agvPriority != 0) {
+//            g2d.setColor(Color.gray);
+//            g2d.fill(shape);
+//        }
         g2d.dispose();
     };
     public boolean isBelongTo(Facility facility){
@@ -132,19 +142,25 @@ public class Node extends Rectangle {
     }
 
     public void updateDelayTime() {
-        if (isBlocked) {
-            if (u == 0) {
-                u = 1.0F;
-            }
-            else u ++;
-            w = (float) (0.6* w + 0.4*u);
+        if (u == 0) {
+            u = 1.0F;
         }
-        else {
-            u = 0;
-        }
+        else u ++;
+        w = (float) (0.6* w + 0.4*u);
     }
     public void updateIsBlocked(boolean b) {
         isBlocked = b;
         updateDelayTime();
+    }
+    @Override
+    public boolean equals(Object other) {
+        return  (this.ID.equals(((Node)other).ID));
+    }
+    public void setAgvPriority(AGV agv) {
+        this.agvPriority = agv.priority;
+    }
+    public void freeNode() {
+        agvPriority = 0;
+        isBlocked = false;
     }
 }
