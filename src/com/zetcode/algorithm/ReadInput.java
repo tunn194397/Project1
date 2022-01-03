@@ -40,6 +40,20 @@ public class ReadInput {
         }
     }
 
+    public void drawSine(Graphics g) {
+        for (Path path : paths) {
+            for (int i = 0; i < path.getPoint() - 1; i++) {
+                java.awt.Point point1 = new java.awt.Point(path.route[i].getX(), path.route[i].getY());
+                java.awt.Point point2 = new java.awt.Point(path.route[i+1].getX(), path.route[i+1].getY());
+                int w = MyMath.length(point1.x, point1.y, point2.x, point2.y);
+                int a = 10;
+                int p = 0;
+                SineWave sineWave = new SineWave(w, a, p);
+                sineWave.draw(g, point1, point2);
+            }
+        }
+    }
+
     public void drawRoute(Graphics g) {
         for (Path path : paths) {
             path.drawRoute(g);
