@@ -1,5 +1,6 @@
 package com.zetcode.controller.buttoncontroller;
 
+import com.zetcode.model.Facility;
 import com.zetcode.model.Node;
 import com.zetcode.view.Board;
 
@@ -36,6 +37,7 @@ public class PlayButtonController extends ButtonController {
 	        try {
                 board.printResult();
                 board.readInput.readInput();
+                board.readInput.changeRouteZigZac(board.facilities);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

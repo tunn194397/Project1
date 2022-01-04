@@ -60,6 +60,7 @@ public class Node extends Rectangle {
         }
     }
 
+
     public Node getUp() {
         return Up;
     }

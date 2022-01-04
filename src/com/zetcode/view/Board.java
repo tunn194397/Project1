@@ -54,6 +54,7 @@ public class Board extends JPanel implements ActionListener {
     public Vector<Lift> liftArray = new Vector<>();
     public Vector<Port> portArray = new Vector<>();
     public Vector<Person> personArray = new Vector<>();
+    public Vector<Node> lineArray = new Vector<>();
 
     public Facility collector = new Facility();
     public Map map = new Map();
@@ -152,7 +153,12 @@ public class Board extends JPanel implements ActionListener {
 
         // Ve quy dao agent
         g.setColor(Color.red);
+//        readInput.printRoute();
         readInput.drawRoute(g);
+        g.setColor(Color.black);
+        readInput.drawRoute1(g);
+
+//        readInput.drawRouteZigZac(g);
     }
 
     private void move() {
