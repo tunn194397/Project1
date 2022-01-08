@@ -8,6 +8,7 @@ public class AGV extends Facility {
     public Node baseNode = new Node();
     public Node nextNode = new Node();
     public Direction direction = new Direction();
+    public Graph graph = new Graph();
     public boolean canControl = false;
     public int priority = 50;
     public int nextNodePriority = 0;
@@ -47,22 +48,11 @@ public class AGV extends Facility {
     }
 
     public void findNextNode() {
-        if (inLine()) {
-            Node tmpUp = (this.y /30 - 1 >= 0)?nodeArray[this.x / 30][this.y / 30 - 1]: new Node();
-            Node tmpDown = (this.y / 30 + 1 < 20)? nodeArray[this.x / 30][this.y / 30 + 1]: new Node();
-            Node tmpLeft = (this.x/30 - 1 >= 0)? nodeArray[this.x / 30 - 1][this.y / 30]: new Node();
-            Node tmpRight = (this.x/30 + 1 < 40) ? nodeArray[this.x / 30 + 1][this.y / 30]: new Node();
-            Node tmpNode = (tmpUp.isLine && baseNode.direction.up == 1)? tmpUp:
-                                (tmpDown.isLine && baseNode.direction.down == 1)?tmpDown:
-                                        (tmpLeft.isLine && baseNode.direction.left == 1)?tmpLeft:
-                                                (tmpRight.isLine && baseNode.direction.right == 1)? tmpRight: baseNode;
-
-            if (direction.up == 1) nextNode = tmpUp.isLine? tmpUp : tmpNode;
-                else if (direction.down == 1) nextNode = tmpDown.isLine? tmpDown: tmpNode;
-                else if (direction.left == 1) nextNode = tmpLeft.isLine? tmpLeft: tmpNode;
-                else if (direction.right == 1) nextNode = tmpRight.isLine? tmpRight: tmpNode;
-                else nextNode = tmpNode;
-
+        if (graph.path.size() != 0) {
+            if (inLine()) {
+                int i = graph.path.indexOf(nodeArray[baseNode.x/30][baseNode.y/30]);
+                if (i+1 < graph.path.size()) nextNode = graph.path.get(i+1);
+            }
         }
     }
 
@@ -102,7 +92,6 @@ public class AGV extends Facility {
         }
 
         if (nextNode.isLine) {
-            System.out.println(nextNode.agvPriority);
             if  ( (nextNode.agvPriority == 0) || nextNode.agvPriority == this.priority) {
                 if (direction.up == 1) update(this.x, this.y - 3);
                 if (direction.down == 1) update(this.x, this.y + 3);
@@ -152,6 +141,14 @@ public class AGV extends Facility {
         g2d.dispose();
         g.setColor(Color.black);
         g.drawString(String.valueOf(priority), this.x , this.y+10);
+    }
+
+    public void findGraph(Node end) {
+        graph.ShortestP(baseNode);
+        System.out.print("Khoảng cách tối thiểu từ " + this.ID + " ");
+        System.out.print(" toi [" +end.coordinate_x+ "; " + end.coordinate_y+ "] la " + end.getDist() + "\n");
+        System.out.println("Quãng đường là từ:");
+        graph.getShortestP(end);
     }
 }
 

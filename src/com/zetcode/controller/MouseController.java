@@ -75,6 +75,12 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             updateBoard();
             board.repaint();
         }
+        else if (board.status == 4) {
+            System.out.println("Choose End Node");
+            if (nodeArray[click_x/30][click_y/30].isLine) nodeArray[click_x/30][click_y/30].updateIsEndNode();
+            else JOptionPane.showMessageDialog(board,"This node isn't in line!");
+            board.setStatus(0);
+        }
     }
     @Override
     public void mousePressed(MouseEvent e) {

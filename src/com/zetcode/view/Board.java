@@ -24,7 +24,7 @@ public class Board extends JPanel implements ActionListener {
 
     //Các biến chứa các giá trị Validate
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
-    public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV, 3 la resize
+    public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV, 2 la resize, 4 la chon node cuoi
     public final int MAX_ROOM_QUANTITY = 10;
     public final int MAX_AGV_QUANTITY = 6;
     public final int MAX_PERSON_QUANTITY = 10;
@@ -52,6 +52,7 @@ public class Board extends JPanel implements ActionListener {
     public ArrayList<Lift> liftArray = new ArrayList<>();
     public ArrayList<Port> portArray = new ArrayList<>();
     public ArrayList<Person> personArray = new ArrayList<>();
+    public Node endNode = new Node();
 
     public Facility collector = new Facility();
     public Map map = new Map();
@@ -134,7 +135,6 @@ public class Board extends JPanel implements ActionListener {
                 g.drawLine(i,0,i,B_HEIGHT);
             }
         }
-        mainAGV.draw(g);
         for (AGV agv : agvArray) {
             agv.draw(g);
         }
@@ -158,37 +158,11 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void move() {
-        mainAGV.move();
         for (AGV agv : agvArray) {
             agv.move();
         }
     }
     public void moveWhenCollision(){
-//        if (leftDirection) {
-//            mainAGV.x += DOT_SIZE;
-//            leftDirection = false;
-//            upDirection = mainAGV.y > 300;
-//            downDirection = mainAGV.y <= 300;
-//            mainAGV.switchSide();
-//        } else if (rightDirection) {
-//            mainAGV.x -= DOT_SIZE;
-//            rightDirection = false;
-//            upDirection = mainAGV.y > 300;
-//            downDirection = mainAGV.y <= 300;
-//            mainAGV.switchSide();
-//        } else if (upDirection) {
-//            mainAGV.y += DOT_SIZE;
-//            upDirection = false;
-//            leftDirection = mainAGV.x > 600;
-//            rightDirection = mainAGV.x <= 600;
-//            mainAGV.switchSide();
-//        } else if (downDirection) {
-//            mainAGV.y -= DOT_SIZE;
-//            downDirection = false;
-//            leftDirection = mainAGV.x > 600;
-//            rightDirection = mainAGV.x <= 600;
-//            mainAGV.switchSide();
-//        }
         pauseGame();
     }
     @Override
@@ -281,6 +255,7 @@ public class Board extends JPanel implements ActionListener {
         AGV agv2 = new AGV(210,15, nodeArray);
         AGV agv3 = new AGV(420,450, nodeArray);
         AGV agv4 = new AGV(600,300, nodeArray);
+        agvArray.add(mainAGV);
         agvArray.add(agv1);
         agvArray.add(agv2);
         agvArray.add(agv3);
@@ -336,15 +311,23 @@ public class Board extends JPanel implements ActionListener {
             };
         }
 
-        System.out.println("Updating line graph");
-        System.out.println("Line array gom " + lineArray.size() + " phan tu");
+        System.out.println("Nothing");
         for (Node node : lineArray) {
-            System.out.print("["+ node.coordinate_x+ "; " + node.coordinate_y+ "]");
-            if (node.Up != null) System.out.print("--> "+ "["+ node.Up.coordinate_x+ "; " + node.Up.coordinate_y+ "]");
-            if (node.Down != null) System.out.print("--> "+ "["+ node.Down.coordinate_x+ "; " + node.Down.coordinate_y+ "]");
-            if (node.Right != null) System.out.print("--> "+ "["+ node.Right.coordinate_x+ "; " + node.Right.coordinate_y+ "]");
-            if (node.Left != null) System.out.print("--> "+ "["+ node.Left.coordinate_x+ "; " + node.Left.coordinate_y+ "]");
-            System.out.println("");
+            if (node.isEndNode) {
+                endNode = node;
+                break;
+            }
+        };
+
+        if (!endNode.ID.equals("Null")) {
+            for (AGV agv: agvArray) {
+                agv.findGraph(endNode);
+                for (Node node : lineArray) {
+                    node.setDist(1000);
+                    node.setVisited(false);
+                    node.setPr(new Node());
+                }
+            }
         }
     }
 

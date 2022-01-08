@@ -2,8 +2,10 @@ package com.zetcode.model;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Node extends Rectangle {
+public class Node extends Rectangle implements Comparable<Node> {
     public int x;
     public int y;
     public final int size_x = 30;
@@ -13,6 +15,7 @@ public class Node extends Rectangle {
     public boolean isNull;
     public boolean isHead;
     public boolean isLine;
+    public boolean isEndNode = false;
 
     public boolean isBlocked = false; // Là giá trị mà node đó có AGV đi qua hay không true: có, false: không có. những node nào không phải là đường của AGV (direction = 0) thì hasNode =  false;
     public int agvPriority = 0;
@@ -21,6 +24,12 @@ public class Node extends Rectangle {
     public Node Up, Down, Right, Left ; //Bốn node cho biết các node xung quanh của node này.
     public Direction direction = new Direction();  // Bốn giá trị đại diện cho giá trị các edge đến các node xung quanh của nó.
     public float w = 0.0F, u = 0.0F; // Hai giá trị biểu thị cho giá trị dự đoán và giá trị thực thời gian AGV phải dừng.
+
+    // Nhung thuoc tinh can thiet cho tim duong di ngan nhan
+    public boolean visited;
+    public float dist = 1000;
+    public Node pr;
+    public List<Edge> list = new ArrayList<>();
 
     public Node(int i, int j) {
         this.x = i;
@@ -38,6 +47,7 @@ public class Node extends Rectangle {
         this.isNull = true;
         this.agvPriority = 0;
         this.isBlocked = false;
+        this.ID = "Null";
     };
     public void updateNode(int i, int j) {
         this.x = i;
@@ -68,24 +78,28 @@ public class Node extends Rectangle {
     }
     public void setUp(Node up) {
         Up = up;
+        addNeighbour(new Edge(this, up));
     }
     public Node getDown() {
         return Down;
     }
     public void setDown(Node down) {
         Down = down;
+        addNeighbour(new Edge(this, down));
     }
     public Node getRight() {
         return Right;
     }
     public void setRight(Node right) {
         Right = right;
+        addNeighbour(new Edge(this, right));
     }
     public Node getLeft() {
         return Left;
     }
     public void setLeft(Node left) {
         Left = left;
+        addNeighbour(new Edge(this, left));
     }
     public float getW() {
         return w;
@@ -115,6 +129,7 @@ public class Node extends Rectangle {
             if (direction.left == 1) imageArrow = new ImageIcon("src/images/arrow/leftArrow.png");
             if (direction.right == 1) imageArrow = new ImageIcon("src/images/arrow/rightArrow.png");
             if (isHead) g2d.setColor(Color.yellow);
+            if (isEndNode) g2d.setColor(Color.orange);
         }
         else {
             g2d.setColor(Color.white);
@@ -162,5 +177,24 @@ public class Node extends Rectangle {
     public void freeNode() {
         agvPriority = 0;
         isBlocked = false;
+    }
+    public void updateIsEndNode() {
+        this.isEndNode = true;
+    }
+
+    public boolean isVisited() {return visited;}
+    public void setVisited(boolean visited) {this.visited = visited;}
+    public float getDist() {return dist;}
+    public void setDist(float dist) {this.dist = dist;}
+    public Node getPr() {return pr;}
+    public void setPr(Node pr) {this.pr = pr;}
+    public java.util.List<Edge> getList() {return list;}
+    public void setList(java.util.List<Edge> list) {list = list;}
+    public void addNeighbour(Edge edge) {
+        list.add(edge);
+    }
+    @Override
+    public int compareTo(Node other) {
+        return java.lang.Float.compare(dist, other.getDist());
     }
 }
