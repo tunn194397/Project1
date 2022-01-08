@@ -5,11 +5,11 @@ import com.zetcode.model.Node;
 import com.zetcode.view.Board;
 
 import javax.swing.*;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class MouseController extends MouseAdapter implements MouseWheelListener {
@@ -19,7 +19,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     public int status;
     public Facility collector;
     public Node[][] nodeArray;
-    public Vector<Node> lineArray = new Vector<>();
+    public ArrayList<Node> lineArray = new ArrayList<>();
 
     //Nhung thuoc tinh dung de xu li su kien
     public Node firstNode = new Node(), lastNode = new Node();
@@ -75,6 +75,12 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             updateBoard();
             board.repaint();
         }
+        else if (board.status == 4) {
+            System.out.println("Choose End Node");
+            if (nodeArray[click_x/30][click_y/30].isLine) nodeArray[click_x/30][click_y/30].updateIsEndNode();
+            else JOptionPane.showMessageDialog(board,"This node isn't in line!");
+            board.setStatus(0);
+        }
     }
     @Override
     public void mousePressed(MouseEvent e) {
@@ -103,7 +109,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     }
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (collector.ID.equals("Null")) {
+        if (!collector.ID.equals("Null")) {
             doScale(e);
         }
     }
@@ -151,7 +157,9 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             firstNode = new Node();
             lastNode = new Node();
         }
-        lineArray.addAll(tmp);
+        for (Node node : tmp) {
+            if (!lineArray.contains(node)) lineArray.add(node);
+        }
         tmp.removeAllElements();
         updateBoard();
         board.repaint();

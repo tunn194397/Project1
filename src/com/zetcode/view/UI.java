@@ -21,6 +21,8 @@ public class UI {
     public JButton dijkstra = new JButton("Dijkstra");
 
     public JButton loadButton = new JButton("Load Map");
+    public JButton playAgainButton = new JButton("Play Again");
+    public JButton chooseEndNodeButton = new JButton("End Node");
 
     public JButton optionsButton = new JButton("Options");
 
@@ -41,6 +43,8 @@ public class UI {
     ButtonController aRC = new AddRoomController(mainBoard,addButton);
     ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
     ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
+    ButtonController pAB = new PlayAgainController(mainBoard,playAgainButton, drawButton);
+    ButtonController cEN = new ChooseEndNodeController(mainBoard,chooseEndNodeButton);
     OptionsController btn_options = new OptionsController(mainBoard, optionsButton);
 
 
@@ -70,7 +74,8 @@ public class UI {
         deleteButton.addActionListener(deleteBC);
         resizeButton.addActionListener(rBC);
         optionsButton.addActionListener(btn_options);
-
+        playAgainButton.addActionListener(pAB);
+        chooseEndNodeButton.addActionListener(cEN);
 
     }
 
@@ -78,7 +83,7 @@ public class UI {
         JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
         panel.setSize(300, 100);
-        GridLayout layout = new GridLayout(1, 6);
+        GridLayout layout = new GridLayout(1, 9);
         layout.setHgap(10);
         layout.setVgap(10);
 
@@ -91,6 +96,8 @@ public class UI {
 
         panel.add(saveButton);
         panel.add(loadButton);
+        panel.add(playAgainButton);
+        panel.add(chooseEndNodeButton);
 
         panel.add(optionsButton);
         controlPanel.add(panel);
