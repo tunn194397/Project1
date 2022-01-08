@@ -440,6 +440,43 @@ public class Board extends JPanel implements ActionListener {
 //        }
 //        updateLineGraph();
 //    }
+
+/*public void updateNode() {
+    for (Node[] nodes: nodeArray) {
+        for (Node node: nodes){
+            if (node.isLine) lineArray.add(node);
+        }
+    }
+    updateLineGraph();
+}
+public void updateLineGraph() {
+    for (int i = 0; i < lineArray.size() - 1; i ++) {
+        if (lineArray.get(i).coordinate_x == lineArray.get(i+1).coordinate_x) {
+            if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y + 1) {
+                lineArray.get(i).setDown(lineArray.get(i+1));
+                lineArray.get(i+1).setUp(lineArray.get(i));
+            }
+            else {
+                lineArray.get(i).setUp(lineArray.get(i+1));
+                lineArray.get(i+1).setDown(lineArray.get(i));
+            }
+        }
+        else {
+            if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y) {
+                if (lineArray.get(i).coordinate_x ==  lineArray.get(i+1).coordinate_x + 1) {
+                    lineArray.get(i).setRight(lineArray.get(i+1));
+                    lineArray.get(i+1).setLeft(lineArray.get(i));
+                }
+                else {
+                    lineArray.get(i).setLeft(lineArray.get(i+1));
+                    lineArray.get(i+1).setRight(lineArray.get(i));
+                }
+            }
+        };
+        lineArray.get(i).setEdge();
+    }
+    System.out.println("Updating line graph");
+}*/
     public void updateLineGraph() {
         System.out.println("Updating line graph");
         for (Node node : lineArray) {

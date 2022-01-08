@@ -35,10 +35,7 @@ public class Room extends Facility {
         for (int i = 0; i < agentNum; i++) {
             int a_pos_x = ThreadLocalRandom.current().nextInt( this.x + 10, this.x + 200 + 1);
             int a_pos_y = ThreadLocalRandom.current().nextInt(this.y +10, this.y + 140 + 1);
-            Agent ag = new Agent(0,0);
-            ag.x = a_pos_x;
-            ag.y = a_pos_y;
-            this.agentArray[i] = ag;
+            this.agentArray[i] = new Agent(a_pos_x, a_pos_y);
         }
     }
     public void draw(Graphics g) {
@@ -78,7 +75,10 @@ Các kịch bản test dành cho phương thức setDoor:
 4. Trong tat ca phan tu cua mang doorArray khong co phan tu nao bi null
 
 Cac kich ban test danh cho phuong thuc agentPosInRoom:
-1. Toa do cua 2 agent bat
+1. Toa do cua 2 agent bat ki khong duoc trung nhau
+2. Ban dau vi tri cac agent phai o trong room
+Cac kich ban cho phuong thuc draw
+1. Khi mà ham draw duoc goi xong thi vi tri cua agent phai co dinh so voi room
 */ 
 
 

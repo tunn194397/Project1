@@ -17,6 +17,5 @@ public class Agent extends Facility {
         y = y-(r/2);
         g.fillOval(x,y,r,r);
         g.setColor(Color.cyan);
-        System.out.println("ve agent");
     }
 }

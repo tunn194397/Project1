@@ -1,8 +1,8 @@
 package com.zetcode.model;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
-public class AgentJS extends JSONObject{
+public class AgentJS extends JSONObject {
     public AgentJS(){};
     public AgentJS(Agent agent){
         this.put("name", "Agent");
