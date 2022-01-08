@@ -70,6 +70,8 @@ public class Map extends JSONArray {
 				n.direction.right = (int)rightdirec;
 				long leftdirec =( (Long) jobj.get("leftdirection")).longValue();
 				n.direction.left = (int)leftdirec;
+				boolean isline = ( (Boolean) jobj.get("isLine")).booleanValue();
+				n.isLine = isline;
 				node.add(n); 
 	 		}
 			if("Agent".equals(name)){

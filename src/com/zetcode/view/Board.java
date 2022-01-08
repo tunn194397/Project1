@@ -286,6 +286,11 @@ public class Board extends JPanel implements ActionListener {
       facilities = map.LoadFacilities(nameFile);
       map.LoadNode(nameFile);
       this.nodeArray = map.LoadNode(nameFile);
+      for (Node[] nodes: nodeArray) {
+        for (Node node: nodes){
+            if (node.isLine) System.out.println(node.ID);
+        }
+    }
       //agArray = map.LoadAgent(nameFile);
     }
 
@@ -422,9 +427,9 @@ public class Board extends JPanel implements ActionListener {
         for (Port port : portArray) {
             if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
         }
-       /* for (Agent agent : agArray) {
-            if (agent.checkBelongToFacilities(facilities) == 0) facilities.add(agent);
-        }*/
+//        for (Agent agent : agArray) {
+//            if (agent.checkBelongToFacilities(facilities) == 0) facilities.add(agent);
+//        }
 //        for (AGV agv : agvArray) {
 //            if (agv.checkBelongToFacilities(facilities) == 0) facilities.add(agv);
 //        }
@@ -432,60 +437,31 @@ public class Board extends JPanel implements ActionListener {
             System.out.println(facility.ID);
         }
     }
-//    public void updateNode() {
-//        for (Node[] nodes: nodeArray) {
-//            for (Node node: nodes){
-//                if (node.isLine) lineArray.add(node);
-//            }
-//        }
-//        updateLineGraph();
-//    }
 
-/*public void updateNode() {
-    for (Node[] nodes: nodeArray) {
-        for (Node node: nodes){
-            if (node.isLine) lineArray.add(node);
-        }
-    }
-    updateLineGraph();
-}
-public void updateLineGraph() {
-    for (int i = 0; i < lineArray.size() - 1; i ++) {
-        if (lineArray.get(i).coordinate_x == lineArray.get(i+1).coordinate_x) {
-            if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y + 1) {
-                lineArray.get(i).setDown(lineArray.get(i+1));
-                lineArray.get(i+1).setUp(lineArray.get(i));
-            }
-            else {
-                lineArray.get(i).setUp(lineArray.get(i+1));
-                lineArray.get(i+1).setDown(lineArray.get(i));
-            }
-        }
-        else {
-            if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y) {
-                if (lineArray.get(i).coordinate_x ==  lineArray.get(i+1).coordinate_x + 1) {
-                    lineArray.get(i).setRight(lineArray.get(i+1));
-                    lineArray.get(i+1).setLeft(lineArray.get(i));
+    public void updateLineGraph() {
+        for (int i = 0; i < lineArray.size() - 1; i ++) {
+            if (lineArray.get(i).coordinate_x == lineArray.get(i+1).coordinate_x) {
+                if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y + 1) {
+                    lineArray.get(i).setUp(lineArray.get(i+1));
                 }
                 else {
-                    lineArray.get(i).setLeft(lineArray.get(i+1));
-                    lineArray.get(i+1).setRight(lineArray.get(i));
+                    if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y - 1) {
+                        lineArray.get(i).setDown(lineArray.get(i+1));
+                    }
                 }
             }
-        };
-        lineArray.get(i).setEdge();
-    }
-    System.out.println("Updating line graph");
-}*/
-    public void updateLineGraph() {
-        System.out.println("Updating line graph");
-        for (Node node : lineArray) {
-            System.out.print("["+ node.ID +"]");
-            if (node.getUp() != null) System.out.print(" ^ [" + node.getUp().ID +" ]");
-            if (node.getDown() != null) System.out.print(" v [" + node.getDown().ID +" ]");
-            if (node.getRight() != null) System.out.print(" -> [" + node.getRight().ID +" ]");
-            if (node.getLeft() != null) System.out.print(" <- [" + node.getLeft().ID +" ]");
-            System.out.println();
+            else {
+                if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y) {
+                    if (lineArray.get(i).coordinate_x ==  lineArray.get(i+1).coordinate_x + 1) {
+                        lineArray.get(i).setLeft(lineArray.get(i+1));
+                    }
+                    else {
+                        if (lineArray.get(i).coordinate_x ==  lineArray.get(i+1).coordinate_x - 1) {
+                            lineArray.get(i).setRight(lineArray.get(i+1));
+                        }
+                    }
+                }
+            };
         }
         updateAGV();
         System.out.println("Updated line graph");

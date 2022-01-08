@@ -43,6 +43,7 @@ public void testDrawAgent1(){
     Mockito.verify(g).setColor(expectedColor);
 }
 
+
 @Test
 public void testDrawAgent0(){
     Agent a = new Agent(100,100);
