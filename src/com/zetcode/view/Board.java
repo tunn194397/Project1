@@ -9,11 +9,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
-
-import java.awt.Color;
-import java.awt.Graphics;
 
 public class Board extends JPanel implements ActionListener {
     // Các biến toàn cục trong Board
@@ -22,11 +21,11 @@ public class Board extends JPanel implements ActionListener {
     public final int B_HEIGHT = 600;
     private final int DOT_SIZE = 10;
     private final int RAND_POS = 29;
-    private final int DELAY = 140;
+    private final int DELAY = 100;
 
     //Các biến chứa các giá trị Validate
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
-    public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV, 3 la resize
+    public int status = 0; // 0 la binh thuong, 1 la ve duong cho AGV, 2 la resize, 4 la chon node cuoi
     public final int MAX_ROOM_QUANTITY = 10;
     public final int MAX_AGV_QUANTITY = 6;
     public final int MAX_PERSON_QUANTITY = 10;
@@ -47,18 +46,18 @@ public class Board extends JPanel implements ActionListener {
     // Các Facilities và Node trong Board
     public AGV mainAGV;
     public Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
-    public Vector<Node> nodeIsLineArray = new Vector<>();
-    public Vector<Room> roomArray = new Vector<>();
-    public Vector<AGV> agvArray = new Vector<>();
-    public Vector<Gurney> gurneyArray = new Vector<>();
-    public Vector<Lift> liftArray = new Vector<>();
-    public Vector<Port> portArray = new Vector<>();
-    public Vector<Person> personArray = new Vector<>();
-    public Vector<Node> lineArray = new Vector<>();
+
+    public ArrayList<Node> lineArray = new ArrayList<>();
+    public ArrayList<Room> roomArray = new ArrayList<>();
+    public ArrayList<AGV> agvArray = new ArrayList<>();
+    public ArrayList<Gurney> gurneyArray = new ArrayList<>();
+    public ArrayList<Lift> liftArray = new ArrayList<>();
+    public ArrayList<Port> portArray = new ArrayList<>();
+    public ArrayList<Person> personArray = new ArrayList<>();
+    public Node endNode = new Node();
 
     public Facility collector = new Facility();
     public Map map = new Map();
-    public Map openMap = new Map();
 
     public Vector<Facility> facilities = new Vector<>();
 
@@ -75,8 +74,8 @@ public class Board extends JPanel implements ActionListener {
         setBackground(Color.white);
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setUpNode();
         constructData();
-
 
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
@@ -102,17 +101,6 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //Ve cac duong ke
-//        for (int i = 0; i < personArray.length; i ++) {
-//            personArray[i].personGraphic(g);
-//        }
-//        for (int i = 0; i < agvArray.length; i ++) {
-//            agvArray[i].agvGraphic(g);
-//        }
-//        for (int i = 0; i < gurneyArray.length; i ++) {
-//            gurneyArray[i].gurneyGraphic(g);
-//        }
-
 
         //Ve phan AGV
         ma.updateController();
@@ -136,9 +124,11 @@ public class Board extends JPanel implements ActionListener {
                 g.drawLine(i,0,i,B_HEIGHT);
             }
         }
-        mainAGV.draw(g);
+        for (AGV agv : agvArray) {
+            agv.draw(g);
+        }
         // Ve 4 cong vao ra
-        for (Facility facility: facilities){
+        for (Facility facility: facilities) {
             facility.draw(g);
         }
 
@@ -157,36 +147,11 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void move() {
-        mainAGV.move();
+        for (AGV agv : agvArray) {
+            agv.move();
+        }
     }
-    public void moveWhenCollision(){
-//        if (leftDirection) {
-//            mainAGV.x += DOT_SIZE;
-//            leftDirection = false;
-//            upDirection = mainAGV.y > 300;
-//            downDirection = mainAGV.y <= 300;
-//            mainAGV.switchSide();
-//        } else if (rightDirection) {
-//            mainAGV.x -= DOT_SIZE;
-//            rightDirection = false;
-//            upDirection = mainAGV.y > 300;
-//            downDirection = mainAGV.y <= 300;
-//            mainAGV.switchSide();
-//        } else if (upDirection) {
-//            mainAGV.y += DOT_SIZE;
-//            upDirection = false;
-//            leftDirection = mainAGV.x > 600;
-//            rightDirection = mainAGV.x <= 600;
-//            mainAGV.switchSide();
-//        } else if (downDirection) {
-//            mainAGV.y -= DOT_SIZE;
-//            downDirection = false;
-//            leftDirection = mainAGV.x > 600;
-//            rightDirection = mainAGV.x <= 600;
-//            mainAGV.switchSide();
-//        }
-        pauseGame();
-    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         move();
@@ -219,62 +184,170 @@ public class Board extends JPanel implements ActionListener {
         return false;
     }
     public void saveGame(){
-       /* for (Port port: portArray){
-            PortJs portJs = new PortJs(port);
-            map.add(portJs);
-        }
-        for(Lift lift: liftArray){
-            LiftJs liftJs = new LiftJs(lift);
-            map.add(liftJs);
-        }
-        for(Room room: roomArray){
-            RoomJs roomJs= new RoomJs(room) ;
-            map.add(roomJs);
-        }*/
+        int p = 0; 
+        int pAGV = 0;
+        Map newMap = new Map();
         for(Facility facility: facilities){
             FacilityJS facilityJS = new FacilityJS(facility);
-            map.add(facilityJS);
+            newMap.add(facilityJS);
+            if("Port".equals(facility.name)) p = p+1;
+            if("Lift".equals(facility.name)) pAGV = pAGV +1;
         }
-        map.SaveMap();
-        System.out.println(map.size());
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
+                NodeJS nodeJS = new NodeJS(nodeArray[i][j]);
+                newMap.add(nodeJS);
+            }
+        }
+        if(p < 2)JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if(pAGV < 4)JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1))JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if((p>=2)&&(pAGV>=4)&&(p%2==0 && pAGV%2==0)) newMap.SaveMap();
     }
 
     public void loadGame(String nameFile){
-       for(Facility facility: map.LoadMap(nameFile) ){
-           facility.draw(getGraphics());
-       }
+      facilities = map.LoadFacilities(nameFile);
+      map.LoadNode(nameFile);
+      this.nodeArray = map.LoadNode(nameFile);
+      
     }
-    private void constructData() {
-        portArray.add(new Port(1,1));
-        portArray.add(new Port(1110,1));
-        portArray.add(new Port(1,540));
-        portArray.add(new Port(1110,540));
-
-
-        liftArray.add(new Lift(1,240));
-        liftArray.add(new Lift(1110,240));
-        liftArray.add(new Lift(1,300));
-        liftArray.add(new Lift(1110,300));
-//
-//        roomArray.add(new Room(150,60));
-//        roomArray.add(new Room(480,60));
-//        roomArray.add(new Room(150,360));
-//        roomArray.add(new Room(480,360));
-//        roomArray.add(new Room(810,60));
-//        roomArray.add(new Room(810,360));
-
+    public void setUpNode() {
         for (int i = 0; i < B_WIDTH/30; i ++) {
             for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
                 nodeArray[i][j] = new Node(i*30, j*30);
+            }
+        }
+    }
+
+    public void constructData() {
+        for (int i = 0; i < B_WIDTH / 30; i++) {
+            for (int j = 0; j < B_HEIGHT / 30; j++) {
+                nodeArray[i][j] = new Node(i * 30, j * 30);
                 System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
             }
         }
-        updateFacilities();
-        mainAGV = new AGV(120,120,nodeArray);
+        portArray.add(new Port(1, 1));
+        portArray.add(new Port(1110, 1));
+        portArray.add(new Port(1, 540));
+        portArray.add(new Port(1110, 540));
 
+        liftArray.add(new Lift(1,240));
+        liftArray.add(new Lift(1,300));
+        liftArray.add(new Lift(1110,240));
+        liftArray.add(new Lift(1110,300));
+        updateFacilities();
+
+        mainAGV = new AGV(120,120,nodeArray);
+        AGV agv1 = new AGV(210,60, nodeArray);
+        AGV agv2 = new AGV(210,15, nodeArray);
+        AGV agv3 = new AGV(420,450, nodeArray);
+        AGV agv4 = new AGV(600,300, nodeArray);
+        agvArray.add(mainAGV);
+        agvArray.add(agv1);
+        agvArray.add(agv2);
+        agvArray.add(agv3);
+        agvArray.add(agv4);
     }
+
+    public boolean checkLine(){
+        boolean oke = true;
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30; j ++ ) {
+                // i là cot, j la hang
+                int a, b, count = 0;
+                if(i == 0){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                    }
+                }
+                if(i == B_WIDTH/30-1){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }    
+                if(j == 0){
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                }
+                if(j == B_HEIGHT/30-1){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }
+                if((i%39 != 0)&&(j%19 != 0)){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }
+
+                if(nodeArray[i][j].isLine && count == 0){ 
+                    oke = false;
+                    a = j+1;
+                    b = i+1;
+                    JOptionPane.showMessageDialog(this, "Node o hang "+a+" cot "+b+" khong hop le","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+                    break;
+                }
+            }
+            if(oke == false) break;
+        }
+        return oke;
+    }
+
     public void updateFacilities(){
-//        facilities.addAll(Arrays.asList(room.doorArray));
         for (Room room : roomArray) {
             if (room.checkBelongToFacilities(facilities) == 0) facilities.add(room);
         }
@@ -288,41 +361,51 @@ public class Board extends JPanel implements ActionListener {
             System.out.println(facility.ID);
         }
     }
-    public void updateNode() {
-        for (Node[] nodes: nodeArray) {
-            for (Node node: nodes){
-                if (node.isLine) nodeIsLineArray.add(node);
-            }
-        }
-        updateLineGraph();
-    }
+
     public void updateLineGraph() {
-        for (int i = 0; i < nodeIsLineArray.size() - 1; i ++) {
-            if (nodeIsLineArray.get(i).coordinate_x == nodeIsLineArray.get(i+1).coordinate_x) {
-                if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y + 1) {
-                    nodeIsLineArray.get(i).setDown(nodeIsLineArray.get(i+1));
-                    nodeIsLineArray.get(i+1).setUp(nodeIsLineArray.get(i));
+        for (int i = 0; i < lineArray.size() - 1; i ++) {
+            if (lineArray.get(i).coordinate_x == lineArray.get(i+1).coordinate_x) {
+                if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y + 1) {
+                    lineArray.get(i).setUp(lineArray.get(i+1));
                 }
                 else {
-                    nodeIsLineArray.get(i).setUp(nodeIsLineArray.get(i+1));
-                    nodeIsLineArray.get(i+1).setDown(nodeIsLineArray.get(i));
+                    if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y - 1) {
+                        lineArray.get(i).setDown(lineArray.get(i+1));
+                    }
                 }
             }
             else {
-                if (nodeIsLineArray.get(i).coordinate_y == nodeIsLineArray.get(i+1).coordinate_y) {
-                    if (nodeIsLineArray.get(i).coordinate_x ==  nodeIsLineArray.get(i+1).coordinate_x + 1) {
-                        nodeIsLineArray.get(i).setRight(nodeIsLineArray.get(i+1));
-                        nodeIsLineArray.get(i+1).setLeft(nodeIsLineArray.get(i));
+                if (lineArray.get(i).coordinate_y == lineArray.get(i+1).coordinate_y) {
+                    if (lineArray.get(i).coordinate_x ==  lineArray.get(i+1).coordinate_x + 1) {
+                        lineArray.get(i).setLeft(lineArray.get(i+1));
                     }
                     else {
-                        nodeIsLineArray.get(i).setLeft(nodeIsLineArray.get(i+1));
-                        nodeIsLineArray.get(i+1).setRight(nodeIsLineArray.get(i));
+                        if (lineArray.get(i).coordinate_x ==  lineArray.get(i+1).coordinate_x - 1) {
+                            lineArray.get(i).setRight(lineArray.get(i+1));
+                        }
                     }
                 }
             };
-            nodeIsLineArray.get(i).setEdge();
         }
-        System.out.println("Updating line graph");
+
+        System.out.println("Nothing");
+        for (Node node : lineArray) {
+            if (node.isEndNode) {
+                endNode = node;
+                break;
+            }
+        };
+
+        if (!endNode.ID.equals("Null")) {
+            for (AGV agv: agvArray) {
+                agv.findGraph(endNode);
+                for (Node node : lineArray) {
+                    node.setDist(1000);
+                    node.setVisited(false);
+                    node.setPr(new Node());
+                }
+            }
+        }
     }
 
     public void printResult() throws IOException {
@@ -371,14 +454,6 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-//            for(int i = 0 ; i < 12 ; i++){
-//                String x1 , y1 ;
-//                x1 = doorCordinateX[i];
-//                y1 = doorCordinateY[i];
-//                System.out.println(x1 +","+ y1);
-//                outputStreamWriter.write(doorCordinateX[i] + "," + doorCordinateY[i] +" ");
-//
-//        }
 
         for (int i = 0; i < 100; i++) {   // 100 ở đây là số đường đi
             Random rand1 = new Random();
@@ -427,6 +502,15 @@ public class Board extends JPanel implements ActionListener {
             outputStreamWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void playAgainGame() {
+        facilities.removeAllElements();
+        agvArray = new ArrayList<>();
+        constructData();
+        for (Node node: lineArray) {
+            node.agvPriority = 0;
         }
     }
 }
