@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
@@ -56,7 +57,6 @@ public class Board extends JPanel implements ActionListener {
 
     public Facility collector = new Facility();
     public Map map = new Map();
-    public Map openMap = new Map();
 
     public Vector<Facility> facilities = new Vector<>();
 
@@ -75,7 +75,6 @@ public class Board extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         setUpNode();
         constructData();
-
 
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
@@ -101,17 +100,6 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //Ve cac duong ke
-//        for (int i = 0; i < personArray.length; i ++) {
-//            personArray[i].personGraphic(g);
-//        }
-//        for (int i = 0; i < agvArray.length; i ++) {
-//            agvArray[i].agvGraphic(g);
-//        }
-//        for (int i = 0; i < gurneyArray.length; i ++) {
-//            gurneyArray[i].gurneyGraphic(g);
-//        }
-
 
         //Ve phan AGV
         ma.updateController();
@@ -139,7 +127,7 @@ public class Board extends JPanel implements ActionListener {
             agv.draw(g);
         }
         // Ve 4 cong vao ra
-        for (Facility facility: facilities){
+        for (Facility facility: facilities) {
             facility.draw(g);
         }
 
@@ -162,9 +150,7 @@ public class Board extends JPanel implements ActionListener {
             agv.move();
         }
     }
-    public void moveWhenCollision(){
-        pauseGame();
-    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         move();
@@ -197,30 +183,32 @@ public class Board extends JPanel implements ActionListener {
         return false;
     }
     public void saveGame(){
-       /* for (Port port: portArray){
-            PortJs portJs = new PortJs(port);
-            map.add(portJs);
-        }
-        for(Lift lift: liftArray){
-            LiftJs liftJs = new LiftJs(lift);
-            map.add(liftJs);
-        }
-        for(Room room: roomArray){
-            RoomJs roomJs= new RoomJs(room) ;
-            map.add(roomJs);
-        }*/
+        int p = 0; 
+        int pAGV = 0;
+        Map newMap = new Map();
         for(Facility facility: facilities){
             FacilityJS facilityJS = new FacilityJS(facility);
-            map.add(facilityJS);
+            newMap.add(facilityJS);
+            if("Port".equals(facility.name)) p = p+1;
+            if("Lift".equals(facility.name)) pAGV = pAGV +1;
         }
-        map.SaveMap();
-        System.out.println(map.size());
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
+                NodeJS nodeJS = new NodeJS(nodeArray[i][j]);
+                newMap.add(nodeJS);
+            }
+        }
+        if(p < 2)JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if(pAGV < 4)JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1))JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        if((p>=2)&&(pAGV>=4)&&(p%2==0 && pAGV%2==0)) newMap.SaveMap();
     }
 
     public void loadGame(String nameFile){
-       for(Facility facility: map.LoadMap(nameFile) ){
-           facility.draw(getGraphics());
-       }
+      facilities = map.LoadFacilities(nameFile);
+      map.LoadNode(nameFile);
+      this.nodeArray = map.LoadNode(nameFile);
+      
     }
     public void setUpNode() {
         for (int i = 0; i < B_WIDTH/30; i ++) {
@@ -229,24 +217,18 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
-    private void constructData() {
-        portArray.add(new Port(1,1));
-        portArray.add(new Port(1110,1));
-        portArray.add(new Port(1,540));
-        portArray.add(new Port(1110,540));
 
-
-        liftArray.add(new Lift(1,240));
-        liftArray.add(new Lift(1110,240));
-        liftArray.add(new Lift(1,300));
-        liftArray.add(new Lift(1110,300));
-//
-//        roomArray.add(new Room(150,60));
-//        roomArray.add(new Room(480,60));
-//        roomArray.add(new Room(150,360));
-//        roomArray.add(new Room(480,360));
-//        roomArray.add(new Room(810,60));
-//        roomArray.add(new Room(810,360));
+    public void constructData() {
+        for (int i = 0; i < B_WIDTH / 30; i++) {
+            for (int j = 0; j < B_HEIGHT / 30; j++) {
+                nodeArray[i][j] = new Node(i * 30, j * 30);
+                System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
+            }
+        }
+        portArray.add(new Port(1, 1));
+        portArray.add(new Port(1110, 1));
+        portArray.add(new Port(1, 540));
+        portArray.add(new Port(1110, 540));
 
         updateFacilities();
 
@@ -260,10 +242,107 @@ public class Board extends JPanel implements ActionListener {
         agvArray.add(agv2);
         agvArray.add(agv3);
         agvArray.add(agv4);
-
     }
+
+    public boolean checkLine(){
+        boolean oke = true;
+        for (int i = 0; i < B_WIDTH/30; i ++) {
+            for (int j = 0; j < B_HEIGHT/30; j ++ ) {
+                // i là cot, j la hang
+                int a, b, count = 0;
+                if(i == 0){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                    }
+                }
+                if(i == B_WIDTH/30-1){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }    
+                if(j == 0){
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                    }
+                }
+                if(j == B_HEIGHT/30-1){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }
+                if((i%39 != 0)&&(j%19 != 0)){
+                    if(nodeArray[i][j].direction.up == 1 && nodeArray[i][j-1].isLine && nodeArray[i][j-1].direction.down == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.down== 1 && nodeArray[i][j+1].isLine && nodeArray[i][j+1].direction.up == 0){
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.right == 1 && nodeArray[i+1][j].isLine && nodeArray[i+1][j].direction.left == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i][j-1].direction.down== 1)count++;
+                        if(nodeArray[i-1][j].direction.right == 1)count++;
+                    }
+                    if(nodeArray[i][j].direction.left == 1 && nodeArray[i-1][j].isLine && nodeArray[i-1][j].direction.right == 0){
+                        if(nodeArray[i][j+1].direction.up == 1)count++;
+                        if(nodeArray[i+1][j].direction.left == 1)count++;
+                        if(nodeArray[i][j-1].direction.down == 1)count++;
+                    }
+                }
+
+                if(nodeArray[i][j].isLine && count == 0){ 
+                    oke = false;
+                    a = j+1;
+                    b = i+1;
+                    JOptionPane.showMessageDialog(this, "Node o hang "+a+" cot "+b+" khong hop le","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+                    break;
+                }
+            }
+            if(oke == false) break;
+        }
+        return oke;
+    }
+
     public void updateFacilities(){
-//        facilities.addAll(Arrays.asList(room.doorArray));
         for (Room room : roomArray) {
             if (room.checkBelongToFacilities(facilities) == 0) facilities.add(room);
         }
@@ -277,14 +356,7 @@ public class Board extends JPanel implements ActionListener {
             System.out.println(facility.ID);
         }
     }
-    public void updateNode() {
-        for (Node[] nodes: nodeArray) {
-            for (Node node: nodes){
-                if (node.isLine) lineArray.add(node);
-            }
-        }
-        updateLineGraph();
-    }
+
     public void updateLineGraph() {
         for (int i = 0; i < lineArray.size() - 1; i ++) {
             if (lineArray.get(i).coordinate_x == lineArray.get(i+1).coordinate_x) {
@@ -377,14 +449,6 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-//            for(int i = 0 ; i < 12 ; i++){
-//                String x1 , y1 ;
-//                x1 = doorCordinateX[i];
-//                y1 = doorCordinateY[i];
-//                System.out.println(x1 +","+ y1);
-//                outputStreamWriter.write(doorCordinateX[i] + "," + doorCordinateY[i] +" ");
-//
-//        }
 
         for (int i = 0; i < 100; i++) {   // 100 ở đây là số đường đi
             Random rand1 = new Random();

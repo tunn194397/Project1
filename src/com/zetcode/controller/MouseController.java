@@ -5,6 +5,7 @@ import com.zetcode.model.Node;
 import com.zetcode.view.Board;
 
 import javax.swing.*;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;

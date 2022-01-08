@@ -1,9 +1,11 @@
 package com.zetcode.controller.buttoncontroller;
 
+import com.zetcode.model.Node;
 import com.zetcode.view.Board;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 public class PlayButtonController extends ButtonController {
 

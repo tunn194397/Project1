@@ -8,6 +8,7 @@ public class AGV extends Facility {
     public Node baseNode = new Node();
     public Node nextNode = new Node();
     public Direction direction = new Direction();
+
     public Graph graph = new Graph();
     public boolean canControl = false;
     public int priority = 50;

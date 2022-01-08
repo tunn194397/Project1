@@ -13,6 +13,9 @@ public class UI {
 
     //Button
     public JButton addButton = new JButton("Add Room");
+    public JButton addPortButton = new JButton("Add Port");
+    public JButton addLiftButton = new JButton("Add Lift");
+
     public JButton resizeButton = new JButton("Resize");
     public JButton deleteButton = new JButton("Delete");
     public JButton drawButton = new JButton("Draw Line");
@@ -41,6 +44,7 @@ public class UI {
     LoadButtonController lBC = new LoadButtonController(mainBoard, loadButton);
 
     ButtonController aRC = new AddRoomController(mainBoard,addButton);
+
     ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
     ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
     ButtonController pAB = new PlayAgainController(mainBoard,playAgainButton, drawButton);
@@ -89,6 +93,8 @@ public class UI {
 
         panel.setLayout(layout);
         panel.add(addButton);
+        panel.add(addPortButton);
+        panel.add(addLiftButton);
         panel.add(resizeButton);
         panel.add(deleteButton);
         panel.add(drawButton);
