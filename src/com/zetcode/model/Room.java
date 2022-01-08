@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Room extends Facility {
     public Door[] doorArray = new Door[4];
     public Agent[] agentArray = new Agent[Config.getAgentRoom()];
-    int agentNum = ThreadLocalRandom.current().nextInt(0, Config.getAgentRoom() + 1);
+    public int agentNum = ThreadLocalRandom.current().nextInt(0, Config.getAgentRoom() + 1);
 
     public Room(int i, int j) {
         super(i, j);
