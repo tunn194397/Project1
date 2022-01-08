@@ -31,12 +31,12 @@ public class FacilityUnitTest {
 
     @Test
     void testCheckCollisionInCaseNull() {
-        assertFalse(testFacility.checkCollision(null));
+        assertFalse(testFacility.checkCollision((Facility) null));
     }
 
     @Test
     void testCheckCollisionInGeneral() {
-        assertFalse(testFacility.checkCollision(null));
+        assertFalse(testFacility.checkCollision((Facility) null));
     }
 
     @Test

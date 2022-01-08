@@ -230,6 +230,10 @@ public class Board extends JPanel implements ActionListener {
         portArray.add(new Port(1, 540));
         portArray.add(new Port(1110, 540));
 
+        liftArray.add(new Lift(1,240));
+        liftArray.add(new Lift(1,300));
+        liftArray.add(new Lift(1110,240));
+        liftArray.add(new Lift(1110,300));
         updateFacilities();
 
         mainAGV = new AGV(120,120,nodeArray);
