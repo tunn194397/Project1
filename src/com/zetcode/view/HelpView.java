@@ -7,14 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class HelpView extends JPanel implements ActionListener {
-    private final Container container;
+    private final Container Container;
     private final JButton howToPlayButton = new JButton();
     private final JButton aboutGameButton = new JButton();
     private final JButton aboutTeamButton = new JButton();
     private final JButton backButton = new JButton();
 
     public HelpView(Container Container) {
-        this.container = Container;
+        this.Container = Container;
         this.setLayout((LayoutManager)null);
         this.initCompts();
     }
@@ -50,7 +50,7 @@ public class HelpView extends JPanel implements ActionListener {
         add(this.aboutTeamButton);
 
         ImageIcon iconBack = new ImageIcon("src/images/page/backButton.png");
-        backButton.setBounds(80, 50, 80, 80);
+        backButton.setBounds(100, 50, 80, 80);
         backButton.addActionListener(this);
         backButton.setContentAreaFilled(false);
         backButton.setBorder((Border)null);
@@ -60,22 +60,20 @@ public class HelpView extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.howToPlayButton) {
-            container.showHelpView();
         }
         if (e.getSource() == this.aboutGameButton) {
-            container.showAboutGameView();
         }
         if (e.getSource() == this.aboutTeamButton) {
-            container.showAboutTeamView();
         }
         if (e.getSource() == this.backButton) {
-            this.container.setShowMenu();
+            this.Container.setShowMenu();
         }
+
     }
 
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        ImageIcon icon = new ImageIcon("src/images/page/background_howToPlay.png");
-        g.drawImage(icon.getImage(), 0, 0, 1300,700, Color.black, null);
+        ImageIcon icon = new ImageIcon("src/images/page/background.png");
+        g.drawImage(icon.getImage(), 0, 0, 1500,700, Color.black, null);
     }
 }

@@ -89,6 +89,6 @@ public class HomeView extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         ImageIcon icon = new ImageIcon("src/images/page/background.png");
-        g.drawImage(icon.getImage(), 0, 0, 1300,700, Color.black, null);
+        g.drawImage(icon.getImage(), 0, 0, 1500,700, Color.black, null);
     }
 }
