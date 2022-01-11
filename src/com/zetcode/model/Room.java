@@ -1,8 +1,8 @@
 package com.zetcode.model;
 
 import com.zetcode.configuration.Config;
-import com.zetcode.controller.buttoncontroller.PlayButtonController;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -20,7 +20,7 @@ public class Room extends Facility {
         moveAbility = false;
         name = "Room";
         ID = "Room" + Integer.toString(i) + Integer.toString(j);
-        color = Color.yellow;
+        color = Color.white;
         setDoor();
         agentPosInRoom();
     }
@@ -33,6 +33,11 @@ public class Room extends Facility {
         this.doorArray = new Door[]{d1,d2,d3,d4};
     }
 
+    public void setAgent() {
+        Agent a1 = new Agent(this.x + 30, this.y+60);
+        this.agentArray = new Agent[]{a1};
+    }
+
     public void agentPosInRoom() {
         for (int i = 0; i < agentNum; i++) {
             int a_pos_x = ThreadLocalRandom.current().nextInt( this.x + 10, this.x + 200 + 1);
@@ -43,14 +48,16 @@ public class Room extends Facility {
 
     public void draw(Graphics g) {
         super.draw(g);
+        Graphics2D g2d = (Graphics2D) g;
+        ImageIcon roomImage = new ImageIcon("src/images/facilities/room.png");
+        g2d.drawImage(roomImage.getImage(),this.x, this.y, this.size_x, this.size_y, Color.white,null);
         setDoor();
         for (int i = 0; i < doorArray.length; i ++) {
             doorArray[i].draw(g);
         }
-        if (PlayButtonController.isGameStart()) {
-            for (int i = 0; i < agentNum; i++) {
-                agentArray[i].drawAgent(g, agentArray[i].x, agentArray[i].y, 20);
-            }
+        setAgent();
+        for (int i = 0; i < agentArray.length; i ++) {
+            agentArray[i].draw(g);
         }
     }
 

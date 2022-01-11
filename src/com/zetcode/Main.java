@@ -1,32 +1,23 @@
 package com.zetcode;
 
-import com.zetcode.model.Facility;
-import com.zetcode.model.Lift;
-import com.zetcode.model.Port;
-import com.zetcode.model.Room;
-import com.zetcode.view.Board;
-import com.zetcode.view.UI;
+import com.zetcode.view.Container;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 
 public class Main extends JFrame {
-    public UI newUI = new UI();
     public Main() {
-        initUI();
-    }
-    private void initUI() {
-        newUI.showLayout();
+        this.setTitle("Happy Hospital");
+        this.add(new Container());
+        this.setSize(1500, 700);
+        this.setVisible(true);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(3);
+        this.setResizable(false);
     }
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            JFrame ex = new Main().newUI.mainFrame;
-            ex.setVisible(true);
-        });
+        new Main();
     }
 
 }

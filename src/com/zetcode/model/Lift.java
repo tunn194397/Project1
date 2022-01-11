@@ -1,5 +1,6 @@
 package com.zetcode.model;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class Lift extends Facility {
@@ -12,16 +13,17 @@ public class Lift extends Facility {
         moveAbility = false;
         name = "Lift";
         ID = "Lift" + Integer.toString(i) + Integer.toString(j);
-        color = Color.green;
-        isUp = (y < 300)? true: false;
     }
     public void draw(Graphics g) {
         super.draw(g);
         Graphics2D g2d = (Graphics2D) g.create();
+
+        ImageIcon liftImage = new ImageIcon("src/images/facilities/lift.png");
+        g2d.drawImage(liftImage.getImage(),this.x, this.y, this.size_x, this.size_y, Color.white,null);
         g2d.setColor(Color.black);
-        g2d.setFont(g2d.getFont().deriveFont(10f));
-        String tmp = ((this.isUp)?"U":"D") + ((x < 600)?"1":"2");
-        g2d.drawString(tmp,(int)x + size_x/3, (int) y + size_y/3);
+        String tmp = ((y < 300)?"U":"D") + ((x < 600)?"1":"2");
+        g2d.setFont(new Font("Ariel",Font.BOLD, 18));
+        g2d.drawString(tmp,(int)x + 35, (int) y + 35);
         g2d.dispose();
     }
 }

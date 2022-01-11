@@ -225,12 +225,14 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
 
         if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
             if (!collector.ID.equals("Null")){
-                if (collector.shape.isHit(wheel_x, wheel_y)) {
-                    float amount =  e.getWheelRotation() * 5f;
-                    collector.updateSize((int)amount);
-                    System.out.println(collector.size_x+ " "+ collector.size_y);
-                    updateBoard();
-                    board.repaint();
+                if (collector.shape != null) {
+                    if (collector.shape.isHit(wheel_x, wheel_y)) {
+                        float amount =  e.getWheelRotation() * 5f;
+                        collector.updateSize((int)amount);
+                        System.out.println(collector.size_x+ " "+ collector.size_y);
+                        updateBoard();
+                        board.repaint();
+                    }
                 }
             }
         }

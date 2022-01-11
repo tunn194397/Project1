@@ -11,7 +11,7 @@ public class Door extends Facility {
         moveAbility = false;
         name = "Door";
         ID = "Door" + Integer.toString(i) + Integer.toString(j);
-        color = Color.pink;
+        color = Color.orange;
     }
 
 }

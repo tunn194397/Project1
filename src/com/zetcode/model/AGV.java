@@ -1,5 +1,6 @@
 package com.zetcode.model;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class AGV extends Facility {
@@ -8,6 +9,7 @@ public class AGV extends Facility {
     public Node baseNode = new Node();
     public Node nextNode = new Node();
     public Direction direction = new Direction();
+    ImageIcon agvImage = new ImageIcon("src/images/facilities/agv1.png");
 
     public Graph graph = new Graph();
     public boolean canControl = false;
@@ -133,15 +135,16 @@ public class AGV extends Facility {
     }
 
     public void draw(Graphics g) {
+        super.draw(g);
         Graphics2D g2d = (Graphics2D) g.create();
-        g2d.setColor(this.color);
-        shape = new ZRectangle(this.x, this.y, this.size_x, this.size_y);
-        g2d.fill(shape);
-        g2d.setColor(Color.black);
-        g2d.draw(shape);
+        if (direction.up == 1 || direction.down == 1) {
+            agvImage = new ImageIcon("src/images/facilities/agv2.jpg");
+        }
+        else {
+            if (direction.left == 1 || direction.right ==1) agvImage = new ImageIcon("src/images/facilities/agv1.png");
+        }
+        g2d.drawImage(agvImage.getImage(),this.x, this.y, this.size_x, this.size_y, Color.white,null);
         g2d.dispose();
-        g.setColor(Color.black);
-        g.drawString(String.valueOf(priority), this.x , this.y+10);
     }
 
     public void findGraph(Node end) {
