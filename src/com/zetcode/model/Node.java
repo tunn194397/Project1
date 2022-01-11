@@ -124,10 +124,6 @@ public class Node extends Rectangle implements Comparable<Node> {
         ImageIcon imageArrow = new ImageIcon();
         if (isLine) {
             g2d.setColor(Color.black);
-            if (direction.up == 1) imageArrow = new ImageIcon("src/images/arrow/upArrow.png");
-            if (direction.down == 1) imageArrow = new ImageIcon("src/images/arrow/downArrow.png");
-            if (direction.left == 1) imageArrow = new ImageIcon("src/images/arrow/leftArrow.png");
-            if (direction.right == 1) imageArrow = new ImageIcon("src/images/arrow/rightArrow.png");
             if (isHead) g2d.setColor(Color.yellow);
             if (isEndNode) g2d.setColor(Color.orange);
         }
@@ -137,16 +133,30 @@ public class Node extends Rectangle implements Comparable<Node> {
         }
         shape = new ZRectangle(this.x, this.y, this.size_x, this.size_y);
         g2d.fill(shape);
-        if (imageArrow != null) {
-            g2d.drawImage(imageArrow.getImage(),this.x+this.size_x/3, this.y+this.size_y/4, this.size_x/3, this.size_y/2, Color.yellow,null);        }
-        if (isLine) {
-            g.drawString(String.valueOf(w), this.x + 10, this.y + 10);
+
+        if (isLine && !isEndNode) {
+            if (direction.up == 1) {
+                imageArrow = new ImageIcon("src/images/arrow/up.png");
+                g2d.drawImage(imageArrow.getImage(),this.x+25, this.y + 5, 5,20,Color.yellow, null);
+            }
+            if (direction.down == 1) {
+                imageArrow = new ImageIcon("src/images/arrow/down.png");
+                g2d.drawImage(imageArrow.getImage(),this.x, this.y +5, 5,20,Color.yellow, null);
+            }
+            if (direction.left == 1) {
+                imageArrow = new ImageIcon("src/images/arrow/left.png");
+                g2d.drawImage(imageArrow.getImage(),this.x+5, this.y, 20,5,Color.yellow, null);
+            }
+            if (direction.right == 1) {
+                imageArrow = new ImageIcon("src/images/arrow/right.png");
+                g2d.drawImage(imageArrow.getImage(),this.x+5, this.y + this.size_y -5, 20,5,Color.yellow, null);
+            }
         }
-        //Cho nay de test xem o co bi block ko
-//        if (agvPriority != 0) {
-//            g2d.setColor(Color.gray);
-//            g2d.fill(shape);
-//        }
+        if (isEndNode) {
+            g2d.setColor(Color.blue);
+            g2d.setFont(new Font("Robo",Font.BOLD, 10));
+            g2d.drawString("END",this.x+7, this.y + 20);
+        }
         g2d.dispose();
     };
     public boolean isBelongTo(Facility facility){

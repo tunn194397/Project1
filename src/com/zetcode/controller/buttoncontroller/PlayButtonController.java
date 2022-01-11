@@ -1,6 +1,5 @@
 package com.zetcode.controller.buttoncontroller;
 
-import com.zetcode.model.Node;
 import com.zetcode.view.Board;
 
 import javax.swing.*;
@@ -33,12 +32,12 @@ public class PlayButtonController extends ButtonController {
             button.setText("Pause");
             board.setStatus(0);
             board.updateLineGraph();
-//	        try {
-//                board.printResult();
-//                board.readInput.readInput();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
+	        try {
+                board.printResult();
+                board.readInput.readInput();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         else {
             board.pauseGame();
