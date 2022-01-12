@@ -8,8 +8,8 @@ import com.zetcode.model.Agent;
 import java.awt.Color;
 import java.awt.Graphics;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+//import org.mockito.Mock;
+//import org.mockito.Mockito;
 
 public class AgentUnitTest {
 public Graphics g;
@@ -33,7 +33,7 @@ public void testAgent3(){
    assertEquals("khong the tao doi tuong room voi tham so am", null, a);
 }
 
-
+/*
 @Test
 public void testDrawAgent1(){
     Agent a = new Agent(100,100);
@@ -42,7 +42,7 @@ public void testDrawAgent1(){
     a.drawAgent(g, a.getX(), a.getY(), 20);
     Mockito.verify(g).setColor(expectedColor);
 }
-
+*/
 
 @Test
 public void testDrawAgent0(){

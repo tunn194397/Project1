@@ -4,6 +4,12 @@ package com.zetcode.view;
 import com.zetcode.controller.MouseController;
 import com.zetcode.model.*;
 
+import javax.print.DocFlavor.URL;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -55,6 +61,7 @@ public class Board extends JPanel implements ActionListener {
 
     public Facility collector = new Facility();
     public Map map = new Map();
+    public Sound sound = new Sound();
 
     public Vector<Facility> facilities = new Vector<>();
 
@@ -72,10 +79,11 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         constructData();
-
+        
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
         addMouseController(ma);
+        turnOnMusic(1);
     }
     public void addMouseController(MouseController ma ) {
         addMouseListener(ma);
@@ -143,84 +151,7 @@ public class Board extends JPanel implements ActionListener {
         //readInput.drawRoute(g);
     }
 
-//    private void move() {
-//        if (mainAGV.inLine()) {
-//            moveWhenCollision();
-//        }
-//        else {
-//            for (Facility facility : facilities) {
-//                if (mainAGV.checkCollision(facility)) {
-//                    moveWhenCollision();
-//                }
-//            }
-//            if (mainAGV.y < 0) {
-//                mainAGV.y += DOT_SIZE;
-//                upDirection = false;
-//                downDirection = false;
-//                leftDirection = mainAGV.x > 600;
-//                rightDirection = mainAGV.x <= 600;
-//                mainAGV.switchSide();
-//            }
-//            else if (mainAGV.y > 570){
-//                mainAGV.y -= DOT_SIZE;
-//                upDirection = false;
-//                downDirection = false;
-//                leftDirection = mainAGV.x > 600;
-//                rightDirection = mainAGV.x <= 600;
-//                mainAGV.switchSide();
-//            }
-//            else if (mainAGV.x < 10){
-//                mainAGV.x += DOT_SIZE;
-//                leftDirection = false;
-//                rightDirection = false;
-//                upDirection = mainAGV.y > 300;
-//                downDirection = mainAGV.y <= 300;
-//                mainAGV.switchSide();
-//            }
-//            else if (mainAGV.x > 1170) {
-//                mainAGV.x -= DOT_SIZE;
-//                leftDirection = false;
-//                rightDirection = false;
-//                upDirection = mainAGV.y > 300;
-//                downDirection = mainAGV.y <= 300;
-//                mainAGV.switchSide();
-//            }
-//            else {
-//                if (leftDirection) {mainAGV.x -= DOT_SIZE;}
-//                if (rightDirection) {mainAGV.x += DOT_SIZE;}
-//                if (upDirection) {mainAGV.y -= DOT_SIZE;}
-//                if (downDirection) {mainAGV.y += DOT_SIZE;}
-//            }
-//        }
-//    }
-//    public void moveWhenCollision(){
-////        if (leftDirection) {
-////            mainAGV.x += DOT_SIZE;
-////            leftDirection = false;
-////            upDirection = mainAGV.y > 300;
-////            downDirection = mainAGV.y <= 300;
-////            mainAGV.switchSide();
-////        } else if (rightDirection) {
-////            mainAGV.x -= DOT_SIZE;
-////            rightDirection = false;
-////            upDirection = mainAGV.y > 300;
-////            downDirection = mainAGV.y <= 300;
-////            mainAGV.switchSide();
-////        } else if (upDirection) {
-////            mainAGV.y += DOT_SIZE;
-////            upDirection = false;
-////            leftDirection = mainAGV.x > 600;
-////            rightDirection = mainAGV.x <= 600;
-////            mainAGV.switchSide();
-////        } else if (downDirection) {
-////            mainAGV.y -= DOT_SIZE;
-////            downDirection = false;
-////            leftDirection = mainAGV.x > 600;
-////            rightDirection = mainAGV.x <= 600;
-////            mainAGV.switchSide();
-////        }
-//        pauseGame();
-//    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         moveAGV();
@@ -427,12 +358,6 @@ public class Board extends JPanel implements ActionListener {
         for (Port port : portArray) {
             if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
         }
-//        for (Agent agent : agArray) {
-//            if (agent.checkBelongToFacilities(facilities) == 0) facilities.add(agent);
-//        }
-//        for (AGV agv : agvArray) {
-//            if (agv.checkBelongToFacilities(facilities) == 0) facilities.add(agv);
-//        }
         for (Facility facility: facilities) {
             System.out.println(facility.ID);
         }
@@ -516,14 +441,6 @@ public class Board extends JPanel implements ActionListener {
                 numOfDoors++;
             }
         }
-//            for(int i = 0 ; i < 12 ; i++){
-//                String x1 , y1 ;
-//                x1 = doorCordinateX[i];
-//                y1 = doorCordinateY[i];
-//                System.out.println(x1 +","+ y1);
-//                outputStreamWriter.write(doorCordinateX[i] + "," + doorCordinateY[i] +" ");
-//
-//        }
 
         for (int i = 0; i < 100; i++) {   // 100 ở đây là số đường đi
             Random rand1 = new Random();
@@ -574,6 +491,20 @@ public class Board extends JPanel implements ActionListener {
             e.printStackTrace();
         }
     }
+
+    public void turnOnMusic(int i){
+        sound.setFile(i);
+        sound.playSound();
+        sound.loopSound();
+    }
+    public void turnOffMusic(){
+        sound.stopSound();
+    }
+    public void turnOnMusic1(int i){
+        sound.setFile(i);
+        sound.playSound();
+    }
+
 }
 
 
