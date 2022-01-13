@@ -68,7 +68,7 @@ public class PlayView extends JPanel implements ActionListener {
         add(this.deleteButton);
 
         ImageIcon iconBack = new ImageIcon("src/images/page/backButton.png");
-        backButton.setBounds(100, 50, 80, 80);
+        backButton.setBounds(80, 50, 80, 80);
         backButton.addActionListener(this);
         backButton.setContentAreaFilled(false);
         backButton.setBorder((Border)null);
@@ -94,6 +94,7 @@ public class PlayView extends JPanel implements ActionListener {
         }
         if (e.getSource() == this.backButton) {
             this.Container.setShowMenu();
+            this.Container.isInGame = 1;
         }
 
     }
@@ -101,6 +102,6 @@ public class PlayView extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         ImageIcon icon = new ImageIcon("src/images/page/background.png");
-        g.drawImage(icon.getImage(), 0, 0, 1500,700, Color.black, null);
+        g.drawImage(icon.getImage(), 0, 0, 1300,700, Color.black, null);
     }
 }

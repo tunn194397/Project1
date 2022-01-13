@@ -15,6 +15,8 @@ import java.util.Random;
 import java.util.Vector;
 
 public class Board extends JPanel implements ActionListener {
+    // Container
+    public Container container;
     // Các biến toàn cục trong Board
     
     public final int B_WIDTH = 1200;
@@ -71,6 +73,18 @@ public class Board extends JPanel implements ActionListener {
     public Timer timer;
 
     public Board() {
+        setBackground(Color.white);
+        setFocusable(true);
+        setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setUpNode();
+        constructData();
+
+//        addKeyListener(new TAdapter());
+        ma = new MouseController(this);
+        addMouseController(ma);
+    }
+    public Board(Container container) {
+        this.container = container;
         setBackground(Color.white);
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
