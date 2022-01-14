@@ -55,6 +55,7 @@ public class Board extends JPanel implements ActionListener {
     public ArrayList<Lift> liftArray = new ArrayList<>();
     public ArrayList<Port> portArray = new ArrayList<>();
     public ArrayList<Person> personArray = new ArrayList<>();
+    public ArrayList<Agent> agentArray = new ArrayList<>();
     public Node endNode = new Node();
 
     public Facility collector = new Facility();
@@ -125,6 +126,7 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < B_WIDTH/30; i ++) {
             for (int j = 0; j < B_HEIGHT/30 ; j ++ ) {
                 nodeArray[i][j].draw(g);
+                nodeArray[i][j].isCover = false;
             }
         }
         for (int i = 0; i < B_HEIGHT; i ++) {
@@ -154,9 +156,12 @@ public class Board extends JPanel implements ActionListener {
         };
         doRound();
 
-        // Ve quy dao agent
-        g.setColor(Color.red);
-        readInput.drawRoute(g);
+        // draw agent...
+        for (int i = 0; i < agentArray.size(); i++) {
+            Agent a = agentArray.get(i);
+            readInput.paths.get(i).doMove(a);
+            a.draw(g);
+        }
     }
 
     private void move() {
@@ -355,7 +360,7 @@ public class Board extends JPanel implements ActionListener {
                     break;
                 }
             }
-            if(oke == false) break;
+            if(!oke) break;
         }
         return oke;
     }
@@ -436,9 +441,9 @@ public class Board extends JPanel implements ActionListener {
             for (Door door : room.doorArray) {
                 doorCordinateX[numOfDoors] = String.valueOf(door.getX() + 15);
                 if (numOfDoors % 4 == 0 || numOfDoors % 4 == 1) {
-                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() - 6);  // 2 cửa trên có tọa độ y - 6
+                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() - 22);  // 2 cửa trên có tọa độ y - 6
                 } else {
-                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() + 16); // 2 cửa dưới có tọa độ y + 6
+                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() + 12); // 2 cửa dưới có tọa độ y + 6
                 }
                 numOfDoors++;
             }
@@ -446,23 +451,23 @@ public class Board extends JPanel implements ActionListener {
 
         for (Port port : portArray) {
             if (port.getX() > 6) {
-                doorCordinateX[numOfDoors] = String.valueOf(port.getX() - 6);
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() - 22);
                 doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 30);
                 numOfDoors++;
             }
             if (port.getY() > 6) {
                 doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 45);
-                doorCordinateY[numOfDoors] = String.valueOf(port.getY() - 6);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() - 22);
                 numOfDoors++;
             }
             if (port.getX() < 1104) {
-                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 96);
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 92);
                 doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 30);
                 numOfDoors++;
             }
             if (port.getY() < 534) {
                 doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 45);
-                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 66);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 62);
                 numOfDoors++;
             }
         }
@@ -482,9 +487,9 @@ public class Board extends JPanel implements ActionListener {
         outputStreamWriter.write("\n");
 
         for (Facility facility : facilities) {
-            String xLeft = String.valueOf(facility.getX());
-            String xRight = String.valueOf(facility.getX() + facility.getSize_x());
-            String yTop = String.valueOf(facility.getY());
+            String xLeft = String.valueOf(facility.getX() - 10);
+            String xRight = String.valueOf(facility.getX() + facility.getSize_x() + 10);
+            String yTop = String.valueOf(facility.getY() - 20);
             String yBot = String.valueOf(facility.getY() + facility.getSize_y());
             String botLeft = xLeft + "," + yBot;
             String botRight = xRight + "," + yBot;

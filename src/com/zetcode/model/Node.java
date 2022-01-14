@@ -16,6 +16,7 @@ public class Node extends Rectangle implements Comparable<Node> {
     public boolean isHead;
     public boolean isLine;
     public boolean isEndNode = false;
+    public boolean isCover = false;
 
     public boolean isBlocked = false; // Là giá trị mà node đó có AGV đi qua hay không true: có, false: không có. những node nào không phải là đường của AGV (direction = 0) thì hasNode =  false;
     public int agvPriority = 0;

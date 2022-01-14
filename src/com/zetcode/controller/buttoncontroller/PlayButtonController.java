@@ -1,5 +1,7 @@
 package com.zetcode.controller.buttoncontroller;
 
+import com.zetcode.model.Agent;
+import com.zetcode.model.Path;
 import com.zetcode.view.Board;
 
 import javax.swing.*;
@@ -33,8 +35,13 @@ public class PlayButtonController extends ButtonController {
             board.setStatus(0);
             board.updateLineGraph();
 	        try {
+                board.agentArray.clear();
                 board.printResult();
                 board.readInput.readInput();
+                for (Path path : board.readInput.paths) {
+                    Agent a = new Agent(path.route[0].getX(), path.route[0].getY());
+                    board.agentArray.add(a);
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

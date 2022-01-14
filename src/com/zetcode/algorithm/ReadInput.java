@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ReadInput {
-    List<Path> paths = new ArrayList<>();
+    public List<Path> paths = new ArrayList<>();
 
     public void readInput() throws FileNotFoundException {
         paths.clear();
