@@ -72,7 +72,6 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         setUpNode();
-        setUpNode();
         constructData();
 
 //        addKeyListener(new TAdapter());
@@ -90,6 +89,7 @@ public class Board extends JPanel implements ActionListener {
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
         addMouseController(ma);
+        initGame();
     }
     public void addMouseController(MouseController ma ) {
         addMouseListener(ma);
@@ -112,6 +112,8 @@ public class Board extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        //update label
+        container.gameView.showLabel();
         //Ve phan AGV
         ma.updateController();
         doDrawing(g);
@@ -150,7 +152,7 @@ public class Board extends JPanel implements ActionListener {
             g.fillRect(collector.x, collector.y,collector.size_x,collector.size_y);
         };
         doRound();
-
+//        repaint();
         // Ve quy dao agent
         g.setColor(Color.red);
         readInput.drawSine(g);
@@ -168,13 +170,23 @@ public class Board extends JPanel implements ActionListener {
         move();
         repaint();
     }
-    private void doRound() {
-        int ex = (collector.x % 30 <= 15)? collector.x - ( collector.x % 30): collector.x + 30 - collector.x % 30;
-        int ey = (collector.y % 30 <= 15)? collector.y - ( collector.y % 30): collector.y + 30 - collector.y % 30;
-        for (Facility facility: facilities) {
-            if (facility.ID.equals(collector.ID)) facility.update(ex,ey);
+    public void doRound() {
+        if (!collector.name.equals("AGV")) {
+            int ex = (collector.x % 30 <= 15)? collector.x - ( collector.x % 30): collector.x + 30 - collector.x % 30;
+            int ey = (collector.y % 30 <= 15)? collector.y - ( collector.y % 30): collector.y + 30 - collector.y % 30;
+            for (Facility facility: facilities) {
+                if (facility.ID.equals(collector.ID)) facility.update(ex,ey);
+            }
+            collector.update(ex,ey);
         }
-        collector.update(ex,ey);
+        else {
+            int ex = (collector.x % 10 <= 5)? collector.x - ( collector.x % 10): collector.x + 10 - collector.x % 10;
+            int ey = (collector.y % 5 <= 3)? collector.y - ( collector.y % 5): collector.y + 5 - collector.y % 5;
+            for (AGV agv: agvArray) {
+                if (agv.ID.equals(collector.ID)) agv.update(ex,ey);
+            }
+            collector.update(ex,ey);
+        }
         repaint();
     }
 
@@ -516,8 +528,14 @@ public class Board extends JPanel implements ActionListener {
         agvArray = new ArrayList<>();
         constructData();
         for (Node node: lineArray) {
+            System.out.println(node.x/30 + "- " + node.y/30 + ": " + node.direction.up + " " + node.direction.down + " " + node.direction.left + " " + node.direction.right);
             node.agvPriority = 0;
         }
+        for (AGV agv: agvArray) {
+            System.out.println(agv.ID);
+        }
+        pos = 1;
+        isNoticed = false;
     }
 
     public void setPos() {
@@ -534,10 +552,57 @@ public class Board extends JPanel implements ActionListener {
                     System.out.println("Main Free");
                     nodeArray[agv.baseNode.x/30][agv.baseNode.y/30].freeNode();
                     endNode.freeNode();
-                    if (!isNoticed) JOptionPane.showMessageDialog(this,"AGV cua ban da ve dich thu " + pos);
+                    if (!isNoticed) Congra(pos);
                     isNoticed = true;
                 }
             }
         }
+    }
+    public void Congra(int i) {
+        JFrame congraFrame = new JFrame();
+        congraFrame.setBackground(Color.white);
+        congraFrame.setSize(300,300);
+        congraFrame.setLocationRelativeTo(null);
+        congraFrame.setVisible(true);
+
+        JPanel congraPanel = new JPanel();
+        congraPanel.setLayout(null);
+        JLabel congraLabel = new JLabel("Congratulation!");
+        congraLabel.setFont(new Font("Robo",Font.BOLD,24));
+        if (i > 3) congraLabel.setVisible(false);
+        congraLabel.setBounds(50,10,200,50);
+
+        JLabel notifyLabel = new JLabel("Rank of you:    " + i);
+        notifyLabel.setFont(new Font("Robo", Font.BOLD, 16));
+        notifyLabel.setBounds(80,180,140,30);
+
+        JButton okButton = new JButton();
+        okButton.setText((i > 3)?"Try again":"Yeahh!");
+        okButton.setBounds(110,220,80,30);
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                congraFrame.dispose();
+            }
+        });
+
+        ImageIcon congraIcon = new ImageIcon();
+        if (i == 1) congraIcon = new ImageIcon("src/images/page/top1.png");
+        else if (i == 2) congraIcon = new ImageIcon("src/images/page/top2.png");
+        else if (i == 3) congraIcon = new ImageIcon("src/images/page/top3.png");
+        else congraIcon = new ImageIcon("src/images/page/outTop.png");
+        JButton imageButton = new JButton(new ImageIcon(congraIcon.getImage().getScaledInstance(120,120,1)));
+        imageButton.setBounds(90,60,120,120);
+        imageButton.setBorderPainted(false);
+
+        congraPanel.add(congraLabel);
+        congraPanel.add(notifyLabel);
+        congraPanel.add(imageButton);
+        congraPanel.add(okButton);
+        congraPanel.setBackground(Color.white);
+
+        congraFrame.add(congraPanel);
+
+
     }
 }

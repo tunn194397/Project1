@@ -18,7 +18,7 @@ public class Container extends JPanel {
     private OptionsView optionsView;
     private ViewView viewView;
     private HomeView homeView;
-    private GameView gameView;
+    public GameView gameView;
     private SettingView settingView;
 
     private AboutTeamView aboutTeamView;

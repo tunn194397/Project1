@@ -26,7 +26,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     public MouseController(){
         super();
     }
-    public MouseController(Board board){
+    public MouseController(Board board) {
         super();
         this.board = board;
         updateController();
@@ -56,7 +56,23 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
                     board.repaint();
                     break;
                 }
-                else {};
+            }
+            for (AGV agv : board.agvArray) {
+                if (agv.shape.isHit(click_x, click_y)) {
+                    System.out.println("Click Mouse in" + agv.ID);
+                    if (collector.ID.equals(agv.ID)) {
+                        System.out.println(collector.ID + " " + agv.ID);
+                        collector = new Facility();
+                        collector.setMovable(false);
+                    } else {
+                        System.out.println(collector.ID + " " + agv.ID);
+                        collector = agv;
+                        collector.setMovable(true);
+                    }
+                    updateBoard();
+                    board.repaint();
+                    break;
+                }
             }
         }
         else if (board.status == 1) {
@@ -199,21 +215,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     //Nhung ham ho tro cho di chuyen cac Facility trong Board
     public void doMove(MouseEvent e, int x, int y) {
         if (collector.shape.isHit(x, y)) {
-            boolean ok = true;
-            Facility tmp = new Facility();
-            if (board.collector.name.equals("Room")) {
-                tmp = new Room(e.getX() - 60, e.getY()-45);
-            }
-            if (board.collector.name.equals("Port")) {
-                tmp = new Port(e.getX() - 60, e.getY()-45);
-            }
-            if (board.collector.name.equals("Lift")) {
-                tmp = new Lift(e.getX() - 60, e.getY()-45);
-            }
-            for (Node node: board.lineArray) {
-                if (node.isBelongTo(tmp)) ok = false;
-            }
-            if (ok) collector.update(e.getX() - 60,e.getY() - 45);
+            collector.update(e.getX() - collector.size_x/2,e.getY() - collector.size_y/2);
             updateBoard();
         }
     }
