@@ -62,7 +62,7 @@ public class Board extends JPanel implements ActionListener {
     public Facility collector = new Facility();
     public Map map = new Map();
     public Sound sound = new Sound();
-
+    public Boolean soundIsPlay;
     public Vector<Facility> facilities = new Vector<>();
 
     //public ReadInput readInput = new ReadInput();
@@ -79,10 +79,9 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         constructData();
-        
-//        addKeyListener(new TAdapter());
         ma = new MouseController(this);
         addMouseController(ma);
+        soundIsPlay = true;
         turnOnMusic(1);
     }
     public void addMouseController(MouseController ma ) {
@@ -207,22 +206,35 @@ public class Board extends JPanel implements ActionListener {
                 newMap.add(agJS);
             }
         }
-        if(p < 2)JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
-        if(pAGV < 4)JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
-        if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1))JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);
-        if((p>=2)&&(pAGV>=4)&&(p%2==0 && pAGV%2==0)) newMap.SaveMap();
+        if(p < 2){
+            this.turnOnMusic1(2);
+            JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        }
+        if(pAGV < 4){
+            this.turnOnMusic1(2);
+            JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        }
+        if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1)){
+            this.turnOnMusic1(2);
+            JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);    
+        }
+        if((p>=2)&&(pAGV>=4)&&(p%2==0 && pAGV%2==0)) {
+            newMap.SaveMap();
+            this.turnOnMusic1(7);
+        }
     }
 
     public void loadGame(String nameFile){
-      facilities = map.LoadFacilities(nameFile);
-      map.LoadNode(nameFile);
-      this.nodeArray = map.LoadNode(nameFile);
-      for (Node[] nodes: nodeArray) {
-        for (Node node: nodes){
-            if (node.isLine) System.out.println(node.ID);
+        facilities = map.LoadFacilities(nameFile);
+        map.LoadNode(nameFile);
+        this.nodeArray = map.LoadNode(nameFile);
+        this.turnOnMusic1(9);
+        for (Node[] nodes: nodeArray) {
+            for (Node node: nodes){
+                if (node.isLine) System.out.println(node.ID);
+            }
         }
-    }
-      //agArray = map.LoadAgent(nameFile);
+      
     }
 
     public void moveAGV() {
@@ -232,7 +244,7 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i < B_WIDTH / 30; i++) {
             for (int j = 0; j < B_HEIGHT / 30; j++) {
                 nodeArray[i][j] = new Node(i * 30, j * 30);
-                System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
+                //System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
             }
         }
         portArray.add(new Port(1, 1));
@@ -338,7 +350,9 @@ public class Board extends JPanel implements ActionListener {
                     oke = false;
                     a = j+1;
                     b = i+1;
+                    this.turnOnMusic1(2);
                     JOptionPane.showMessageDialog(this, "Node o hang "+a+" cot "+b+" khong hop le","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+                    
                     break;
                 }
             }
@@ -348,7 +362,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void updateFacilities(){
-//        facilities.addAll(Arrays.asList(room.doorArray));
+
         for (Room room : roomArray) {
             if (room.checkBelongToFacilities(facilities) == 0) facilities.add(room);
         }
@@ -357,9 +371,6 @@ public class Board extends JPanel implements ActionListener {
         }
         for (Port port : portArray) {
             if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
-        }
-        for (Facility facility: facilities) {
-            System.out.println(facility.ID);
         }
     }
 
@@ -401,6 +412,7 @@ public class Board extends JPanel implements ActionListener {
         doorCordinateX = new String[100];
         doorCordinateY = new String[100];
         File file = new File("src/com/zetcode/algorithm/testCase.inp");
+        if(file != null)System.out.println("dit con me no");
         OutputStream outputStream = new FileOutputStream(file);
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
         String numberOfFacilities = String.valueOf(facilities.size());
@@ -493,16 +505,16 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void turnOnMusic(int i){
-        sound.setFile(i);
-        sound.playSound();
-        sound.loopSound();
+        this.sound.setFile(i);
+        this.sound.playSound();
+        this.sound.loopSound();
     }
     public void turnOffMusic(){
-        sound.stopSound();
+        this.sound.stopSound();
     }
     public void turnOnMusic1(int i){
-        sound.setFile(i);
-        sound.playSound();
+        this.sound.setFile(i);
+        this.sound.playSound();
     }
 
 }

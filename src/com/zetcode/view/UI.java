@@ -12,6 +12,7 @@ public class UI {
     public JPanel controlPanel;
 
     //Button
+    ImageIcon music = new ImageIcon("upArrow.png");
     public JButton addButton = new JButton("Add Room");
     public JButton addPortButton = new JButton("Add Port");
     public JButton addLiftButton = new JButton("Add Lift");
@@ -26,6 +27,7 @@ public class UI {
     public JButton loadButton = new JButton("Load Map");
 
     public JButton optionsButton = new JButton("Options");
+    public JButton musicButton = new JButton(music);
 
 
 
@@ -46,6 +48,7 @@ public class UI {
     ButtonController deleteBC = new DeleteButtonController(mainBoard,deleteButton);
     ButtonController rBC = new ResizeButtonController(mainBoard,deleteButton, playButton);
     OptionsController btn_options = new OptionsController(mainBoard, optionsButton);
+    PlayMusicController mOFF = new PlayMusicController(mainBoard, musicButton);
 
 
 
@@ -74,8 +77,8 @@ public class UI {
         deleteButton.addActionListener(deleteBC);
         resizeButton.addActionListener(rBC);
         optionsButton.addActionListener(btn_options);
-
-
+        musicButton.addActionListener(mOFF);
+        
     }
 
     public void showLayout() {
@@ -99,6 +102,7 @@ public class UI {
         panel.add(loadButton);
 
         panel.add(optionsButton);
+        panel.add(musicButton);
         controlPanel.add(panel);
     }
 
