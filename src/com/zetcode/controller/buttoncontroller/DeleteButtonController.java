@@ -13,12 +13,29 @@ public class DeleteButtonController extends ButtonController{
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (board.collector.ID != "Null"){
-            board.facilities.removeIf(facility -> facility.equals(board.collector));
+        if (!board.collector.ID.equals("Null")){
+            System.out.println("Delete");
+            board.facilities.removeIf(f -> f.ID.equals(board.collector.ID));
+            for (Facility f : board.facilities) {
+                System.out.println(f.ID);
+            }
+            if (board.collector.name.equals("Room")) {
+                board.roomArray.removeIf(f->f.ID.equals(board.collector.ID));
+            }
+            if (board.collector.name.equals("Port")) {
+                board.portArray.removeIf(f->f.ID.equals(board.collector.ID));
+            }
+            if (board.collector.name.equals("Lift")) {
+                board.liftArray.removeIf(f->f.ID.equals(board.collector.ID));
+            }
+            if (board.collector.name.equals("AGV")) {
+                board.agvArray.removeIf(f->f.ID.equals(board.collector.ID));
+            }
             board.collector = new Facility();
             board.collector.setMovable(false);
         }
         else {
+            System.out.println("No Delete");
             JOptionPane.showMessageDialog(board,"Collect one facility to delete!");
         }
     }

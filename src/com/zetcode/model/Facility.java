@@ -138,7 +138,6 @@ public class Facility extends JPanel{
     public void update(int i, int j) {
         this.x = i;
         this.y = j;
-        this.ID = this.name + i + " " + j;
     }
     public void updateSize(int i) {
         if (this.size_x*this.size_y/900 > maxsize && i > 0) {
