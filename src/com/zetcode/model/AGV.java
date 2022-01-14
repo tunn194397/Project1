@@ -15,6 +15,7 @@ public class AGV extends Facility {
     public boolean canControl = false;
     public int priority = 50;
     public int nextNodePriority = 0;
+    public boolean isEnd = false;
 
     public AGV() {
         size_x = 30;
@@ -45,9 +46,41 @@ public class AGV extends Facility {
         findNextNode();
     }
 
+    public void setControl (boolean control) {
+        canControl = control;
+    }
+    public void setupMove() {
+        if (direction.up == 1 || direction.down == 1) {
+            this.size_x = 15;
+            this.size_y = 30;
+        }
+        else {
+            if (direction.left == 1 || direction.right == 1) {
+                this.size_x = 30;
+                this.size_y = 15;
+            }
+        }
+    }
+
+    public boolean isAllIn(Node node) {
+        int i1 = this.x/30;
+        int j1 = this.y/30;
+        int i2 = (this.x + this.size_x - 1)/30;
+        int j2 = (this.y + this.size_y - 1)/30;
+        return i1 == i2 && j1 == j2;
+    }
+
     public boolean inLine() {
         Node tmpNode = nodeArray[this.x/30][this.y/30];
         return tmpNode.isLine;
+    }
+
+    public void findGraph(Node end) {
+        graph.ShortestP(baseNode);
+        System.out.print("Khoảng cách tối thiểu từ " + this.ID + " ");
+        System.out.print(" toi [" +end.coordinate_x+ "; " + end.coordinate_y+ "] la " + end.getDist() + "\n");
+        System.out.println("Quãng đường là từ:");
+        graph.getShortestP(end);
     }
 
     public void findNextNode() {
@@ -75,7 +108,49 @@ public class AGV extends Facility {
         } else direction = new Direction();
     }
 
-    public void move() {
+    public void moveInLine() {
+        if  ( (nextNode.agvPriority == 0) || nextNode.agvPriority == this.priority) {
+            if (direction.up == 1 && y >= 3) update(this.x, this.y - 3);
+            else if (direction.down == 1 && y <= 597) update(this.x, this.y + 3);
+            else if (direction.left == 1 && x >= 3) update(this.x - 3, this.y);
+            else if (direction.right == 1 && x <= 1197) update(this.x + 3, this.y);
+            nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].setU(0);
+        }
+        else {
+            if (nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].agvPriority != nextNodePriority) {
+                nodeArray[baseNode.coordinate_x][baseNode.coordinate_y].updateDelayTime();
+            }
+            nextNodePriority = nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].agvPriority;
+        }
+    }
+    public void moveWithControl() {
+        setupMove();
+        if (isAllIn(baseNode)) {
+            nodeArray[baseNode.coordinate_x][baseNode.coordinate_y].freeNode(); // danh dau node da di qua la khong con agv nay nua
+            updateBaseNode(); // update baseNode la node dang giu tron AGV truoc
+
+            if (direction.up == 1 && y >= 30) nextNode = nodeArray[baseNode.x/30][baseNode.y/30 - 1] ;
+                else if (direction.down == 1 && y <= 570) nextNode = nodeArray[baseNode.x/30][baseNode.y/30 + 1];
+                    else if (direction.left == 1 && x >= 30) nextNode = nodeArray[baseNode.x/30 - 1][baseNode.y/30];
+                        else if (direction.right == 1 && x <= 1170) nextNode = nodeArray[baseNode.x/30+1][baseNode.y/30];
+
+            nodeArray[baseNode.coordinate_x][baseNode.coordinate_y].setAgvPriority(this);
+            nodeArray[baseNode.coordinate_x][baseNode.coordinate_y].isBlocked = true;
+            if (nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].agvPriority == 0)
+                nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].setAgvPriority(this);
+            else if (nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].agvPriority < this.priority && !nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].isBlocked) {
+                nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].setAgvPriority(this);
+            }
+        }
+        else {
+            nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].isBlocked = true;
+        };
+
+        if (nextNode.isLine && nextNode.y/30 >= 0 && nextNode.y/30 <= 19 && nextNode.x/30 >= 0 && nextNode.y/30 <= 39) {
+            moveInLine();
+        }
+    }
+    public void moveWithNoControl () {
         if (isAllIn(baseNode)) {
             nodeArray[baseNode.coordinate_x][baseNode.coordinate_y].freeNode(); // danh dau node da di qua la khong con agv nay nua
             updateBaseNode();   // update basenode la node dang giu tron AGV truoc
@@ -93,66 +168,40 @@ public class AGV extends Facility {
         else {
             nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].isBlocked = true;
         }
-
         if (nextNode.isLine) {
-            if  ( (nextNode.agvPriority == 0) || nextNode.agvPriority == this.priority) {
-                if (direction.up == 1) update(this.x, this.y - 3);
-                if (direction.down == 1) update(this.x, this.y + 3);
-                if (direction.left == 1) update(this.x - 3, this.y);
-                if (direction.right == 1) update(this.x + 3, this.y);
-                nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].setU(0);
+            moveInLine();
+        }
+    }
+    public void move() {
+        if (!isEnd) {
+            if (!canControl) {
+                moveWithNoControl();
             }
             else {
-                if (nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].agvPriority != nextNodePriority) {
-                    nodeArray[baseNode.coordinate_x][baseNode.coordinate_y].updateDelayTime();
-                }
-                nextNodePriority = nodeArray[nextNode.coordinate_x][nextNode.coordinate_y].agvPriority;
+                moveWithControl();
             }
         }
-    }
-    public void setControl (boolean control) {
-        canControl = control;
-    }
-    public void setupMove() {
-        if (direction.up == 1 || direction.down == 1) {
-            this.size_x = 15;
-            this.size_y = 30;
-        }
-        else {
-            if (direction.left == 1 || direction.right == 1) {
-                this.size_x = 30;
-                this.size_y = 15;
-            }
-        }
-    }
-
-    public boolean isAllIn(Node node) {
-        int i1 = this.x/30;
-        int j1 = this.y/30;
-        int i2 = (this.x + this.size_x - 1)/30;
-        int j2 = (this.y + this.size_y - 1)/30;
-        return i1 == i2 && j1 == j2;
     }
 
     public void draw(Graphics g) {
         super.draw(g);
         Graphics2D g2d = (Graphics2D) g.create();
-        if (direction.up == 1 || direction.down == 1) {
-            agvImage = new ImageIcon("src/images/facilities/agv2.jpg");
+        if (canControl) {
+            if (direction.up == 1 || direction.down == 1) {
+                agvImage = new ImageIcon("src/images/facilities/agv2.jpg");
+            }
+            else {
+                if (direction.left == 1 || direction.right ==1) agvImage = new ImageIcon("src/images/facilities/agv1.png");
+            }
+            g2d.drawImage(agvImage.getImage(),this.x, this.y, this.size_x, this.size_y, Color.white,null);
         }
         else {
-            if (direction.left == 1 || direction.right ==1) agvImage = new ImageIcon("src/images/facilities/agv1.png");
+            g2d.setColor(Color.orange);
+            g2d.fillRect(this.x, this.y,this.size_x, this.size_y);
+            g2d.setColor(Color.black);
+            g2d.drawRect(this.x, this.y, this.size_x, this.size_y );
         }
-        g2d.drawImage(agvImage.getImage(),this.x, this.y, this.size_x, this.size_y, Color.white,null);
         g2d.dispose();
-    }
-
-    public void findGraph(Node end) {
-        graph.ShortestP(baseNode);
-        System.out.print("Khoảng cách tối thiểu từ " + this.ID + " ");
-        System.out.print(" toi [" +end.coordinate_x+ "; " + end.coordinate_y+ "] la " + end.getDist() + "\n");
-        System.out.println("Quãng đường là từ:");
-        graph.getShortestP(end);
     }
 }
 

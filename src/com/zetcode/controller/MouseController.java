@@ -1,11 +1,9 @@
 package com.zetcode.controller;
 
-import com.zetcode.model.Facility;
-import com.zetcode.model.Node;
+import com.zetcode.model.*;
 import com.zetcode.view.Board;
 
 import javax.swing.*;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -45,10 +43,12 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             for (Facility facility : facilities) {
                 if (facility.shape.isHit(click_x, click_y)) {
                     System.out.println("Click Mouse in" + facility.ID);
-                    if (collector == facility) {
+                    if (collector.ID.equals(facility.ID)) {
+                        System.out.println(collector.ID + " " + facility.ID);
                         collector = new Facility();
                         collector.setMovable(false);
                     } else {
+                        System.out.println(collector.ID + " " + facility.ID);
                         collector = facility;
                         collector.setMovable(true);
                     }
@@ -198,23 +198,24 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
 
     //Nhung ham ho tro cho di chuyen cac Facility trong Board
     public void doMove(MouseEvent e, int x, int y) {
-        int dx = e.getX() - x;
-        int dy = e.getY() - y;
-
         if (collector.shape.isHit(x, y)) {
-            collector.update(e.getX() - 60,e.getY() - 45);
-            System.out.println(collector.x+ " " + collector.y);
+            boolean ok = true;
+            Facility tmp = new Facility();
+            if (board.collector.name.equals("Room")) {
+                tmp = new Room(e.getX() - 60, e.getY()-45);
+            }
+            if (board.collector.name.equals("Port")) {
+                tmp = new Port(e.getX() - 60, e.getY()-45);
+            }
+            if (board.collector.name.equals("Lift")) {
+                tmp = new Lift(e.getX() - 60, e.getY()-45);
+            }
+            for (Node node: board.lineArray) {
+                if (node.isBelongTo(tmp)) ok = false;
+            }
+            if (ok) collector.update(e.getX() - 60,e.getY() - 45);
             updateBoard();
-//            board.repaint();
         }
-        x += dx;
-        y += dy;
-    }
-    public void doDrawLine(MouseEvent e, int x, int y)  {
-        int dx = e.getX() - x;
-        int dy = e.getY() - y;
-
-        nodeArray[e.getX()/30][e.getY()/30].updateDirection("true");
     }
 
     // Ham ho tro size update

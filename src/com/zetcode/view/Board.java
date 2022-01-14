@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
@@ -24,6 +23,8 @@ public class Board extends JPanel implements ActionListener {
     private final int DOT_SIZE = 10;
     private final int RAND_POS = 29;
     private final int DELAY = 100;
+    public int pos = 1;
+    public boolean isNoticed = false;
 
     //Các biến chứa các giá trị Validate
     public float validMaxSizeOfRoom = (float) 0.7;// Đây là giá trị vadidate cho kích cỡ lớn nhất của các phòng có thể có trong map
@@ -37,12 +38,6 @@ public class Board extends JPanel implements ActionListener {
 
     //Controller của chuột, cái này không đẩy được sang class UI vì bị thay đổi liên tục trong repaint()
     MouseController ma;
-
-    //Các hướng của mainAGV
-    public boolean leftDirection = false;
-    public boolean rightDirection = true;
-    public boolean upDirection = false;
-    public boolean downDirection = false;
 
 
     // Các Facilities và Node trong Board
@@ -76,6 +71,7 @@ public class Board extends JPanel implements ActionListener {
         setBackground(Color.white);
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setUpNode();
         setUpNode();
         constructData();
 
@@ -161,6 +157,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void move() {
+        setPos();
         for (AGV agv : agvArray) {
             agv.move();
         }
@@ -234,12 +231,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void constructData() {
-        for (int i = 0; i < B_WIDTH / 30; i++) {
-            for (int j = 0; j < B_HEIGHT / 30; j++) {
-                nodeArray[i][j] = new Node(i * 30, j * 30);
-                System.out.println(nodeArray[i][j].coordinate_x + " " + nodeArray[i][j].coordinate_y);
-            }
-        }
         portArray.add(new Port(1, 1));
         portArray.add(new Port(1110, 1));
         portArray.add(new Port(1, 540));
@@ -252,6 +243,7 @@ public class Board extends JPanel implements ActionListener {
         updateFacilities();
 
         mainAGV = new AGV(120,120,nodeArray);
+        mainAGV.setControl(true);
         AGV agv1 = new AGV(210,60, nodeArray);
         AGV agv2 = new AGV(210,15, nodeArray);
         AGV agv3 = new AGV(420,450, nodeArray);
@@ -356,7 +348,7 @@ public class Board extends JPanel implements ActionListener {
                     break;
                 }
             }
-            if(oke == false) break;
+            if(!oke) break;
         }
         return oke;
     }
@@ -525,6 +517,27 @@ public class Board extends JPanel implements ActionListener {
         constructData();
         for (Node node: lineArray) {
             node.agvPriority = 0;
+        }
+    }
+
+    public void setPos() {
+        for (AGV agv: agvArray) {
+            if (agv.x == endNode.x && agv.y == endNode.y && !agv.isEnd) {
+                agv.isEnd = true;
+                if (!agv.ID.equals(mainAGV.ID)) {
+                    System.out.println("Free");
+                    nodeArray[agv.baseNode.x/30][agv.baseNode.y/30].freeNode();
+                    endNode.freeNode();
+                    pos ++;
+                }
+                else {
+                    System.out.println("Main Free");
+                    nodeArray[agv.baseNode.x/30][agv.baseNode.y/30].freeNode();
+                    endNode.freeNode();
+                    if (!isNoticed) JOptionPane.showMessageDialog(this,"AGV cua ban da ve dich thu " + pos);
+                    isNoticed = true;
+                }
+            }
         }
     }
 }
