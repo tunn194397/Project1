@@ -1,15 +1,14 @@
 package com.zetcode.test.modeltest;
 
-import com.zetcode.configuration.Config;
 import com.zetcode.model.Agent;
 import com.zetcode.model.Door;
+import com.zetcode.model.Room;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zetcode.model.Room;
-
 public class RoomUnitTest {
-    Room room = new Room(150, 360);
+    Room room = new Room(150, 360,5);
 
     @Test
     void testSetDoorReturnNull() {
@@ -43,7 +42,7 @@ public class RoomUnitTest {
 
     @Test
     void testAgentNum() {
-        assertNotNull(room.agentNum);
+        assertNotNull(room.agentArray.size());
     }
 
     @Test

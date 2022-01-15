@@ -39,7 +39,7 @@ public class Validate {
         agentInFloor = 20;
         agentOutRoom = 20;
         numberAgentInRoom = 5;
-        numberAgentInFloor = 50;
+        numberAgentInFloor = 10;
         velocityOfAgent = 1;
 
         volumeOfAudio = 40;

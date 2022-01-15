@@ -19,14 +19,15 @@ public class AddRoomController extends ButtonController {
     public void actionPerformed(ActionEvent e) {
         int randomX = 5;
         int randomY = 3;
-        while (checkNewLocated(new Room(randomX*30, randomY*30))) {
+        int randomAgent = (new Random()).nextInt(board.container.validate.numberAgentInRoom) + 1;
+        while (checkNewLocated(new Room(randomX*30, randomY*30, randomAgent))) {
             randomX = (new Random()).nextInt(33);
             randomY = (new Random()).nextInt(15);
             flag++;
             if (flag >= 200) break;
         }
         if (flag < 200 ){
-            Room room = new Room(randomX*30,randomY*30);
+            Room room = new Room(randomX*30,randomY*30, randomAgent);
             if (board.roomArray.size() < board.MAX_ROOM_QUANTITY) {
                 flag =0;
                 board.roomArray.add(room);

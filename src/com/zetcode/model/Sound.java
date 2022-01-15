@@ -1,14 +1,9 @@
 package com.zetcode.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import java.io.File;
 
 public class Sound {
     public Clip clip ;
@@ -31,12 +26,9 @@ public class Sound {
     public void setFile(int i){
         try {
             File file = new File(nameOfFile[i]);
-            System.out.println("1: phan tu thu "+i);
             AudioInputStream ais = AudioSystem.getAudioInputStream(file);
             this.clip = AudioSystem.getClip();
-            System.out.println("phan tu 2 thu "+i);
             this.clip.open(ais);
-            System.out.println("phan tu 3 thu "+i);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,7 +36,6 @@ public class Sound {
 
     public void playSound(){
         this.clip.start();
-        System.out.println("turn on music ");
     }
 
     public void loopSound(){
@@ -53,6 +44,5 @@ public class Sound {
 
     public void stopSound(){
         this.clip.stop();
-        System.out.println("stop music");
     }
 }

@@ -1,9 +1,8 @@
 package com.zetcode.controller.buttoncontroller;
 
-import javax.swing.*;
-
-import com.zetcode.model.Facility;
 import com.zetcode.view.Board;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class PlayMusicController extends ButtonController {
@@ -20,13 +19,15 @@ public class PlayMusicController extends ButtonController {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (board.soundIsPlay){
-            button.setIcon(new ImageIcon("src/images/page/musicOff.png"));
+            ImageIcon icon = new ImageIcon("src/images/page/musicOff.png");
+            button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(40,40,1)));
             board.turnOffMusic();
             board.soundIsPlay = false;
         }
         else {
             board.turnOnMusic(1);
-            button.setIcon(new ImageIcon("src/images/page/musicOn.png"));
+            ImageIcon icon = new ImageIcon("src/images/page/musicOn.png");
+            button.setIcon(new ImageIcon(icon.getImage().getScaledInstance(40,40,1)));
             board.soundIsPlay = true;
         }
     }

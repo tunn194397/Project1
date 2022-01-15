@@ -1,17 +1,17 @@
 package com.zetcode.test.viewtest;
 
-import com.zetcode.model.Facility;
 import com.zetcode.model.Room;
 import com.zetcode.view.Board;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BoardUnitTest {
     Board testBoard = new Board();
 
     @Test
     void testCheckRoomOverTotalSizeWithNegativeInput() {
-        Room room = new Room(10, 10);
+        Room room = new Room(10, 10, 5);
         testBoard.roomArray.add(room);
         room.size_x = -100;
         room.size_y = -100;

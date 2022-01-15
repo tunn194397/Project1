@@ -115,24 +115,11 @@ public class GameView extends JPanel implements ActionListener {
         buttonPanel.setLayout(null);
         buttonPanel.setBackground(Color.lightGray);
 
-        addButton.setBounds(10,20,70,40);
-        deleteButton.setBounds(10,80,70,40);
-        drawButton.setBounds(10,140,70,40);
-        playButton.setBounds(10,200,70,40);
-        saveButton.setBounds(10,260,70,40);
-        loadButton.setBounds(10,320,70,40);
-        playAgainButton.setBounds(10,380,70,40);
-        chooseEndNodeButton.setBounds(10,440,70,40);
-        optionsButton.setBounds(10,500,70,40);
-
-        backButton.setBounds(10, 560, 70, 40);
-        backButton.addActionListener(this);
-        musicButton.setBounds(20, 610, 50,50);
-
+        musicButton.setBounds(20, 310, 40,40);
         musicButton.setContentAreaFilled(false);
         musicButton.setBorder((Border)null);
         ImageIcon icon = new ImageIcon("src/images/page/musicOn.png");
-        musicButton.setIcon(icon);
+        musicButton.setIcon(new ImageIcon(icon.getImage().getScaledInstance(40,40,1)));
 
         buttonPanel.add(backButton);
         ImageIcon backIcon = new ImageIcon("src/images/boardButton/back.png");

@@ -50,7 +50,7 @@ public class Board extends JPanel implements ActionListener {
     public ArrayList<Gurney> gurneyArray = new ArrayList<>();
     public ArrayList<Lift> liftArray = new ArrayList<>();
     public ArrayList<Port> portArray = new ArrayList<>();
-    public ArrayList<Person> personArray = new ArrayList<>();
+    public ArrayList<Agent> agentArray = new ArrayList<>();
     public Node endNode = new Node();
 
     public Facility collector = new Facility();
@@ -160,9 +160,18 @@ public class Board extends JPanel implements ActionListener {
         };
         doRound();
 //        repaint();
-        // Ve quy dao agent
-        g.setColor(Color.red);
-        readInput.drawSine(g);
+        // draw agent...
+        for (int i = 0; i < agentArray.size(); i++) {
+            Agent a = agentArray.get(i);
+            if(timer.isRunning()) readInput.paths.get(i).doMove(a);
+            a.draw(g);
+            int top = a.y / 30, bottom = (a.y + 20) / 30, left = a.x / 30, right = (a.x + 20) / 30;
+            if (top > 19 || left > 39 || right < 0 || bottom < 0) continue;
+            if (top >= 0 && left >= 0) nodeArray[left][top].isCover = true;
+            if (bottom <= 19 && left >= 0) nodeArray[left][bottom].isCover = true;
+            if (top >= 0 && right <= 39) nodeArray[right][top].isCover = true;
+            if (bottom <= 19 && right <= 39) nodeArray[right][bottom].isCover = true;
+        }
     }
 
     private void move() {
@@ -445,56 +454,70 @@ public class Board extends JPanel implements ActionListener {
 
     public void printResult() throws IOException {
         numOfDoors = 0;
+        int agentInRoom = 0;
+        Random rand = new Random();
         doorCordinateX = new String[100];
         doorCordinateY = new String[100];
-        File file = new File("src/com/zetcode/algorithm/testCase.inp");
-        OutputStream outputStream = new FileOutputStream(file);
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-        String numberOfFacilities = String.valueOf(facilities.size());
-        outputStreamWriter.write("100");  //Số lượng đường đi
-        outputStreamWriter.write("\n");
 
         for (Room room : roomArray) {
             for (Door door : room.doorArray) {
                 doorCordinateX[numOfDoors] = String.valueOf(door.getX() + 15);
                 if (numOfDoors % 4 == 0 || numOfDoors % 4 == 1) {
-                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() - 12);  // 2 cửa trên có tọa độ y - 6
+                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() - 22);  // 2 cửa trên có tọa độ y - 6
                 } else {
-                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() + 22); // 2 cửa dưới có tọa độ y + 6
+                    doorCordinateY[numOfDoors] = String.valueOf(door.getY() + 12); // 2 cửa dưới có tọa độ y + 6
                 }
                 numOfDoors++;
             }
+            agentInRoom += room.agentArray.size();
         }
 
         for (Port port : portArray) {
             if (port.getX() > 6) {
-                doorCordinateX[numOfDoors] = String.valueOf(port.getX() - 12);
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() - 22);
                 doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 30);
                 numOfDoors++;
             }
             if (port.getY() > 6) {
                 doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 45);
-                doorCordinateY[numOfDoors] = String.valueOf(port.getY() - 12);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() - 22);
                 numOfDoors++;
             }
             if (port.getX() < 1104) {
-                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 102);
+                doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 92);
                 doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 30);
                 numOfDoors++;
             }
             if (port.getY() < 534) {
                 doorCordinateX[numOfDoors] = String.valueOf(port.getX() + 45);
-                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 72);
+                doorCordinateY[numOfDoors] = String.valueOf(port.getY() + 62);
                 numOfDoors++;
             }
         }
 
+        int agentGoOut = agentInRoom * container.validate.agentOutRoom / 100;
+        for (int i = 0; i < agentGoOut; i++) {
+            int a;
+            do {
+                a = rand.nextInt(roomArray.size());
+            } while (roomArray.get(a).agentArray.size() < 1);
+            roomArray.get(a).agentArray.remove(0);
+        }
+        int agentOut = container.validate.numberAgentInFloor - agentInRoom + agentGoOut;
 
-        for (int i = 0; i < 100; i++) {   // 100 ở đây là số đường đi
-            Random rand1 = new Random();
-            int random1 = rand1.nextInt(numOfDoors);
-            Random rand2 = new Random();
-            int random2 = rand2.nextInt(numOfDoors);
+        File file = new File("src/com/zetcode/algorithm/testCase.inp");
+        OutputStream outputStream = new FileOutputStream(file);
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+        String numberOfFacilities = String.valueOf(facilities.size());
+        outputStreamWriter.write(agentOut + "");  //Số lượng đường đi
+        outputStreamWriter.write("\n");
+
+        for (int i = 0; i < agentOut; i++) {   // agentOut ở đây là số đường đi
+            int random1 = rand.nextInt(numOfDoors);
+            int random2;
+            do {
+                random2 = rand.nextInt(numOfDoors);
+            } while(random2 == random1);
             outputStreamWriter.write(doorCordinateX[random1] + "," + doorCordinateY[random1] + " ");
             outputStreamWriter.write(doorCordinateX[random2] + "," + doorCordinateY[random2]);
             outputStreamWriter.write("\n");
@@ -506,8 +529,8 @@ public class Board extends JPanel implements ActionListener {
         for (Facility facility : facilities) {
             String xLeft = String.valueOf(facility.getX() - 10);
             String xRight = String.valueOf(facility.getX() + facility.getSize_x() + 10);
-            String yTop = String.valueOf(facility.getY() - 10);
-            String yBot = String.valueOf(facility.getY() + facility.getSize_y() + 10);
+            String yTop = String.valueOf(facility.getY() - 20);
+            String yBot = String.valueOf(facility.getY() + facility.getSize_y());
             String botLeft = xLeft + "," + yBot;
             String botRight = xRight + "," + yBot;
             String topLeft = xLeft + "," + yTop;
@@ -539,6 +562,7 @@ public class Board extends JPanel implements ActionListener {
             e.printStackTrace();
         }
     }
+
 
     public void playAgainGame() {
         facilities.removeAllElements();

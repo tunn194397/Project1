@@ -51,7 +51,7 @@ public class Map extends JSONArray {
 				facilities.add(l);
 			}
 			if ("Room".equals(name)) {
-				Room r = new Room(0,0);
+				Room r = new Room(0,0,5);
 				setFacility(r, jobj);
 				facilities.add(r);
 			}
