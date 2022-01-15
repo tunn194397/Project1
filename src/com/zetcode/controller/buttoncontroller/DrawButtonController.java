@@ -18,12 +18,15 @@ public class DrawButtonController extends ButtonController{
     public void actionPerformed(ActionEvent e) {
         if (button.getText().equals("Draw Line")) {
             playButton.setText("Play");
+            playButton.setToolTipText("Play");
             board.pauseGame();
             board.setStatus(1);
             button.setText("Resume");
+            button.setToolTipText("Resume");
         }
         else {
             button.setText("Draw Line");
+            button.setToolTipText("Draw Line");
             board.setStatus(0);
             board.updateLineGraph();
         }

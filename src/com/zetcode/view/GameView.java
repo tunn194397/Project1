@@ -24,15 +24,15 @@ public class GameView extends JPanel implements ActionListener {
     public JButton deleteButton = new JButton("Delete");
 
     public JButton drawButton = new JButton("Draw Line");
-    public JButton saveButton = new JButton("Save Map");
+    public JButton saveButton = new JButton("");
     public JButton playButton = new JButton("Play");
 
-    public JButton loadButton = new JButton("Load Map");
-    public JButton playAgainButton = new JButton("Play Again");
-    public JButton chooseEndNodeButton = new JButton("End Node");
+    public JButton loadButton = new JButton("");
+    public JButton playAgainButton = new JButton("");
+    public JButton chooseEndNodeButton = new JButton("");
 
-    public JButton optionsButton = new JButton("Options");
-    public JButton backButton = new JButton("Back");
+    public JButton optionsButton = new JButton("");
+    public JButton backButton = new JButton("");
 
 
     //Label
@@ -113,18 +113,48 @@ public class GameView extends JPanel implements ActionListener {
         buttonPanel.setLayout(null);
         buttonPanel.setBackground(Color.lightGray);
 
-        drawButton.setBounds(5,10,70,40);
-        saveButton.setBounds(5,60,70,40);
-        loadButton.setBounds(5,110,70,40);
-        playAgainButton.setBounds(5,160,70,40);
-        chooseEndNodeButton.setBounds(5,210,70,40);
-        optionsButton.setBounds(5,260,70,40);
-        backButton.setBounds(5,500,70,40);
+        ImageIcon backIcon = new ImageIcon("src/images/boardButton/back.png");
+        backButton.setBackground(Color.white);
+        backButton.setBounds(5,10,60,40);
+        backButton.setIcon(backIcon);
         backButton.addActionListener(this);
 
-        playButton.setBounds(5, 550, 70, 80);
-        buttonPanel.add(backButton);
+        ImageIcon saveIcon = new ImageIcon("src/images/boardButton/save.png");
+        saveButton.setBackground(Color.white);
+        saveButton.setBounds(5,60,60,40);
+        saveButton.setIcon(saveIcon);
 
+        ImageIcon loadIcon = new ImageIcon("src/images/boardButton/load.png");
+        loadButton.setBackground(Color.white);
+        loadButton.setBounds(5,110,60,40);
+        loadButton.setIcon(loadIcon);
+
+        ImageIcon drawIcon = new ImageIcon("src/images/boardButton/drawLine.png");
+        drawButton.setBackground(Color.white);
+        drawButton.setBounds(5,360,60,40);
+        drawButton.setIcon(drawIcon);
+
+        ImageIcon playAgainIcon = new ImageIcon("src/images/boardButton/playAgain.png");
+        playAgainButton.setBackground(Color.white);
+        playAgainButton.setBounds(5,410,60,40);
+        playAgainButton.setIcon(playAgainIcon);
+
+        ImageIcon endIcon = new ImageIcon("src/images/boardButton/endNode.png");
+        chooseEndNodeButton.setBackground(Color.white);
+        chooseEndNodeButton.setBounds(5,460,60,40);
+        chooseEndNodeButton.setIcon(endIcon);
+
+        ImageIcon optionIcon = new ImageIcon("src/images/boardButton/options.png");
+        optionsButton.setBackground(Color.white);
+        optionsButton.setBounds(5,510,60,40);
+        optionsButton.setIcon(optionIcon);
+
+        ImageIcon playIcon = new ImageIcon("src/images/boardButton/play.png");
+        playButton.setBackground(Color.white);
+        playButton.setBounds(5,560,60,50);
+        playButton.setIcon(playIcon);
+
+        buttonPanel.add(backButton);
         buttonPanel.add(drawButton);
         buttonPanel.add(playButton);
         buttonPanel.add(saveButton);
@@ -167,6 +197,16 @@ public class GameView extends JPanel implements ActionListener {
         addAGVButton.addActionListener(aac);
         addPortButton.addActionListener(apc);
         addLiftButton.addActionListener(alc);
+
+        playButton.setToolTipText("Play");
+        drawButton.setToolTipText("Draw Line");
+        saveButton.setToolTipText("Save Map");
+        loadButton.setToolTipText("Load Map");
+        optionsButton.setToolTipText("Options");
+        playAgainButton.setToolTipText("Play Again");
+        chooseEndNodeButton.setToolTipText("Choose End Node");
+        backButton.setToolTipText("Back");
+
     }
     public void setUpAll() {
         controlPanel.setBounds(0,611,1210,90);

@@ -24,7 +24,7 @@ public class AddAGVController extends ButtonController{
             if (flag >= 200) break;
         }
         if (flag < 200 ){
-            AGV agv = new AGV(randomX*30,randomY*30);
+            AGV agv = new AGV(randomX*30,randomY*30,board.nodeArray);
             if (board.agvArray.size() < board.container.validate.maxNumberOfAgv) {
                 flag =0;
                 board.agvArray.add(agv);

@@ -24,13 +24,13 @@ public class AddLiftController extends ButtonController {
         }
         if (flag < 200 ){
             Lift lift = new Lift(randomX*30,randomY*30);
-            if (board.liftArray.size() < 6) {
+            if (board.liftArray.size() < board.MAX_LIFT_QUANTITY) {
                 flag =0;
                 board.liftArray.add(lift);
                 board.updateFacilities();
             }
             else {
-                JOptionPane.showMessageDialog(board,"Cannot add Lift because of max room in the map is 6");
+                JOptionPane.showMessageDialog(board,"Cannot add Lift because of max room in the map is " + board.MAX_LIFT_QUANTITY);
             }
         }
         else {

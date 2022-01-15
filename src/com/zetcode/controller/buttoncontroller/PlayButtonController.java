@@ -30,6 +30,9 @@ public class PlayButtonController extends ButtonController {
             board.initGame();
             gameStart = true;
             button.setText("Pause");
+            button.setToolTipText("Pause");
+            ImageIcon pauseIcon = new ImageIcon("src/images/boardButton/pause.png");
+            button.setIcon(pauseIcon);
             board.setStatus(0);
             board.updateLineGraph();
 	        try {
@@ -42,6 +45,9 @@ public class PlayButtonController extends ButtonController {
         else {
             board.pauseGame();
             button.setText("Play");
+            button.setToolTipText("Play");
+            ImageIcon playIcon = new ImageIcon("src/images/boardButton/play.png");
+            button.setIcon(playIcon);
             board.setStatus(0);
         }
     }

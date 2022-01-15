@@ -24,13 +24,13 @@ public class AddPortController extends ButtonController{
         }
         if (flag < 200 ){
             Port port = new Port(randomX*30,randomY*30);
-            if (board.portArray.size() < 8) {
+            if (board.portArray.size() < board.MAX_PORT_QUANTITY) {
                 flag =0;
                 board.portArray.add(port);
                 board.updateFacilities();
             }
             else {
-                JOptionPane.showMessageDialog(board,"Cannot add Port because of max port in the map is 8");
+                JOptionPane.showMessageDialog(board,"Cannot add Port because of max port in the map is " + board.MAX_PORT_QUANTITY);
             }
         }
         else {

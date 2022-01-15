@@ -256,15 +256,15 @@ public class Board extends JPanel implements ActionListener {
 
         mainAGV = new AGV(120,120,nodeArray);
         mainAGV.setControl(true);
-        AGV agv1 = new AGV(210,60, nodeArray);
-        AGV agv2 = new AGV(210,15, nodeArray);
-        AGV agv3 = new AGV(420,450, nodeArray);
-        AGV agv4 = new AGV(600,300, nodeArray);
+//        AGV agv1 = new AGV(210,60, nodeArray);
+//        AGV agv2 = new AGV(210,15, nodeArray);
+//        AGV agv3 = new AGV(420,450, nodeArray);
+//        AGV agv4 = new AGV(600,300, nodeArray);
         agvArray.add(mainAGV);
-        agvArray.add(agv1);
-        agvArray.add(agv2);
-        agvArray.add(agv3);
-        agvArray.add(agv4);
+//        agvArray.add(agv1);
+//        agvArray.add(agv2);
+//        agvArray.add(agv3);
+//        agvArray.add(agv4);
     }
 
     public boolean checkLine(){
