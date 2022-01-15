@@ -14,16 +14,19 @@ public class AddLiftController extends ButtonController {
     public int flag = 0;
     @Override
     public void actionPerformed(ActionEvent e) {
-        int randomX = 5;
-        int randomY = 3;
-        while (checkNewLocated(new Lift(randomX*30, randomY*30))) {
-            randomX = (new Random()).nextInt(33);
-            randomY = (new Random()).nextInt(15);
+        int x = 0;
+        int randomX = 0;
+        int randomY = 6;
+        while (checkNewLocated(new Lift(x*30, randomY*30))) {
+            randomX = (new Random()).nextInt(37);
+            if (randomX < 18) {x = 0;} else x= 37;
+            randomY = (new Random()).nextInt(18);
+            if (randomY % 2 != 0) randomY ++;
             flag++;
             if (flag >= 200) break;
         }
         if (flag < 200 ){
-            Lift lift = new Lift(randomX*30,randomY*30);
+            Lift lift = new Lift(x*30,randomY*30);
             if (board.liftArray.size() < board.MAX_LIFT_QUANTITY) {
                 flag =0;
                 board.liftArray.add(lift);

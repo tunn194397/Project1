@@ -375,9 +375,6 @@ public class Board extends JPanel implements ActionListener {
         for (Port port : portArray) {
             if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
         }
-        for (Facility facility: facilities) {
-            System.out.println(facility.ID);
-        }
     }
 
     public void updateLineGraph() {
@@ -406,7 +403,6 @@ public class Board extends JPanel implements ActionListener {
             };
         }
 
-        System.out.println("Nothing");
         for (Node node : lineArray) {
             if (node.isEndNode) {
                 endNode = node;
@@ -528,11 +524,7 @@ public class Board extends JPanel implements ActionListener {
         agvArray = new ArrayList<>();
         constructData();
         for (Node node: lineArray) {
-            System.out.println(node.x/30 + "- " + node.y/30 + ": " + node.direction.up + " " + node.direction.down + " " + node.direction.left + " " + node.direction.right);
             node.agvPriority = 0;
-        }
-        for (AGV agv: agvArray) {
-            System.out.println(agv.ID);
         }
         pos = 1;
         isNoticed = false;
@@ -543,13 +535,11 @@ public class Board extends JPanel implements ActionListener {
             if (agv.x == endNode.x && agv.y == endNode.y && !agv.isEnd) {
                 agv.isEnd = true;
                 if (!agv.ID.equals(mainAGV.ID)) {
-                    System.out.println("Free");
                     nodeArray[agv.baseNode.x/30][agv.baseNode.y/30].freeNode();
                     endNode.freeNode();
                     pos ++;
                 }
                 else {
-                    System.out.println("Main Free");
                     nodeArray[agv.baseNode.x/30][agv.baseNode.y/30].freeNode();
                     endNode.freeNode();
                     if (!isNoticed) Congra(pos);
