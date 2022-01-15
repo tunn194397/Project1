@@ -95,6 +95,8 @@ public class Board extends JPanel implements ActionListener {
         addMouseController(ma);
         soundIsPlay = true;
         turnOnMusic(1);
+
+        initGame();
     }
     public void addMouseController(MouseController ma ) {
         addMouseListener(ma);
@@ -117,6 +119,8 @@ public class Board extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        //update label
+        container.gameView.showLabel();
         //Ve phan AGV
         ma.updateController();
         doDrawing(g);
@@ -155,7 +159,7 @@ public class Board extends JPanel implements ActionListener {
             g.fillRect(collector.x, collector.y,collector.size_x,collector.size_y);
         };
         doRound();
-
+//        repaint();
         // Ve quy dao agent
         g.setColor(Color.red);
         readInput.drawSine(g);
@@ -173,13 +177,23 @@ public class Board extends JPanel implements ActionListener {
         move();
         repaint();
     }
-    private void doRound() {
-        int ex = (collector.x % 30 <= 15)? collector.x - ( collector.x % 30): collector.x + 30 - collector.x % 30;
-        int ey = (collector.y % 30 <= 15)? collector.y - ( collector.y % 30): collector.y + 30 - collector.y % 30;
-        for (Facility facility: facilities) {
-            if (facility.ID.equals(collector.ID)) facility.update(ex,ey);
+    public void doRound() {
+        if (!collector.name.equals("AGV")) {
+            int ex = (collector.x % 30 <= 15)? collector.x - ( collector.x % 30): collector.x + 30 - collector.x % 30;
+            int ey = (collector.y % 30 <= 15)? collector.y - ( collector.y % 30): collector.y + 30 - collector.y % 30;
+            for (Facility facility: facilities) {
+                if (facility.ID.equals(collector.ID)) facility.update(ex,ey);
+            }
+            collector.update(ex,ey);
         }
-        collector.update(ex,ey);
+        else {
+            int ex = (collector.x % 10 <= 5)? collector.x - ( collector.x % 10): collector.x + 10 - collector.x % 10;
+            int ey = (collector.y % 5 <= 3)? collector.y - ( collector.y % 5): collector.y + 5 - collector.y % 5;
+            for (AGV agv: agvArray) {
+                if (agv.ID.equals(collector.ID)) agv.update(ex,ey);
+            }
+            collector.update(ex,ey);
+        }
         repaint();
     }
 
@@ -262,15 +276,15 @@ public class Board extends JPanel implements ActionListener {
 
         mainAGV = new AGV(120,120,nodeArray);
         mainAGV.setControl(true);
-        AGV agv1 = new AGV(210,60, nodeArray);
-        AGV agv2 = new AGV(210,15, nodeArray);
-        AGV agv3 = new AGV(420,450, nodeArray);
-        AGV agv4 = new AGV(600,300, nodeArray);
+//        AGV agv1 = new AGV(210,60, nodeArray);
+//        AGV agv2 = new AGV(210,15, nodeArray);
+//        AGV agv3 = new AGV(420,450, nodeArray);
+//        AGV agv4 = new AGV(600,300, nodeArray);
         agvArray.add(mainAGV);
-        agvArray.add(agv1);
-        agvArray.add(agv2);
-        agvArray.add(agv3);
-        agvArray.add(agv4);
+//        agvArray.add(agv1);
+//        agvArray.add(agv2);
+//        agvArray.add(agv3);
+//        agvArray.add(agv4);
     }
 
     public boolean checkLine(){
@@ -382,9 +396,6 @@ public class Board extends JPanel implements ActionListener {
         for (Port port : portArray) {
             if (port.checkBelongToFacilities(facilities) == 0) facilities.add(port);
         }
-        for (Facility facility: facilities) {
-            System.out.println(facility.ID);
-        }
     }
 
     public void updateLineGraph() {
@@ -413,7 +424,6 @@ public class Board extends JPanel implements ActionListener {
             };
         }
 
-        System.out.println("Nothing");
         for (Node node : lineArray) {
             if (node.isEndNode) {
                 endNode = node;
@@ -537,6 +547,8 @@ public class Board extends JPanel implements ActionListener {
         for (Node node: lineArray) {
             node.agvPriority = 0;
         }
+        pos = 1;
+        isNoticed = false;
     }
 
     public void setPos() {
@@ -544,16 +556,14 @@ public class Board extends JPanel implements ActionListener {
             if (agv.x == endNode.x && agv.y == endNode.y && !agv.isEnd) {
                 agv.isEnd = true;
                 if (!agv.ID.equals(mainAGV.ID)) {
-                    System.out.println("Free");
                     nodeArray[agv.baseNode.x/30][agv.baseNode.y/30].freeNode();
                     endNode.freeNode();
                     pos ++;
                 }
                 else {
-                    System.out.println("Main Free");
                     nodeArray[agv.baseNode.x/30][agv.baseNode.y/30].freeNode();
                     endNode.freeNode();
-                    if (!isNoticed) JOptionPane.showMessageDialog(this,"AGV cua ban da ve dich thu " + pos);
+                    if (!isNoticed) Congra(pos);
                     isNoticed = true;
                 }
             }
@@ -573,4 +583,52 @@ public class Board extends JPanel implements ActionListener {
         this.sound.playSound();
     }
 
+
+    public void Congra(int i) {
+        JFrame congraFrame = new JFrame();
+        congraFrame.setBackground(Color.white);
+        congraFrame.setSize(300,300);
+        congraFrame.setLocationRelativeTo(null);
+        congraFrame.setVisible(true);
+
+        JPanel congraPanel = new JPanel();
+        congraPanel.setLayout(null);
+        JLabel congraLabel = new JLabel("Congratulation!");
+        congraLabel.setFont(new Font("Robo",Font.BOLD,24));
+        if (i > 3) congraLabel.setVisible(false);
+        congraLabel.setBounds(50,10,200,50);
+
+        JLabel notifyLabel = new JLabel("Rank of you:    " + i);
+        notifyLabel.setFont(new Font("Robo", Font.BOLD, 16));
+        notifyLabel.setBounds(80,180,140,30);
+
+        JButton okButton = new JButton();
+        okButton.setText((i > 3)?"Try again":"Yeahh!");
+        okButton.setBounds(110,220,80,30);
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                congraFrame.dispose();
+            }
+        });
+
+        ImageIcon congraIcon = new ImageIcon();
+        if (i == 1) congraIcon = new ImageIcon("src/images/page/top1.png");
+        else if (i == 2) congraIcon = new ImageIcon("src/images/page/top2.png");
+        else if (i == 3) congraIcon = new ImageIcon("src/images/page/top3.png");
+        else congraIcon = new ImageIcon("src/images/page/outTop.png");
+        JButton imageButton = new JButton(new ImageIcon(congraIcon.getImage().getScaledInstance(120,120,1)));
+        imageButton.setBounds(90,60,120,120);
+        imageButton.setBorderPainted(false);
+
+        congraPanel.add(congraLabel);
+        congraPanel.add(notifyLabel);
+        congraPanel.add(imageButton);
+        congraPanel.add(okButton);
+        congraPanel.setBackground(Color.white);
+
+        congraFrame.add(congraPanel);
+
+
+    }
 }

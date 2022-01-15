@@ -26,30 +26,23 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     public MouseController(){
         super();
     }
-    public MouseController(Board board){
+    public MouseController(Board board) {
         super();
         this.board = board;
         updateController();
-        for (Facility facility : facilities) {
-            System.out.println(facility.ID);
-        }
     }
     @Override
     public void mouseClicked(MouseEvent e) {
         board.turnOnMusic1(4);
         int click_x = e.getX();
         int click_y = e.getY();
-        System.out.println("Click in " + click_x+ " " + click_y);
         if (board.status == 0) {
             for (Facility facility : facilities) {
                 if (facility.shape.isHit(click_x, click_y)) {
-                    System.out.println("Click Mouse in" + facility.ID);
                     if (collector.ID.equals(facility.ID)) {
-                        System.out.println(collector.ID + " " + facility.ID);
                         collector = new Facility();
                         collector.setMovable(false);
                     } else {
-                        System.out.println(collector.ID + " " + facility.ID);
                         collector = facility;
                         collector.setMovable(true);
                     }
@@ -57,11 +50,23 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
                     board.repaint();
                     break;
                 }
-                else {};
+            }
+            for (AGV agv : board.agvArray) {
+                if (agv.shape.isHit(click_x, click_y)) {
+                    if (collector.ID.equals(agv.ID)) {
+                        collector = new Facility();
+                        collector.setMovable(false);
+                    } else {
+                        collector = agv;
+                        collector.setMovable(true);
+                    }
+                    updateBoard();
+                    board.repaint();
+                    break;
+                }
             }
         }
         else if (board.status == 1) {
-            System.out.println("DrawLine");
             if (firstNode.isNull) {
                 firstNode = nodeArray[click_x / 30][click_y / 30];
                 firstNode.updateDirection("head");
@@ -78,7 +83,6 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             board.repaint();
         }
         else if (board.status == 4) {
-            System.out.println("Choose End Node");
             if (nodeArray[click_x/30][click_y/30].isLine) nodeArray[click_x/30][click_y/30].updateIsEndNode();
             else JOptionPane.showMessageDialog(board,"This node isn't in line!");
             board.setStatus(0);
@@ -89,7 +93,6 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
         int press_x = e.getX();
         int press_y = e.getY();
         if (status == 0) {
-            System.out.println("press Mouse in " + press_x + " " + press_y);
         }
         else if (status == 1) {
         }
@@ -99,14 +102,11 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
         if (board.status == 0) {
             int drag_x = e.getX();
             int drag_y = e.getY();
-            System.out.println(drag_x+ " " + drag_y);
             if (collector.moveAbility){
                 doMove(e, drag_x, drag_y);
             }
         }
         else if (board.status == 1) {
-//            doDrawLine(e);
-            System.out.println(e.getX()+ " " + e.getY());
         }
     }
     @Override
@@ -201,21 +201,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     //Nhung ham ho tro cho di chuyen cac Facility trong Board
     public void doMove(MouseEvent e, int x, int y) {
         if (collector.shape.isHit(x, y)) {
-            boolean ok = true;
-            Facility tmp = new Facility();
-            if (board.collector.name.equals("Room")) {
-                tmp = new Room(e.getX() - 60, e.getY()-45);
-            }
-            if (board.collector.name.equals("Port")) {
-                tmp = new Port(e.getX() - 60, e.getY()-45);
-            }
-            if (board.collector.name.equals("Lift")) {
-                tmp = new Lift(e.getX() - 60, e.getY()-45);
-            }
-            for (Node node: board.lineArray) {
-                if (node.isBelongTo(tmp)) ok = false;
-            }
-            if (ok) collector.update(e.getX() - 60,e.getY() - 45);
+            collector.update(e.getX() - collector.size_x/2,e.getY() - collector.size_y/2);
             updateBoard();
         }
     }
@@ -232,7 +218,6 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
                     if (collector.shape.isHit(wheel_x, wheel_y)) {
                         float amount =  e.getWheelRotation() * 5f;
                         collector.updateSize((int)amount);
-                        System.out.println(collector.size_x+ " "+ collector.size_y);
                         updateBoard();
                         board.repaint();
                     }

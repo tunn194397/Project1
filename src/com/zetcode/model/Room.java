@@ -22,7 +22,7 @@ public class Room extends Facility {
         ID = "Room" + Integer.toString(i) + Integer.toString(j);
         color = Color.white;
         setDoor();
-        agentPosInRoom();
+        setAgent();
     }
 
     public void setDoor() {
@@ -34,16 +34,11 @@ public class Room extends Facility {
     }
 
     public void setAgent() {
+        int rand = (int) (Math.random() * 100);
+        int agentQty = rand % 5;
         Agent a1 = new Agent(this.x + 30, this.y+60);
-        this.agentArray = new Agent[]{a1};
-    }
 
-    public void agentPosInRoom() {
-        for (int i = 0; i < agentNum; i++) {
-            int a_pos_x = ThreadLocalRandom.current().nextInt( this.x + 10, this.x + 200 + 1);
-            int a_pos_y = ThreadLocalRandom.current().nextInt(this.y +10, this.y + 140 + 1);
-            this.agentArray[i] = new Agent(a_pos_x, a_pos_y);
-        }
+        this.agentArray = new Agent[]{a1};
     }
 
     public void draw(Graphics g) {

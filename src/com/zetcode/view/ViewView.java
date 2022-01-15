@@ -101,7 +101,6 @@ public class ViewView extends JPanel implements ActionListener {
                 if (agentBox.getSelectedIndex() != -1) {
                     agentData = (String) agentBox.getItemAt(agentBox.getSelectedIndex());
                 }
-                System.out.println(mapData + " " + roomData + " " + AGVData + " " + agentData + " ");
                 updateSize();
             }
         });

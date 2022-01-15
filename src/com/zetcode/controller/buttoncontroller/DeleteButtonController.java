@@ -14,12 +14,13 @@ public class DeleteButtonController extends ButtonController{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!board.collector.ID.equals("Null")){
-            System.out.println("Delete");
             board.facilities.removeIf(f -> f.ID.equals(board.collector.ID));
+
             board.turnOnMusic1(7);
             for (Facility f : board.facilities) {
                 System.out.println(f.ID);
             }
+
             if (board.collector.name.equals("Room")) {
                 board.roomArray.removeIf(f->f.ID.equals(board.collector.ID));
             }

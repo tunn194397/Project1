@@ -6,14 +6,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PlayView extends JPanel implements ActionListener {
+public class PlayerView extends JPanel implements ActionListener {
     private final Container Container;
     private final JButton newMapButton = new JButton();
     private final JButton userButton = new JButton();
     private final JButton highScoreButton = new JButton();
     private final JButton backButton = new JButton();
 
-    public PlayView(Container Container) {
+    public PlayerView(Container Container) {
         this.Container = Container;
         this.setLayout((LayoutManager)null);
         this.initCompts();
@@ -79,7 +79,7 @@ public class PlayView extends JPanel implements ActionListener {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        ImageIcon icon = new ImageIcon("src/images/page/background.png");
+        ImageIcon icon = new ImageIcon("src/images/page/background_empty.png");
         g.drawImage(icon.getImage(), 0, 0, 1300,700, Color.black, null);
     }
 }

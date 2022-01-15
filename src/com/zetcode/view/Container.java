@@ -18,7 +18,7 @@ public class Container extends JPanel {
     private OptionsView optionsView;
     private ViewView viewView;
     private HomeView homeView;
-    private GameView gameView;
+    public GameView gameView;
     private SettingView settingView;
 
     private AboutTeamView aboutTeamView;
@@ -29,6 +29,9 @@ public class Container extends JPanel {
     private AGVValidateView agvValidateView;
     private AgentValidateView agentValidateView;
     private AudioValidateView audioValidateView;
+
+    private PlayerView playerView;
+    private HighScoreView highScoreView;
 
     private CardLayout CardLayout;
 
@@ -65,6 +68,11 @@ public class Container extends JPanel {
         this.add(this.agentValidateView, "agent_validate_view");
         this.audioValidateView = new AudioValidateView(this);
         this.add(this.audioValidateView, "audio_validate_view");
+
+        this.playerView = new PlayerView(this);
+        this.add(this.playerView, "player_view");
+        this.highScoreView = new HighScoreView(this);
+        this.add(this.highScoreView, "high_score_view");
 
         this.setShowMenu();
     }
@@ -117,5 +125,13 @@ public class Container extends JPanel {
     public void showAudioView() {
         this.CardLayout.show(this, "audio_validate_view");
         this.audioValidateView.requestFocus();
+    }
+    public void showPlayerView() {
+        this.CardLayout.show(this, "player_view");
+        this.playView.requestFocus();
+    }
+    public void showHighScoreView() {
+        this.CardLayout.show(this, "high_score_view");
+        this.highScoreView.requestFocus();
     }
 }

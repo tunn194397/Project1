@@ -90,6 +90,7 @@ public class Facility extends JPanel{
     }
 
     public Facility() {
+        name = "Null";
         ID = "Null";
     }
 
