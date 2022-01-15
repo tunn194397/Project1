@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zetcode.model.Room;
 
 public class RoomUnitTest {
-    Room room = new Room(150, 360);
+    Room room = new Room(150, 360, 1);
 
     @Test
     void testSetDoorReturnNull() {
@@ -39,11 +39,6 @@ public class RoomUnitTest {
         Door d4 = new Door(280, 230);
          Door[] doorArray = new Door[] {d1, d2, d3, d4};
         assertEquals(doorArray, room.doorArray);
-    }
-
-    @Test
-    void testAgentNum() {
-        assertNotNull(room.agentNum);
     }
 
     @Test

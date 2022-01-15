@@ -144,7 +144,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (checkRoomOverTotalSize()){
-            JOptionPane.showMessageDialog(this,"Total size of room cannot over " + validMaxSizeOfRoom*100 + "% size of room","Warning",JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,"Total size of room cannot over " + validMaxSizeOfRoom * 100 + "% size of room","Warning",JOptionPane.WARNING_MESSAGE);
         }
         if (!collector.ID.equals("Null")) {
             g.setColor(Color.gray);
@@ -155,8 +155,14 @@ public class Board extends JPanel implements ActionListener {
         // draw agent...
         for (int i = 0; i < agentArray.size(); i++) {
             Agent a = agentArray.get(i);
-            readInput.paths.get(i).doMove(a);
+            if(timer.isRunning()) readInput.paths.get(i).doMove(a);
             a.draw(g);
+            int top = a.y / 30, bottom = (a.y + 20) / 30, left = a.x / 30, right = (a.x + 20) / 30;
+            if (top > 19 || left > 39 || right < 0 || bottom < 0) continue;
+            if (top >= 0 && left >= 0) nodeArray[left][top].isCover = true;
+            if (bottom <= 19 && left >= 0) nodeArray[left][bottom].isCover = true;
+            if (top >= 0 && right <= 39) nodeArray[right][top].isCover = true;
+            if (bottom <= 19 && right <= 39) nodeArray[right][bottom].isCover = true;
         }
     }
 
@@ -420,14 +426,10 @@ public class Board extends JPanel implements ActionListener {
 
     public void printResult() throws IOException {
         numOfDoors = 0;
+        int agentInRoom = 0;
+        Random rand = new Random();
         doorCordinateX = new String[100];
         doorCordinateY = new String[100];
-        File file = new File("src/com/zetcode/algorithm/testCase.inp");
-        OutputStream outputStream = new FileOutputStream(file);
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-        String numberOfFacilities = String.valueOf(facilities.size());
-        outputStreamWriter.write("100");  //Số lượng đường đi
-        outputStreamWriter.write("\n");
 
         for (Room room : roomArray) {
             for (Door door : room.doorArray) {
@@ -439,6 +441,7 @@ public class Board extends JPanel implements ActionListener {
                 }
                 numOfDoors++;
             }
+            agentInRoom += room.agentArray.size();
         }
 
         for (Port port : portArray) {
@@ -464,12 +467,26 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
+        int agentGoOut = agentInRoom * container.validate.agentOutRoom / 100;
+        for (int i = 0; i < agentGoOut; i++) {
+            int a;
+            do {
+                a = rand.nextInt(roomArray.size());
+            } while (roomArray.get(a).agentArray.size() < 1);
+            roomArray.get(a).agentArray.remove(0);
+        }
+        int agentOut = container.validate.numberAgentInFloor - agentInRoom + agentGoOut;
 
-        for (int i = 0; i < 100; i++) {   // 100 ở đây là số đường đi
-            Random rand1 = new Random();
-            int random1 = rand1.nextInt(numOfDoors);
-            Random rand2 = new Random();
-            int random2 = rand2.nextInt(numOfDoors);
+        File file = new File("src/com/zetcode/algorithm/testCase.inp");
+        OutputStream outputStream = new FileOutputStream(file);
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+        String numberOfFacilities = String.valueOf(facilities.size());
+        outputStreamWriter.write(agentOut + "");  //Số lượng đường đi
+        outputStreamWriter.write("\n");
+
+        for (int i = 0; i < agentOut; i++) {   // 100 ở đây là số đường đi
+            int random1 = rand.nextInt(numOfDoors);
+            int random2 = rand.nextInt(numOfDoors);
             outputStreamWriter.write(doorCordinateX[random1] + "," + doorCordinateY[random1] + " ");
             outputStreamWriter.write(doorCordinateX[random2] + "," + doorCordinateY[random2]);
             outputStreamWriter.write("\n");
@@ -513,7 +530,6 @@ public class Board extends JPanel implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void playAgainGame() {

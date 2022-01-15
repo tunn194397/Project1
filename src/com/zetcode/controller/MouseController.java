@@ -202,13 +202,13 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
             boolean ok = true;
             Facility tmp = new Facility();
             if (board.collector.name.equals("Room")) {
-                tmp = new Room(e.getX() - 60, e.getY()-45);
+                tmp = new Room(e.getX() - 60, e.getY() - 45, board.container.validate.numberAgentInRoom);
             }
             if (board.collector.name.equals("Port")) {
-                tmp = new Port(e.getX() - 60, e.getY()-45);
+                tmp = new Port(e.getX() - 60, e.getY() - 45);
             }
             if (board.collector.name.equals("Lift")) {
-                tmp = new Lift(e.getX() - 60, e.getY()-45);
+                tmp = new Lift(e.getX() - 60, e.getY() - 45);
             }
             for (Node node: board.lineArray) {
                 if (node.isBelongTo(tmp)) ok = false;
