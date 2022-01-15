@@ -36,6 +36,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
     }
     @Override
     public void mouseClicked(MouseEvent e) {
+        board.turnOnMusic1(4);
         int click_x = e.getX();
         int click_y = e.getY();
         System.out.println("Click in " + click_x+ " " + click_y);
@@ -189,6 +190,7 @@ public class MouseController extends MouseAdapter implements MouseWheelListener 
         tmp.get(tmp.size() -1).updateDirection(s);
     }
     public void resetDraw(){
+        board.turnOnMusic1(2);
         JOptionPane.showMessageDialog(board,"Cannot make line because line cannot go through the facility");
         firstNode.updateIsLine(false);
         lastNode.updateIsLine(false);

@@ -16,6 +16,7 @@ public class DeleteButtonController extends ButtonController{
         if (!board.collector.ID.equals("Null")){
             System.out.println("Delete");
             board.facilities.removeIf(f -> f.ID.equals(board.collector.ID));
+            board.turnOnMusic1(7);
             for (Facility f : board.facilities) {
                 System.out.println(f.ID);
             }
@@ -36,6 +37,7 @@ public class DeleteButtonController extends ButtonController{
         }
         else {
             System.out.println("No Delete");
+            board.turnOnMusic1(2);
             JOptionPane.showMessageDialog(board,"Collect one facility to delete!");
         }
     }

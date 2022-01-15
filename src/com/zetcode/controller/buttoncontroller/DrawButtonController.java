@@ -16,6 +16,7 @@ public class DrawButtonController extends ButtonController{
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        board.turnOnMusic1(7);
         if (button.getText().equals("Draw Line")) {
             playButton.setText("Play");
             board.pauseGame();

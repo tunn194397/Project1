@@ -26,6 +26,8 @@ public class PlayButtonController extends ButtonController {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (button.getText().equals("Play")) {
+            board.turnOffMusic();
+            board.turnOnMusic(6);
             drawButton.setText("Draw Line");
             board.initGame();
             gameStart = true;
@@ -40,6 +42,7 @@ public class PlayButtonController extends ButtonController {
             }
         }
         else {
+            board.turnOffMusic();
             board.pauseGame();
             button.setText("Play");
             board.setStatus(0);

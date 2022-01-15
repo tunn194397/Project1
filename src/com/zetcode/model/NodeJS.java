@@ -12,5 +12,6 @@ public class NodeJS extends JSONObject {
         this.put("downdirection", node.direction.down);
         this.put("rightdirection", node.direction.right);
         this.put("leftdirection", node.direction.left);
+        this.put("isLine", node.isLine);
     }
 }

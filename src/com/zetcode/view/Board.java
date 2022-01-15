@@ -55,6 +55,8 @@ public class Board extends JPanel implements ActionListener {
 
     public Facility collector = new Facility();
     public Map map = new Map();
+    public Sound sound = new Sound();
+    public Boolean soundIsPlay;
 
     public Vector<Facility> facilities = new Vector<>();
 
@@ -72,12 +74,13 @@ public class Board extends JPanel implements ActionListener {
         setFocusable(true);
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         setUpNode();
-        setUpNode();
         constructData();
 
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
         addMouseController(ma);
+        //soundIsPlay = true;
+        //turnOnMusic(1);
     }
     public Board(Container container) {
         this.container = container;
@@ -90,6 +93,8 @@ public class Board extends JPanel implements ActionListener {
 //        addKeyListener(new TAdapter());
         ma = new MouseController(this);
         addMouseController(ma);
+        soundIsPlay = true;
+        turnOnMusic(1);
     }
     public void addMouseController(MouseController ma ) {
         addMouseListener(ma);
@@ -210,17 +215,30 @@ public class Board extends JPanel implements ActionListener {
                 newMap.add(nodeJS);
             }
         }
-        if(p < 2)JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
-        if(pAGV < 4)JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
-        if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1))JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);
-        if((p>=2)&&(pAGV>=4)&&(p%2==0 && pAGV%2==0)) newMap.SaveMap();
+        if(p < 2){
+            this.turnOnMusic1(2);
+            JOptionPane.showMessageDialog(this, "So luong cong cho nguoi phai >= 2","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        }
+        if(pAGV < 4){
+            this.turnOnMusic1(2);
+            JOptionPane.showMessageDialog(this, "So luong cong cho AGV phai >= 4","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        }
+        if((p>=2)&&(pAGV>=4)&&(p%2==1 || pAGV%2==1)){
+            this.turnOnMusic1(2);
+            JOptionPane.showMessageDialog(this, "So luong cong phai la so chan","Map khong hop le", JOptionPane.WARNING_MESSAGE);
+        }
+        if((p>=2)&&(pAGV>=4)&&(p%2==0 && pAGV%2==0)) {
+            newMap.SaveMap();
+            this.turnOnMusic1(7);
+        }
     }
 
     public void loadGame(String nameFile){
-      facilities = map.LoadFacilities(nameFile);
-      map.LoadNode(nameFile);
-      this.nodeArray = map.LoadNode(nameFile);
-      
+        facilities = map.LoadFacilities(nameFile);
+        map.LoadNode(nameFile);
+        this.nodeArray = map.LoadNode(nameFile);
+        this.lineArray = map.LoadLineArray(nodeArray);
+        this.turnOnMusic1(9);
     }
     public void setUpNode() {
         for (int i = 0; i < B_WIDTH/30; i ++) {
@@ -344,6 +362,7 @@ public class Board extends JPanel implements ActionListener {
                     oke = false;
                     a = j+1;
                     b = i+1;
+                    turnOnMusic1(2);
                     JOptionPane.showMessageDialog(this, "Node o hang "+a+" cot "+b+" khong hop le","Map khong hop le", JOptionPane.WARNING_MESSAGE);
                     break;
                 }
@@ -540,4 +559,18 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
+
+    public void turnOnMusic(int i){
+        this.sound.setFile(i);
+        this.sound.playSound();
+        this.sound.loopSound();
+    }
+    public void turnOffMusic(){
+        this.sound.stopSound();
+    }
+    public void turnOnMusic1(int i){
+        this.sound.setFile(i);
+        this.sound.playSound();
+    }
+
 }

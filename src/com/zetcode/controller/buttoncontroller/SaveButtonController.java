@@ -12,6 +12,7 @@ public class SaveButtonController extends ButtonController{
         }
         @Override
         public void actionPerformed(ActionEvent e) { 
+            board.turnOnMusic1(7);
             if(board.checkLine() == true){  
                 nameMap = null;
                 nameMap = JOptionPane.showInputDialog("Name Of Map");

@@ -17,6 +17,7 @@ public class PlayAgainController extends ButtonController {
 
     @Override
     public void actionPerformed(ActionEvent e)  {
+            board.turnOnMusic1(7);
             drawButton.setText("Draw Line");
             board.playAgainGame();
             board.setStatus(0);

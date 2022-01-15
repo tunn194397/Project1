@@ -30,13 +30,16 @@ public class AddRoomController extends ButtonController {
             if (board.roomArray.size() < board.MAX_ROOM_QUANTITY) {
                 flag =0;
                 board.roomArray.add(room);
+                board.turnOnMusic1(7);
                 board.updateFacilities();
             }
             else {
+                board.turnOnMusic1(2);
                 JOptionPane.showMessageDialog(board,"Cannot add Room because of max room in the map is " + board.MAX_ROOM_QUANTITY);
             }
         }
         else {
+            board.turnOnMusic1(2);
             JOptionPane.showMessageDialog(board,"Cannot add Room because of no space available");
             flag = 0;
         }

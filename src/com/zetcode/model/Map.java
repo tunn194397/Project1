@@ -8,6 +8,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Map extends JSONArray {
@@ -16,6 +17,7 @@ public class Map extends JSONArray {
 	String nameMap;
 	Node[][] nodeArray = new Node[B_WIDTH/30][B_HEIGHT/30];
 	Vector<Node> node = new Vector<>();
+	ArrayList<Node> lineArray = new ArrayList<>();
     public void SaveMap() {
 		this.nameMap = SaveButtonController.nameMap;
         try {
@@ -67,6 +69,8 @@ public class Map extends JSONArray {
 				n.direction.right = (int)rightdirec;
 				long leftdirec =( (Long) jobj.get("leftdirection")).longValue();
 				n.direction.left = (int)leftdirec;
+				boolean isline = ( (Boolean) jobj.get("isLine")).booleanValue();
+				n.isLine = isline;
 				node.add(n); 
 	 		}
 		}
@@ -90,6 +94,17 @@ public class Map extends JSONArray {
 					}
 				}
 		  return nodeArray;
+	}
+
+	public ArrayList<Node> LoadLineArray(Node[][] n){
+		for(Node[] node : n){
+			for(Node no: node){
+				if(no.isLine){
+					lineArray.add(no);
+				}
+			}
+		}
+		return lineArray;
 	}
 	private void setFacility(Facility f, JSONObject jobj) {
 		long xL, yL, sx, sy;
